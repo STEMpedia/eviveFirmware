@@ -371,8 +371,8 @@ void Adafruit_ST7735::initR(uint8_t options) {
   commonInit(Rcmd1);
   if(options == INITR_GREENTAB) {
     commandList(Rcmd2green);
-    colstart = 2;
-    rowstart = 1;
+//    colstart = 2;   //(un)comment based of TFT driver
+//    rowstart = 1;   //(un)comment based of TFT driver
   } else if(options == INITR_144GREENTAB) {
     _height = ST7735_TFTHEIGHT_144;
     commandList(Rcmd2green144);

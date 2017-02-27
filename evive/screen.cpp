@@ -6,6 +6,7 @@
 //#include "language.h"
 //#include "status.h"
 #include "screenImplementation.h"
+
 //#define LCD_UPDATE_INTERVAL 100
 #define LCD_NUM_LINES  11
 #define LCD_CLICKED (menuMove==2)
@@ -18,9 +19,12 @@
 	#define ENCODER_PULSES_PER_STEP 1
 #endif
 
+volatile bool DAC_ON_OFF = 0;
+volatile bool OSCILLOSCOPE_ON_OFF = 0;
+
 unsigned long lastStatusUpdateTime = 0;
 
-typedef void (*menuFunc_t)();	// Function pointer to menu functions.
+typedef void (*menuFunc_t)();	// Function pointer to menu function.
 
 static void lcd_home_menu();
 static void lcd_control_menu();
@@ -30,9 +34,14 @@ static void lcd_control_servos_menu();
 //static void lcd_control_slidesw_menu();
 //static void lcd_control_tactilesw_menu();
 static void lcd_sensing_menu();
-static void lcd_log_menu();
+//static void lcd_log_menu();
 static void lcd_pin_state();
 static void lcd_evive_oscilloscope();
+static void lcd_serial_select_menu();
+static void lcd_baud_menu();
+static void lcd_serial_monitor_setup();
+static void lcd_serial_monitor();
+static void lcd_pin_state_menu();
 static void lcd_dac_menu();
 static void lcd_user_def_menu();
 static void lcd_remove_function_menu();
@@ -48,12 +57,15 @@ static void lcd_sensing_VV();
 static void lcd_sensing_VI();
 static void lcd_sensing_status_VV();
 static void lcd_sensing_status_VI();
+static void lcd_digital_pin_state_setup();
+static void lcd_analog_pin_state_setup();
+static void lcd_digital_pin_state();
+static void lcd_analog_pin_state();
+static void lcd_digi_ana_pin_state_setup();
+static void lcd_digi_ana_pin_state();
 static void lcd_dac_function_generator();
-/*static void lcd_dac_analog_out();
-static void lcd_dac_sine();
-static void lcd_dac_sqaure();
-static void lcd_dac_triangular();
-static void lcd_dac_sawtooth();*/
+static void lcd_touch_sensors_setup();
+static void lcd_touch_sensors();
 static void add_user_def_fun_1();
 static void add_user_def_fun_2();
 static void add_user_def_fun_3();
@@ -61,6 +73,8 @@ static void add_user_def_fun_4();
 static void add_user_def_fun_5();
 static void actionRemove();
 
+long baudrate[]={9600, 115200, 250000, 300,1200,2400,4800,19200,38400,57600,74880,230400};
+uint8_t serialSelect;
 
 #if ENABLED(SDSUPPORT)
 	static void lcd_sdcard_menu();
@@ -78,25 +92,25 @@ static void menu_action_setting_edit_callback_int3(const char* pstr, int* ptr, i
 uint8_t currentMenuViewOffset=0;              /* scroll offset in the current menu */
 //moved menupress and menumove, lastKeyMoveTime to navkey.h. They are extern variables, so can be accessed.
 int8_t encoderPosition;
-
+uint8_t _menuItemNr;
 menuFunc_t currentMenu = lcd_home_menu; /* function pointer to the currently active menu, assgined to home menu. Default: home menu*/
 uint8_t lcdDrawUpdate = 2;                  /* Set to none-zero when the LCD needs to draw, decreased after every draw. 
 Set to 2 in LCD routines so the LCD gets at least 1 full redraw (first redraw is partial) */
 //prevMenu and prevEncoderPosition are used to store the previous menu location when editing settings.
-menuFunc_t prevMenu=NULL;
-uint16_t prevEncoderPosition;
+menuFunc_t prevMenu = NULL;
+uint8_t prevEncoderPosition;
 //Variables used when editing values (There are more in ultralcd, if ever edit menu is included)
 menuFunc_t callbackFunc;
 
 /* Helper macros for menu */
 //_draw menu item is assigned values from 0 to (LCD_NUM_LINES -1), while _lineNr is the menu item numbers to be drawn
 #define START_MENU() do { \
-		Serial.print("Start encoder position: ");\
+		/*Serial.print("Start encoder position: ");\
 		Serial.println(encoderPosition);\
 		Serial.print("Start Current menu view offset: ");\
-		Serial.println(currentMenuViewOffset);\
+		Serial.println(currentMenuViewOffset);*/\
     if (encoderPosition < currentMenuViewOffset) currentMenuViewOffset = encoderPosition;\
-    uint8_t _lineNr = currentMenuViewOffset, _menuItemNr;\
+    uint8_t _lineNr = currentMenuViewOffset;\
     bool wasClicked = LCD_CLICKED; \
     for(uint8_t _drawLineNr = 0; _drawLineNr < LCD_NUM_LINES; _drawLineNr++, _lineNr++) { \
         _menuItemNr = 0;
@@ -104,7 +118,7 @@ menuFunc_t callbackFunc;
 #define MENU_ITEM(type, label, args...) do { \
     if (_menuItemNr == _lineNr) { \
         if (lcdDrawUpdate) { \
-          Serial.print("encoder position: ");\
+          /*Serial.print("encoder position: ");\
           Serial.println(encoderPosition);\
           Serial.print("Current menu view offset: ");\
           Serial.println(currentMenuViewOffset);\
@@ -113,22 +127,23 @@ menuFunc_t callbackFunc;
           Serial.print("lineNr ");\
           Serial.println(_lineNr);\
           Serial.print("_drawLineNr ");\
-          Serial.println(_drawLineNr);\
+          Serial.println(_drawLineNr);*/\
             const char* _label_pstr = PSTR(label); \
             if ((encoderPosition) == _menuItemNr) { \
-            	Serial.print("Select Printed Menu item:");\
-            	Serial.println(_menuItemNr);\
+            	/*Serial.print("Select Printed Menu item:");\
+            	Serial.println(_menuItemNr);*/\
 				      lcd_implementation_text_and_background_color(ST7735_BLACK, ST7735_RED);\
 				      lcd_implementation_drawmenu_ ## type ## _selected (_drawLineNr, _label_pstr , ## args ); \
             }\
             else{\
-            	Serial.print("Printed Menu item:");\
-            	Serial.println(_menuItemNr);\
+            	/*Serial.print("Printed Menu item:");\
+            	Serial.println(_menuItemNr);*/\
 				      lcd_implementation_text_and_background_color(ST7735_RED, ST7735_BLACK);\
               lcd_implementation_drawmenu_ ## type (_drawLineNr, _label_pstr , ## args ); \
             }\
         }\
         if (wasClicked && (encoderPosition == _menuItemNr)) {\
+					prevEncoderPosition = encoderPosition;\
           menu_action_ ## type ( args ); \
           return;\
         }\
@@ -145,9 +160,9 @@ menuFunc_t callbackFunc;
       currentMenuViewOffset=0; \
       _lineNr=0;\
     }\
-		else if (encoderPosition<0) {\
-    	Serial.print("End Else 0 encoder position: ");\
-    	Serial.println(encoderPosition);\
+		else if (encoderPosition < 0) {\
+    	/*Serial.print("End Else 0 encoder position: ");\
+    	Serial.println(encoderPosition);*/\
       lcdDrawUpdate=2; \
       encoderPosition=_menuItemNr-1; \
       currentMenuViewOffset=(encoderPosition-LCD_NUM_LINES+1>0)?encoderPosition-LCD_NUM_LINES+1:currentMenuViewOffset;\
@@ -158,11 +173,11 @@ menuFunc_t callbackFunc;
       lcdDrawUpdate = 2; \
       _lineNr = currentMenuViewOffset - 1; \
       _drawLineNr = -1; } \
-		} } while(0);\
-    Serial.print("End encoder position: ");\
+		} } while(0)
+    /*Serial.print("End encoder position: ");\
     Serial.println(encoderPosition);\
     Serial.print("End Current menu view offset: ");\
-    Serial.println(currentMenuViewOffset)
+    Serial.println(currentMenuViewOffset)*/
 
 #define	EXIT_MENU(args) back_menu_process(args)
 
@@ -170,7 +185,7 @@ void back_menu_process(menuFunc_t data)
 {
 	if(menuMove == 4)  
 	{
-//		lcd_quick_feedback(); 
+//		lcd_quick_feedback();
 		menu_action_back(data);
 	}
 }
@@ -190,8 +205,8 @@ static void lcd_goto_menu(menuFunc_t menu, const bool feedback = false, const ui
 
 static void lcd_returnto_home()	{lcd_goto_menu(lcd_home_menu);}
 	
-void lcd_update(){			//will be called in idle, etc
-	navKeyUpdate();
+void lcd_update(){			//will be called always in loop
+	navKeyUpdate();       //Return values as per navigation key is pressed/move or not (This will update menuMove and menuPress)
 	if (menuMove != 0 || menuPress != 0){
 		lcdDrawUpdate = 1;
 		
@@ -203,15 +218,17 @@ void lcd_update(){			//will be called in idle, etc
 		else if(menuMove == 3)
 			encoderPosition++;
 		else if(menuMove == 1){
-			if(encoderPosition>0)
+			if(encoderPosition >= 0)
 				encoderPosition--;
+			if(encoderPosition < 0)
+				encoderPosition=_menuItemNr-1;
 		}
 
 		
 	}
     (*currentMenu)();	
     //if (lcdDrawUpdate == 2)
-        //lcd_implementation_clear_menu();					//implement in lcd implementation
+    //    lcd_implementation_clear_menu();					//implement in lcd implementation
     if (lcdDrawUpdate)
         lcdDrawUpdate--;
     if (millis()>lastStatusUpdateTime+MIN_TIME2)
@@ -221,19 +238,19 @@ void lcd_update(){			//will be called in idle, etc
     	lastStatusUpdateTime =millis();
     }
 }
-/**
-*
+
+/*
 *"Home" menu
-*
 */
 static void lcd_home_menu(){
 	START_MENU();
 	MENU_ITEM(submenu, MSG_CONTROL, lcd_control_menu);
 	MENU_ITEM(submenu, MSG_SENSING, lcd_sensing_menu);
 	MENU_ITEM(function, MSG_OSCILLOSCOPE, lcd_evive_oscilloscope);
-//  MENU_ITEM(submenu, MSG_LOG, lcd_log_menu);
-//  MENU_ITEM(function, MSG_PIN_STATE, lcd_pin_state);
+	MENU_ITEM(submenu, MSG_SERIAL_MONITOR, lcd_serial_select_menu);
+  MENU_ITEM(submenu, MSG_PIN_STATE, lcd_pin_state_menu);
   MENU_ITEM(submenu, MSG_DAC, lcd_dac_menu);
+  MENU_ITEM(function, MSG_CAP_TOUCH, lcd_touch_sensors_setup);
   MENU_ITEM(submenu, MSG_USER_DEF, lcd_user_def_menu);
 //  MENU_ITEM(submenu, MSG_REMOVE_FUNCTION, lcd_remove_function_menu);
 	//add menu
@@ -328,6 +345,7 @@ static void lcd_control_status(){
 	if(_MOTOR2_EN)	lcd_implementation_control_status_motor(1);
 	else if(_SERVO2_EN)	lcd_implementation_control_status_servo(1);
 	if(_STEPPER_EN)	lcd_implementation_control_status_stepper();
+	back_menu_process(lcd_control_menu);
 }
 
 static void lcd_sensing_menu(){
@@ -365,12 +383,99 @@ static void lcd_evive_oscilloscope(){
   lcdDrawUpdate = 2;
 }
 
-static void lcd_log_menu(){
-	//add code here
+static void lcd_serial_select_menu(){
+  START_MENU();
+  MENU_ITEM(submenu, MSG_SERIAL0, lcd_baud_menu);
+  MENU_ITEM(submenu, MSG_SERIAL2, lcd_baud_menu);
+  MENU_ITEM(submenu, MSG_SERIAL3, lcd_baud_menu);
+  END_MENU();
+  EXIT_MENU(lcd_home_menu);
 }
 
-static void lcd_pin_state(){
-	//add code here
+static void lcd_baud_menu(){
+  serialSelect = prevEncoderPosition;
+#ifdef __DEBUG__
+	Serial.println(serialSelect);
+#endif
+	START_MENU();
+  MENU_ITEM(function, MSG_BAUD_9600, lcd_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_115200, lcd_serial_monitor_setup);
+	MENU_ITEM(function, MSG_BAUD_250000, lcd_serial_monitor_setup);
+	MENU_ITEM(function, MSG_BAUD_300, lcd_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_1200, lcd_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_2400, lcd_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_4800, lcd_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_19200, lcd_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_38400, lcd_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_57600, lcd_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_74880, lcd_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_230400, lcd_serial_monitor_setup);
+  END_MENU();
+  EXIT_MENU(lcd_serial_monitor);
+}
+
+static void lcd_serial_monitor_setup(){
+//  currentMenu = lcd_baud_menu;
+#ifdef __DEBUG__
+	Serial.println(encoderPosition);
+#endif
+	lcd_implementation_clear_menu();
+  serialObject.Initalise(baudrate[encoderPosition], serialSelect);
+  currentMenu = lcd_serial_monitor;
+}
+
+static void lcd_serial_monitor(){
+	lcd_implementation_serial_monitor();
+	back_menu_process(lcd_serial_select_menu);
+}
+
+//static void lcd_log_menu(){
+//	//add code here
+//}
+
+/*Logic analyser */
+static void lcd_pin_state_menu(){
+  START_MENU();
+  MENU_ITEM(function, MSG_DIGITAL_PIN_STATE, lcd_digital_pin_state_setup);
+  MENU_ITEM(function, MSG_ANALOG_PIN_STATE, lcd_analog_pin_state_setup);
+  MENU_ITEM(function, MSG_DIGI_ANA_PIN_STATE, lcd_digi_ana_pin_state_setup);
+  END_MENU();
+  EXIT_MENU(lcd_home_menu);
+}
+
+static void lcd_digital_pin_state_setup(){
+	lcd_implementation_clear_menu();
+  lcd_digital_pin_state_monitor_template();
+  currentMenu = lcd_digital_pin_state;
+}
+
+static void lcd_analog_pin_state_setup(){
+	lcd_implementation_clear_menu();
+  lcd_analog_pin_state_monitor_template();
+  currentMenu = lcd_analog_pin_state;
+}
+
+static void lcd_digi_ana_pin_state_setup(){
+	lcd_implementation_clear_menu();
+	lcd_digital_pin_state_monitor_template();
+	lcd_analog_pin_state_monitor_template();
+	currentMenu = lcd_digi_ana_pin_state;
+}
+
+static void lcd_digital_pin_state(){
+	lcd_implementation_digital_pin_state();
+	back_menu_process(lcd_pin_state_menu);
+}
+
+static void lcd_analog_pin_state(){
+	lcd_implementation_analog_pin_state();
+	back_menu_process(lcd_pin_state_menu);
+}
+
+static void lcd_digi_ana_pin_state(){
+	lcd_implementation_digital_pin_state();
+	lcd_implementation_analog_pin_state();
+	back_menu_process(lcd_pin_state_menu);
 }
 
 static void lcd_dac_menu(){
@@ -446,6 +551,74 @@ void navKeyInterruptCenterPress(){
 //	Serial.println("Dettached Interrupt");
 }
 
+// Keeps track of the last pins touched
+// so we know when buttons are 'released'
+uint16_t lasttouched = 0;
+uint16_t currtouched = 0;
+
+static void lcd_touch_sensors_setup(){
+	lcd_implementation_clear_menu();
+	lcd.setCursor(40, TOP_MARGIN);
+	lcd.setTextColor(ST7735_CYAN, ST7735_BLACK);
+	lcd.println("Touch Sensors");
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
+  // Default address is 0x5A, if tied to 3.3V its 0x5B
+  // If tied to SDA its 0x5C and if SCL then 0x5D
+  if (!cap.begin(0x5A)) {
+  	lcd.print("ERROR");
+    Serial.println("MPR121 not found, check wiring?");
+    return;
+  }
+  Serial.println("MPR121 found!");
+  currentMenu = lcd_touch_sensors;
+}
+
+static void lcd_touch_sensors(){
+    // put your user defined (custom) code here, to run repeatedly:
+    currtouched = cap.touched();
+
+    for (uint8_t i=0; i<12; i++) {
+      // it if *is* touched and *wasnt* touched before, alert!
+      if ((currtouched & _BV(i)) && !(lasttouched & _BV(i)) ) {
+        Serial.print(i); Serial.println(" touched");
+        lcd.setCursor(i*7+(i/10)*8,50);
+        lcd.print(i+1);
+        tone(BUZZER,200+100*i,200);
+      }
+      // if it *was* touched and now *isnt*, alert!
+      if (!(currtouched & _BV(i)) && (lasttouched & _BV(i)) ) {
+        Serial.print(i); Serial.println(" released");
+        //lcd.setCursor(i*10,100);
+        lcd.fillRect(i*7+(i/10)*7,50, 7+((i+1)/10)*7, 7, ST7735_BLACK);
+      }
+    }
+
+    // reset our state
+    lasttouched = currtouched;
+
+    // comment out this line for detailed data from the sensor!
+    //return;
+
+    // debugging info, what
+#ifdef __DEBUG__
+    Serial.print("\t\t\t\t\t\t\t\t\t\t\t\t\t 0x"); Serial.println(cap.touched(), HEX);
+    Serial.print("Filt: ");
+    for (uint8_t i=0; i<12; i++) {
+      Serial.print(cap.filteredData(i)); Serial.print("\t");
+    }
+    Serial.println();
+    Serial.print("Base: ");
+    for (uint8_t i=0; i<12; i++) {
+      Serial.print(cap.baselineData(i)); Serial.print("\t");
+    }
+    Serial.println();
+#endif
+    // put a delay so it isn't overwhelming
+    delay(100);
+    back_menu_process(lcd_home_menu);
+}
+
 static void lcd_user_def_menu(){
 	START_MENU();
 	#ifdef USER_DEFINED_FUNCTION_1
@@ -470,22 +643,27 @@ static void lcd_user_def_menu(){
 
 static void add_user_def_fun_1(){
 	add_user_def_fun(1);
+	remove_other_user_def_fun(1);
 }
 
 static void add_user_def_fun_2(){
 	add_user_def_fun(2);
+	remove_other_user_def_fun(2);
 }
 
 static void add_user_def_fun_3(){
 	add_user_def_fun(3);
+	remove_other_user_def_fun(3);
 }
 
 static void add_user_def_fun_4(){
 	add_user_def_fun(4);
+	remove_other_user_def_fun(4);
 }
 
 static void add_user_def_fun_5(){
 	add_user_def_fun(5);
+	remove_other_user_def_fun(5);
 }
 
 static void lcd_remove_function_menu(){
@@ -540,7 +718,9 @@ static void menu_action_setting_edit_callback_bool(const char* pstr, bool* ptr, 
 bool lcd_clicked() { return LCD_CLICKED; }
 
 void lcd_init(){
-	//Serial.println("in lcd_init");
+//#ifdef __DEEBUG__
+	Serial.println("Setup loop ends");
+//#endif
 	pinMode(LCD_CS,OUTPUT);
 	lcd_implementation_init();
 }

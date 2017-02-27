@@ -22,7 +22,7 @@
 #ifndef DAC_MCP4725_H
 #define DAC_MCP4725_H
 //#ifndef MCP4725_ADDR
-#define MCP4725_ADDR 0x60
+#define MCP4725_ADDR 0x62
 //#endif
 
 #include "evive.h"

@@ -56,7 +56,12 @@ class Motor
 		void stopSmoothly();
 };		
 
+//No varible can be assigned any value here as variables are actually declared in motor.cpp
+//Using extern, variables can be used in other libraries without declaration.
+extern bool _MOTOR1_EN;
+extern bool _MOTOR2_EN;
 extern  Motor motor1, motor2;
+
 //void controlMotor();			//auto motor control from pots and slide switches
 void addMotor1();
 void addMotor2();

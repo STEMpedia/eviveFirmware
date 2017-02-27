@@ -125,7 +125,11 @@ class Stepper {
     unsigned long last_step_time; // time stamp in us of when the last step was taken
 };
 
+//No varible can be assigned any value here as variables are actually declared in motor.cpp
+//Using extern, variables can be used in other libraries without declaration.
+extern bool _STEPPER_EN;
 extern Stepper stepper;
+
 void controlStepper();
 void addStepper();
 

@@ -9,15 +9,6 @@
 actionFunc actionFuncList[20] = {};			//maximum 20 functions
 uint8_t actionFuncListNum	 = 0;			//must be greater than or equals to 0
 
-void actionAdd(actionFunc addFun){
-	actionFuncList[actionFuncListNum++] = addFun	;
-	Serial.print("funList: ");
-	Serial.println(actionFuncListNum);
-//	Serial.print("funAdd: ");
-//	Serial.println(addFun);
-	return;
-}
-
 //for avoiding multiple includes of same function for multiple times in one loop
 //if flag = 1, checks for repetition
 void actionAdd(actionFunc addFun, bool flag){
@@ -30,6 +21,15 @@ void actionAdd(actionFunc addFun, bool flag){
 	actionFuncList[actionFuncListNum++] = addFun	;
 	Serial.print("funList: ");
 	Serial.println(actionFuncListNum);
+	return;
+}
+
+void actionAdd(actionFunc addFun){
+	actionFuncList[actionFuncListNum++] = addFun	;
+	Serial.print("funList: ");
+	Serial.println(actionFuncListNum);
+//	Serial.print("funAdd: ");
+//	Serial.println(addFun);
 	return;
 }
 

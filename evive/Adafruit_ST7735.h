@@ -143,7 +143,8 @@ class Adafruit_ST7735 : public Adafruit_GFX {
            setRotation(uint8_t r),
            invertDisplay(boolean i);
   uint16_t Color565(uint8_t r, uint8_t g, uint8_t b);
-
+  void   sleep(void) { writecommand(ST7735_SLPIN); }
+  void   wake(void) { writecommand(ST7735_SLPOUT); }
   /* These are not for current use, 8-bit protocol only!
   uint8_t  readdata(void),
            readcommand8(uint8_t);

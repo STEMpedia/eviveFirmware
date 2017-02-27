@@ -394,13 +394,14 @@ int Stepper::version(void)
   return 5;
 }
 
+bool _STEPPER_EN = 0;
 Stepper stepper;
 
 void controlStepper()
 {	//Serial.println("StepperCtrl");
 	//stepper.setSpeed(pot1.getValue()/10);
 	if (tactileSw1.read()){
-		Serial.println("sw1");
+//		Serial.println("sw1");
 		if(slideSw1.readPin1())
 			stepper.step(1);
 		else {if (slideSw1.readPin2())
@@ -408,7 +409,7 @@ void controlStepper()
 		delay(100);
 	}
 	else if (tactileSw2.read()){
-			Serial.println("sw2");
+//			Serial.println("sw2");
 			if(slideSw1.readPin1())
 				stepper.step(10);
 			else {if (slideSw1.readPin2())
@@ -421,6 +422,8 @@ void controlStepper()
 void addStepper(){
 	_MOTOR1_EN = 0;
 	_MOTOR2_EN = 0;
+	_SERVO1_EN = 0;
+	_SERVO2_EN = 0;
 	_STEPPER_EN = 1;
 	pinMode(SLIDESW1_D1,INPUT);
 	pinMode(SLIDESW1_D2,INPUT);

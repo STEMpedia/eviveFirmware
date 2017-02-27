@@ -6,7 +6,7 @@ unsigned long lastKeyMoveTime = 0;
 
 void navKeyUpdate(){
 	unsigned long thisTime=millis();
-	if ((thisTime-lastKeyMoveTime)<MIN_TIME2){ //Too less time has passed
+	if ((thisTime-lastKeyMoveTime)<MIN_TIME1_5){ //Too less time has passed
 		menuPress=0;
 		menuMove=0;
 		return;
@@ -15,7 +15,9 @@ void navKeyUpdate(){
 		if(digitalRead(NAVKEY_PRESS)){ //Press
 			lastKeyMoveTime=thisTime;
 			menuPress = 1;
+			#ifdef __DEBUG__
 			Serial.println("Navkey Press");
+			#endif
 			menuMove=0;
 			return;
 		}
@@ -26,8 +28,10 @@ void navKeyUpdate(){
 				menuMove=0;
 			}
 			else{ //No press, yes move
-				Serial.print("value of navKeyMove is: ");
+				//#ifdef __DEBUG__
+				Serial.print("NavKeyMove: ");
 				Serial.println(navKeyMove);
+				//#endif
 				if ((navKeyMove>NAVKEYMOVE_UP_LOW)&&(navKeyMove<NAVKEYMOVE_UP_HIGH)){ //Up
 					menuMove=1;
 					lastKeyMoveTime=thisTime;
@@ -49,8 +53,9 @@ void navKeyUpdate(){
 	}
 }
 
-//Use/Attach Center Press key of Navigation Key (Joystick) as Interrupt
+//Use Attach Center Press key of Navigation Key (Joystick) as Interrupt. The program running on a controller is normally running sequentially instruction by instruction. An interrupt is an external event that interrupts the running program and runs a special interrupt service routine (here ISR = navKeyInterruptCenterPress). After the ISR has been finished, the running program is continued with the next instruction.
 void navKeyAttachInterruptMenuPress(){
+		//Define void navKeyInterruptCenterPress() in code
 		attachInterrupt(digitalPinToInterrupt(NAVKEY_PRESS), navKeyInterruptCenterPress, RISING);
 }
 

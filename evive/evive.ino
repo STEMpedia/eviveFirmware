@@ -1,20 +1,19 @@
-/*
+ /*
  * This firmware is developed for evive [http://evive.cc].
- * This is licensed under Creative Commons 4.0
- * Written by Dhrupal R Shah and Akshat Agarwal for Agilo Technology.
- * Last update: 2016, Aug 20
- * 
+ * This is licensed under Creative Commons 4.0 BY-SA.
+ * Written by Dhrupal R Shah for Agilo Technologies.
+ * Last update: 2017, Jan 31
+ *
  * NOTE: Works with Arduino IDE 1.6.6 or later [https://www.arduino.cc/en/Main/Software]
  */
- #include "evive.h"
+
+//evive.h includes all the libraries for evive functionalities.
+#include "evive.h"
 
 void setup(){
   Serial.begin(BAUDRATE);
-  Serial.println("In the setup loop now");
   lcd_init();
 
-  setPinModeDefault();
-  Serial.println("setup ends");
 }
 
 void loop(){

@@ -2,25 +2,36 @@
 #define CONFIGURATION_H
 
 #define SENSING
-#define SCREEN
-//#define SDSUPPORT
 
-#define BAUDRATE 250000
+#define SCREEN
+
+/* DEBUG MODE: comment this line to disable debugging messages over serial console*/
+//#define __DEBUG__
+
+#define BAUDRATE 115200
+#define SERIAL_TIME_OUT 10
+
+//Comment (uncomment) based on the Screen Tab type of TFT Display, ie BLACKTAB or GREENTAB
+//Identify TFT, if you get Red color in place of Blue or vice versa.
+#define SCREEN_TAB INITR_GREENTAB
+//#define SCREEN_TAB INITR_BLACKTAB
+
 
 //////////macros////////////////
 // Macros to support option testing
 #define _CAT(a, ...) a ## __VA_ARGS__
-#define SWITCH_ENABLED_0 0
+#define SWITCH	_ENABLED_0 0
 #define SWITCH_ENABLED_1 1
 #define SWITCH_ENABLED_  1
 #define ENABLED(b) _CAT(SWITCH_ENABLED_, b)
 #define DISABLED(b) (!_CAT(SWITCH_ENABLED_, b))
 
 //Min time between simultaneous process
-#define MIN_TIME1 100
-#define MIN_TIME2 200
-#define MIN_TIME3 300
-#define MIN_TIME5 500
+#define MIN_TIME1 	100
+#define MIN_TIME1_5 150
+#define MIN_TIME2 	200
+#define MIN_TIME3 	300
+#define MIN_TIME5 	500
 
 // Macros for bit masks
 #define BIT(b) (1<<(b))

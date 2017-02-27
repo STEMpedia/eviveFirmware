@@ -8,18 +8,16 @@
  * Sensing with ADE7912
  * Based on codes of Art of Circuits
  * Contact: support@artofcircuits.com
- * Edited by evive team http://evive.cc
- * or Dhrupal R Shah, Agilo Technologies
- * Edited on 20160518
+ * Edited by evive team http://evive.cc, Agilo Technologies
+ * or Dhrupal R Shah and Akshat Agarwal
+ * Edited on 20170102
  * Contact: support@evive.cc
- * Target CPU: ATMEGA 2560
- * Target Board: Arduino MEGA
+ * Target Board: evive
 */
 
 #include "adc_ade7912.h"
 
 /*---------ADE MACROS/VAR//start----------*/
-#define __DEBUG__    /* comment this line to disable debugging messages over serial console*/
 
 // inslude the SPI library:
 #include <SPI.h>
@@ -39,11 +37,11 @@ int ADC_RDY = 32;      // ADC Ready pin
 #define ADE791X_REG_V1WV           0x01    /* Instantaneous value of Voltage V1 */
 #define ADE791X_REG_V2WV           0x02    /* Instantaneous value of Voltage V2 */
 #define ADE791X_MUL_V1WV           0.006485
-#define ADE791X_OFFSET_V1WV        362760
+long ADE791X_OFFSET_V1WV =         350000;			//387161;
 #define ADE791X_MUL_VIMWV          0.0011901
-#define ADE791X_OFFSET_VIMWV			 349319
+#define ADE791X_OFFSET_VIMWV       369226
 #define ADE791X_MUL_IWV            0.0005921
-#define ADE791X_OFFSET_IWV				 349319
+long ADE791X_OFFSET_IWV  =         250000;			//369226;
 
 #define ADE791X_REG_ADC_CRC        0x04    /* CRC value of IWV, V1WV, and V2WV registers. See the ADC Output Values CRC section for details */
 #define ADE791X_REG_CTRL_CRC       0x05    /* CRC value of configuration registers. See the CRC of Configuration Registers  for details. */
@@ -90,12 +88,12 @@ void ade791x_init(void)
   pinMode(SPI_ADC_SS, OUTPUT);
   pinMode(ADC_RDY, INPUT);
   // take the SS pin high to de-select the chip:
-//  digitalWrite(SPI_ADC_SS, HIGH);
+  digitalWrite(SPI_ADC_SS, HIGH);
   // initialize SPI:
-//  SPI.begin();
-  //delay(1);
+  SPI.begin();
+//	delay(1);
 //  delayMicroseconds(16);
-  //SPI.setClockDivider(SPI_ADC_SS, 64);  // default is 4MHz clock
+//	SPI.setClockDivider(SPI_ADC_SS, 64);  // default is 4MHz clock
 //  SPI.setBitOrder(MSBFIRST);        // default is MSBFIRST
 //  SPI.setDataMode(SPI_MODE3);       // ADE791x chip uses SPI_MODE3
 //  ade791x_write(ADE791X_REG_LOCK,UNLOCKED);
@@ -112,19 +110,20 @@ long ade791x_read_v1(void)
 
   addr = addr << 3;  // left shift address by 3 bits
   opcode = (addr | ADE791X_READ);     // forms opcode byte
-  // Serial.print ("opcode: ");    // for debug only
-  // Serial.println(opcode, BIN);  // for debug only
-
+	
+	#ifdef __DEBUG__
+   Serial.print ("opcode: ");    // for debug only
+   Serial.println(opcode, BIN);  // for debug only
+  #endif
+	
   SPI.beginTransaction(ADCSetting);
   // take the SS pin low to select the chip:
-//  digitalWrite(SPI_ADC_SS, LOW);  // bring SS2 pin low
-//	PORTC &= ~_BV(PC2);
 	PORTC &= 0b11111011;
   SPI.transfer(opcode);        // send out opcode
 //  value  = SPI.transfer(0xFF) * 0x10000;  // read MS Byte
-////  tempValue1=value;
+//  tempValue1=value;
 //  value |= SPI.transfer(0xFF) * 0x100;  // read mid Byte
-////  tempValue2=value;
+//  tempValue2=value;
 //  value |= SPI.transfer(0xFF);  // LS Byte
 
   tempValue1 = SPI.transfer(0xFF);  // read MS Byte
@@ -132,8 +131,6 @@ long ade791x_read_v1(void)
   tempValue3 = SPI.transfer(0xFF);  // LS Byte
 
   // take the SS pin high to de-select the chip:
-  //digitalWrite(SPI_ADC_SS, HIGH);
-	//PORTC |= _BV(PC2);
 	PORTC |= 0b00000100;
   SPI.endTransaction();
 
@@ -147,8 +144,8 @@ long ade791x_read_v1(void)
   value = (value - ADE791X_OFFSET_V1WV)*ADE791X_MUL_V1WV; //ADE791X_MUL_V1WV;
 
   #ifdef __DEBUG__
- // Serial.print ("V1: ");
- // Serial.println (value);
+		Serial.print ("V1: ");
+		Serial.println (value);
   #endif
   return value;
 }
@@ -162,14 +159,14 @@ long ade791x_read_vim(void)
 
   addr = addr << 3;  // left shift address by 3 bits
   opcode = (addr | ADE791X_READ);     // forms opcode byte
-//  Serial.print ("opcode: ");    // for debug only
-//  Serial.println(opcode, BIN);  // for debug only
-
+	
+  #ifdef __DEBUG__
+		Serial.print ("opcode: ");    // for debug only
+		Serial.println(opcode, BIN);  // for debug only
+  #endif
   SPI.beginTransaction(ADCSetting);
   // take the SS pin low to select the chip:
-  // digitalWrite(SPI_ADC_SS, LOW);  // bring SS2 pin low
-  //	PORTC &= ~_BV(PC2);
-  	PORTC &= 0b11111011;
+ 	PORTC &= 0b11111011;
   SPI.transfer(opcode);        // send out opcode
 //  value  = SPI.transfer(0xFF) * 0x10000;  // read MS Byte
 ////  tempValue1=value;
@@ -182,8 +179,6 @@ long ade791x_read_vim(void)
   tempValue3 = SPI.transfer(0xFF);  // LS Byte
 
   // take the SS pin high to de-select the chip:
-  // digitalWrite(SPI_ADC_SS, HIGH);
-	//PORTC |= _BV(PC2);
 	PORTC |= 0b00000100;
   SPI.endTransaction();
 
@@ -191,13 +186,14 @@ long ade791x_read_vim(void)
   tempValue2 = tempValue1 | tempValue2 * 0x100;
   value = tempValue2 | tempValue3;
 
-	// Serial.print("RAW: ");
-	// Serial.println (value);
 	value = value <<8;        // sign extends value to 32 bit
   value = value / 0x100;    // converts back value to 24 bit but now sign extended
 	value = (value - ADE791X_OFFSET_VIMWV)*ADE791X_MUL_VIMWV; //ADE791X_MUL_V1WV;
-		// Serial.print ("VIM: ");
-		// Serial.println (value);
+
+  #ifdef __DEBUG__
+		Serial.print ("VIM: ");
+		Serial.println (value);
+  #endif		
   return value;
 }
 
@@ -210,13 +206,12 @@ long ade791x_read_im(void)
 
   addr = addr << 3;  // left shift address by 3 bits
   opcode = (addr | ADE791X_READ);     // forms opcode byte
-//  Serial.print ("opcode: ");    // for debug only
-//  Serial.println(opcode, BIN);  // for debug only
-
+	#ifdef __DEBUG__
+		Serial.print ("opcode: ");    // for debug only
+		Serial.println(opcode, BIN);  // for debug only
+	#endif
   SPI.beginTransaction(ADCSetting);
   // take the SS pin low to select the chip:
-  // digitalWrite(SPI_ADC_SS, LOW);  // bring SS2 pin low
-  //	PORTC &= ~_BV(PC2);
   	PORTC &= 0b11111011;
   SPI.transfer(opcode);        // send out opcode
 //  value  = SPI.transfer(0xFF) * 0x10000;  // read MS Byte
@@ -230,23 +225,21 @@ long ade791x_read_im(void)
   tempValue3 = SPI.transfer(0xFF);  // LS Byte
 
   // take the SS pin high to de-select the chip:
-  // digitalWrite(SPI_ADC_SS, HIGH);
-	//PORTC |= _BV(PC2);
 	PORTC |= 0b00000100;
   SPI.endTransaction();
 
   tempValue1  = tempValue1 * 0x10000;
   tempValue2 = tempValue1 | tempValue2 * 0x100;
   value = tempValue2 | tempValue3;
-//  tempValue3=value;
-	// Serial.print("RAW: ");
-	// Serial.println (value);
+
 	value = value <<8;        // sign extends value to 32 bit
   value = value / 0x100;    // converts back value to 24 bit but now sign extended
 
-		value = (value - ADE791X_OFFSET_IWV)*ADE791X_MUL_IWV; //ADE791X_MUL_IWV;
-		// Serial.print ("IM: ");
-		// Serial.println (value);
+	value = (value - ADE791X_OFFSET_IWV)*ADE791X_MUL_IWV; //ADE791X_MUL_IWV;
+	#ifdef __DEBUG__
+		Serial.print ("IM: ");
+		Serial.println (value);
+	#endif
   return value;
 }
 /*--------ADE functions//end------------*/
