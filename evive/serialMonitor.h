@@ -1,4 +1,14 @@
-#ifndef SERIAL_MONITOR_H
+/*
+ * Serial Monitor library reads data from the selected serial ports in menu and displays on TFT screen.
+ * Menu gives the user a choice to select the baud rate and displays it on the TFT. It can read from multiple
+ * serial ports simultaneously. In the function lcd_implementation_serial_monitor [in screenImplementation.h],
+ * serial ports are checked for any new/available data while the class object serialObject takes care of printing the
+ * data on screen corresponding to the selected serial port(s).
+ * Written by Bhanu & Sandeep
+ * Tested with evive v1
+ * Date: Jan 2017
+ */
+ #ifndef SERIAL_MONITOR_H
 #define SERIAL_MONITOR_H
 
 #include "evive.h"

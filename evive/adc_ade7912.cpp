@@ -8,7 +8,7 @@
  * Sensing with ADE7912
  * Based on codes of Art of Circuits
  * Contact: support@artofcircuits.com
- * Edited by evive team http://evive.cc, Agilo Technologies
+ * Edited by evive team, http://evive.cc, Agilo Technologies
  * or Dhrupal R Shah and Akshat Agarwal
  * Edited on 20170102
  * Contact: support@evive.cc
@@ -33,15 +33,6 @@ int ADC_RDY = 32;      // ADC Ready pin
 #define ADE791X_WRITE   0x00
 
 // Register Definitions
-#define ADE791X_REG_IWV            0x00    /* Instantaneous value of Current I. */
-#define ADE791X_REG_V1WV           0x01    /* Instantaneous value of Voltage V1 */
-#define ADE791X_REG_V2WV           0x02    /* Instantaneous value of Voltage V2 */
-#define ADE791X_MUL_V1WV           0.006485
-long ADE791X_OFFSET_V1WV =         350000;			//387161;
-#define ADE791X_MUL_VIMWV          0.0011901
-#define ADE791X_OFFSET_VIMWV       369226
-#define ADE791X_MUL_IWV            0.0005921
-long ADE791X_OFFSET_IWV  =         250000;			//369226;
 
 #define ADE791X_REG_ADC_CRC        0x04    /* CRC value of IWV, V1WV, and V2WV registers. See the ADC Output Values CRC section for details */
 #define ADE791X_REG_CTRL_CRC       0x05    /* CRC value of configuration registers. See the CRC of Configuration Registers  for details. */

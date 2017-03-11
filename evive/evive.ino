@@ -1,22 +1,25 @@
  /*
  * This firmware is developed for evive [http://evive.cc].
- * This is licensed under Creative Commons 4.0 BY-SA.
- * Written by Dhrupal R Shah for Agilo Technologies.
+ * This is licensed under GNU GPL V3 [http://www.gnu.org/licenses/gpl.txt].
+ * Written by Dhrupal R Shah for evive platform, Agilo Technologies.
  * Last update: 2017, Jan 31
+ * Contact: support@evive.cc
+ * Copyright (c) 2017 Agilo Technologies.  All rights reserved.
+ *
+ * Getting started with evive: http://learn.evive.cc/
  *
  * NOTE: Works with Arduino IDE 1.6.6 or later [https://www.arduino.cc/en/Main/Software]
  */
 
-//evive.h includes all the libraries for evive functionalities.
+//evive.h includes all the libraries for evive's functionalities.
 #include "evive.h"
 
 void setup(){
-  Serial.begin(BAUDRATE);
-  lcd_init();
-
+  Serial.begin(BAUDRATE);			//Default BAUD Rate: 250000, edit the macro in configuration.h
+  lcd_init();									//Initialize TFT screen in library screen.cpp
 }
 
 void loop(){
-  lcd_update();
-  action();
+  lcd_update();								//Updates the TFT on any action in menu
+  action();										//Runs the function in the array actionFuncList
 }

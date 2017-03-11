@@ -3,7 +3,7 @@
 #include "evive.h"
 
 typedef void (*actionFunc)();	// Function pointer to action functions.
-extern actionFunc actionFuncList[20];
+extern actionFunc actionFuncList[10];
 extern uint8_t actionFuncListNum;
 
 void actionAdd(actionFunc, bool);

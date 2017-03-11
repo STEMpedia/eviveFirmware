@@ -1,11 +1,3 @@
-/* Written by Bhanu & Sandeep
- It reads data form the serial and prints on tft screen.
- It also gives the user choice to select the baud rate and print on tft screen.
- Initalise sets the baud rate according to choice of user
- There are various types of print messages whicht takes data from the serial and prints on tft.
- lcd_implementation_serial_monitor decides which selects which serial print message is run in loop
- Serialprint runs lcd_implementation_serial_monitor in loop
- */
 #include "serialMonitor.h"
 
 SerialMonitor::SerialMonitor() {

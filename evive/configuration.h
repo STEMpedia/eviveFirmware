@@ -8,7 +8,7 @@
 /* DEBUG MODE: comment this line to disable debugging messages over serial console*/
 //#define __DEBUG__
 
-#define BAUDRATE 115200
+#define BAUDRATE 250000
 #define SERIAL_TIME_OUT 10
 
 //Comment (uncomment) based on the Screen Tab type of TFT Display, ie BLACKTAB or GREENTAB
