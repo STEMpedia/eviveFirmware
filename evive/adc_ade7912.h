@@ -12,18 +12,20 @@
 
 #include "evive.h"
 
+#ifndef ADE7911X_REG_IWV
 #define ADE791X_REG_IWV            0x00    /* Instantaneous value of Current I. */
 #define ADE791X_REG_V1WV           0x01    /* Instantaneous value of Voltage V1 */
 #define ADE791X_REG_V2WV           0x02    /* Instantaneous value of Voltage V2 */
 //For V1WV 5,320,000 reading = 34.5V  (Multiplier = 0.006485) mV
 #define ADE791X_MUL_V1WV           0.006485
-long ADE791X_OFFSET_V1WV =         350000;			//387161;   //Adjust
 //For V2WV 5,320,000Num reading = 6.3315V (Multiplier = 0.0011901) mV
 #define ADE791X_MUL_VIMWV          0.0011901
-#define ADE791X_OFFSET_VIMWV       369226       //Adjust      
 //For IWV 5,320,000 reading = 3.15A (Multiplier = 0.0005921) mA
 #define ADE791X_MUL_IWV            0.0005921
-long ADE791X_OFFSET_IWV  =         250000;			//369226;  //Adjust
+#define ADE791X_OFFSET_V1WV          350000      //387161;   //Adjust
+#define ADE791X_OFFSET_VIMWV         369226                  //Adjust  
+#define ADE791X_OFFSET_IWV           250000			//369226;   //Adjust
+#endif
 
 void ade791x_init(void);
 long ade791x_read_v1(void);

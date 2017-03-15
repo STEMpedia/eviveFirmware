@@ -3,10 +3,8 @@
  *
  *  Created on: May 27, 2016
  *      Author: dhrups
- */
-/*
  * Sensing with ADE7912
- * Based on codes of Art of Circuits
+ * Library based on codes of Art of Circuits
  * Contact: support@artofcircuits.com
  * Edited by evive team, http://evive.cc, Agilo Technologies
  * or Dhrupal R Shah and Akshat Agarwal

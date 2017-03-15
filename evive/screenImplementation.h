@@ -41,7 +41,7 @@
 #define BATT_WIDTH					17
 #define BATT_HEIGHT					7
 #define BATT_COLOR					ST7735_CYAN
-#define VVR_MULTIPLIER			0.03021
+#define VVR_MULTIPLIER			0.0381
 uint16_t pre_vvr = 0, vvr = 0;
 
 static void drawBattery();
