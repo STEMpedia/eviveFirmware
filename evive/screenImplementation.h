@@ -713,7 +713,7 @@ static void PrintMenuItem(int item) {
 			lcd.println("Send");
 			break;
 		case 10:
-			lcd.println("Save");
+			lcd.println("---");     //save to SD card
 			break;
 		default:
 			break;
