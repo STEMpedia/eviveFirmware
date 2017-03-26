@@ -132,13 +132,13 @@ menuFunc_t callbackFunc;
             if ((encoderPosition) == _menuItemNr) { \
             	/*Serial.print("Select Printed Menu item:");\
             	Serial.println(_menuItemNr);*/\
-				      lcd_implementation_text_and_background_color(ST7735_BLACK, ST7735_RED);\
+				      lcd_implementation_text_and_background_color(ST7735_BLACK, ST7735_WHITE);\
 				      lcd_implementation_drawmenu_ ## type ## _selected (_drawLineNr, _label_pstr , ## args ); \
             }\
             else{\
             	/*Serial.print("Printed Menu item:");\
             	Serial.println(_menuItemNr);*/\
-				      lcd_implementation_text_and_background_color(ST7735_RED, ST7735_BLACK);\
+				      lcd_implementation_text_and_background_color(ST7735_WHITE, ST7735_BLACK);\
               lcd_implementation_drawmenu_ ## type (_drawLineNr, _label_pstr , ## args ); \
             }\
         }\

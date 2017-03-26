@@ -80,7 +80,7 @@ void batteryUpdate() {
 	int widthMeter = 0;
 	if (batt < 630)
 		widthMeter = 0;
-	else if (batt < 682)
+	else if (batt < 672)
 		widthMeter = 5;
 	else if (batt < 752)
 		widthMeter = 10;
