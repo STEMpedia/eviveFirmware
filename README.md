@@ -1,4 +1,4 @@
-# eviveSoftware
+# eviveFirmware
 This firmware is developed for evive [http://evive.cc].  It enables the menu based visual interface for Arduino programs.
 
 1) Control Menu: evive includes hardware interaction and plug & play interface, which can be used to control many basic utilities like controlling motors, servos, stepper, relays, solenoid values for pneumatics using tactile switches slide switches and potentiometers. Also the user can use the inbuilt hardware (switches and potentiometers) to change/define the states of Digital I/O Pins or PWM output. Switches and potentiometers are internally connected to Arduino MEGA pins as control inputs and motor drivers are connected for output at plug & play interface. The state or values are displayed on screen
