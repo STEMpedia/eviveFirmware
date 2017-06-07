@@ -24,7 +24,8 @@
 #define NAVKEY_PRESS			19
 #endif
 #ifndef MIN_TIME1_5
-#define MIN_TIME1_5					150
+#define MIN_TIME2					200
+               
 #endif
 
 extern volatile bool menuPress;	//If ever put into an interrupt, make these variables volatile

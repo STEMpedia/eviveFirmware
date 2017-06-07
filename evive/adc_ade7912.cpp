@@ -22,7 +22,7 @@
 
 int SPI_ADC_SS = 35;    // SPI ADC SS
 int ADC_RDY = 32;      // ADC Ready pin
-#define ADC_SPIMaxSpeed 5600000
+#define ADC_SPIMaxSpeed 8000000
 #define ADC_SPIMode SPI_MODE3
 #define ADC_SPIDataOrder MSBFIRST
 

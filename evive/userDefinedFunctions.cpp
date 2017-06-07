@@ -18,9 +18,9 @@ void setup_user_def_fun_1(){
 void loop_user_def_fun_1(){
 	// Remove this example code and put your user defined (custom) code here, to run repeatedly:
 	digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(500);                       // wait for a second
+  delay(100);                       // wait for a second
   digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-  delay(500);                       // wait for a second
+  delay(100);                       // wait for a second
 }
 
 // the setup function runs once when you select the user defined function

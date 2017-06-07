@@ -6,7 +6,7 @@ unsigned long lastKeyMoveTime = 0;
 
 void navKeyUpdate(){
 	unsigned long thisTime=millis();
-	if ((thisTime-lastKeyMoveTime)<MIN_TIME1_5){ //Too less time has passed
+	if ((thisTime-lastKeyMoveTime)<MIN_TIME2){ //Too less time has passed
 		menuPress=0;
 		menuMove=0;
 		return;

@@ -41,7 +41,7 @@
 //Using extern, variables can be used in other libraries without declaration.
 extern volatile bool DAC_ON_OFF;
 extern volatile bool OSCILLOSCOPE_ON_OFF;
-extern Adafruit_ST7735 lcd;
+extern TFT_ST7735 lcd;
 
 void lcd_init();
 void lcd_update();

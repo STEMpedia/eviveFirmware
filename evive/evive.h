@@ -69,8 +69,9 @@
 //#endif
 
 #include <Arduino.h>
-#include "Adafruit_GFX.h"
-#include "Adafruit_ST7735.h"
+//#include "Adafruit_GFX.h"
+//#include "Adafruit_ST7735.h"
+#include "TFT_ST7735.h" 
 #include <SPI.h>
 #include <Wire.h>
 

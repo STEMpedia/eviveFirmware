@@ -6,7 +6,7 @@
  */
 
 
-#include "Button.h"
+#include "button.h"
 
 /*----------------------------------------------------------------------*
  * SlideSwitch(pin1, pin2, puEnable, invert,) instantiates a SlideSwitct object.  *

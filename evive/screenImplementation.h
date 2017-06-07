@@ -50,12 +50,15 @@ void vvrUpdate();
 static void printVvr();
 static void drawStatusBar();
 //Actual implementation of the LCD display routines
-Adafruit_ST7735 lcd = Adafruit_ST7735(LCD_CS, LCD_DC, LCD_RST);
+//Adafruit_ST7735 lcd = Adafruit_ST7735(LCD_CS, LCD_DC, LCD_RST);
+
+TFT_ST7735 lcd = TFT_ST7735();
 extern int8_t encoderPosition;
 
 static void lcd_implementation_init() {
 	//lcd.initR();
-	lcd.initR(SCREEN_TAB);
+	//lcd.initR(SCREEN_TAB);
+	lcd.init();
 	lcd.setRotation(1);
 	lcd.setTextWrap(true);
 	lcd.fillScreen(ST7735_BLACK);
@@ -119,6 +122,9 @@ void vvrUpdate() {
 
 static void lcd_implementation_drawmenu_generic(uint8_t row, const char* pstr,
     char pre_char, char post_char) {
+		lcd.fillRect( LEFT_MARGIN ,
+	TOP_MARGIN + ROW_HEIGHT * row, LCD_WIDTH - RIGHT_MARGIN - CHAR_WIDTH * 1,
+	ROW_HEIGHT, ST7735_BLACK);
 	char c;
 	uint8_t n = LCD_WIDTH / CHAR_WIDTH;
 	lcd.setCursor(LEFT_MARGIN, TOP_MARGIN + (row) * ROW_HEIGHT);
@@ -128,9 +134,9 @@ static void lcd_implementation_drawmenu_generic(uint8_t row, const char* pstr,
 		pstr++;
 		n--;
 	}
-	lcd.fillRect(2 + LEFT_MARGIN + LCD_WIDTH - n * CHAR_WIDTH,
-	TOP_MARGIN + ROW_HEIGHT * row, LCD_WIDTH - RIGHT_MARGIN - CHAR_WIDTH * 1,
-	ROW_HEIGHT, ST7735_BLACK);
+	//lcd.fillRect(2 + LEFT_MARGIN + LCD_WIDTH - n * CHAR_WIDTH,
+	//TOP_MARGIN + ROW_HEIGHT * row, LCD_WIDTH - RIGHT_MARGIN - CHAR_WIDTH * 1,
+	//ROW_HEIGHT, ST7735_BLACK);
 	lcd.setCursor(LCD_WIDTH - RIGHT_MARGIN - CHAR_WIDTH * 1,
 	TOP_MARGIN + (row) * ROW_HEIGHT);
 	lcd.print(post_char);
@@ -809,14 +815,43 @@ static void ClearGraph() {
 }
 
 int ConvertMilliVoltToPixel(long value, byte range, int off) {
+	//Serial.println(value);
 	value = value / (MILLIVOL_per_dot[range]) + off;
 	// Serial.println(value);
 	value = value >= (LCD_HEIGHT_TOP_MARGIN - off + 1) ?
 	LCD_HEIGHT_TOP_MARGIN - off :
 	                                                     value;
+														 
+	//Serial.println(value);
 	return int(value);
 }
 
+
+int ConvertMilliVoltToPixel1(long value, byte range, int off) {
+	//Serial.println(value);
+	value = value / (MILLIVOL_per_dot[range]) + off;
+	// Serial.println(value);
+	value = value >= (LCD_HEIGHT_TOP_MARGIN - off + 1) ?
+	LCD_HEIGHT_TOP_MARGIN - off :
+	                                                     value;
+														 
+	//Serial.println(value);
+	return int(value);
+}
+
+int ConvertMilliVoltToPixel2(long value, byte range, int off) {
+	//Serial.println(value);
+	value = value / (MILLIVOL_per_dot[range]) + off;
+	// Serial.println(value);
+	value = value >= (LCD_HEIGHT_TOP_MARGIN - off + 1) ?
+	LCD_HEIGHT_TOP_MARGIN - off :
+	                                                     value;
+														 
+	//Serial.println(value);
+	return int(value);
+}
+
+int v;
 void evive_oscilloscope() {
 	lcd.fillScreen(BGCOLOR);
 	lcd.setTextColor(ST7735_RED);
@@ -846,6 +881,9 @@ void evive_oscilloscope() {
 }
 
 static void evive_oscilloscope_loop() {
+	//unsigned long t= micros();
+	
+	//Serial.println();
 	//int value =  ade791x_read_v1 ();
 	// value =  ade791x_read_vim ();
 	// ade791x_read_i();
@@ -947,6 +985,7 @@ static void evive_oscilloscope_loop() {
 				while ((st - micros()) < r)
 					;
 				st += r;
+				
 				data[sample + 0][i] = ConvertMilliVoltToPixel(ade791x_read_v1(), range0,
 				    ch0_off);
 				;
@@ -999,15 +1038,23 @@ static void evive_oscilloscope_loop() {
 				i--;
 				continue;
 			}
-			data[sample + 0][i] = ConvertMilliVoltToPixel(ade791x_read_v1(), range0,
+			//v=ade791x_read_v1();
+			//Serial.println(v);
+			//Serial.println(ade791x_read_v1());
+			ade791x_read_v1();
+			data[sample + 0][i] = ConvertMilliVoltToPixel1(ade791x_read_v1(), range0,
 			    ch0_off);
 			;
 			if (range1 < 9)
-				data[sample + 1][i] = ConvertMilliVoltToPixel(ade791x_read_vim(),
+				data[sample + 1][i] = ConvertMilliVoltToPixel2(ade791x_read_vim(),
 				    range1, ch1_off);
 			else
 				data[sample + 1][i] = ConvertMilliVoltToPixel(ade791x_read_im(), range1,
 				    ch1_off);
+					
+			
+			//Serial.println(data[sample+0][i]);
+			
 			ClearAndDrawDot(i);
 		}
 		// Serial.println(millis()-st0);
@@ -1020,6 +1067,7 @@ static void evive_oscilloscope_loop() {
 		Start = 0;
 	else
 		Start = 1;
+	//Serial.println(micros()-t);
 }
 
 //-------------mini oscilloscope/end--------------//

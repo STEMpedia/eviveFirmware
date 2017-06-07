@@ -22,7 +22,7 @@
 #define ADE791X_MUL_VIMWV          0.0011901
 //For IWV 5,320,000 reading = 3.15A (Multiplier = 0.0005921) mA
 #define ADE791X_MUL_IWV            0.0005921
-#define ADE791X_OFFSET_V1WV          350000      //387161;   //Adjust
+#define ADE791X_OFFSET_V1WV          362378      //387161;   //Adjust
 #define ADE791X_OFFSET_VIMWV         369226                  //Adjust  
 #define ADE791X_OFFSET_IWV           250000			//369226;   //Adjust
 #endif
