@@ -15,4 +15,4 @@ This firmware is developed for evive [http://evive.cc].  It enables the menu bas
 
 7) Touch: evive has 12 touch inputs. Just plug a wire from the outputs to any conducting surface, and get a touch-sensitive surface!
 
-8) User Defined Programs: Generally, while using Arduino one face problem of uploading different codes again and again as he changes some part of codes. Using evive’s user defined function submenu, the user can store different Arduino programs at once. He can switch to different program while navigating inside the menu. Here is how to do it:
+8) User Defined Programs: Generally, while using Arduino one face problem of uploading different codes again and again as he changes some part of codes. Using evive’s user defined function submenu, the user can store different Arduino programs at once. He can switch to different program while navigating inside the menu. Here is how to do it: https://www.youtube.com/watch?v=c5ne1dfeFOQ
