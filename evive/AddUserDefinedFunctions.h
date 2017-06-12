@@ -1,5 +1,5 @@
-#ifndef USER_DEFINED_FUNCTION_H
-#define USER_DEFINED_FUNCTION_H
+#ifndef addUserDefinedFunctions_H
+#define addUserDefinedFunctions_H
 
 //IMPORTANT: uncomment the desired user defined functions and give desired name
 #define USER_DEFINED_FUNCTION_1 	"Eg: Blink"

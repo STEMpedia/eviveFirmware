@@ -4,7 +4,7 @@
  *  Created on: May 6, 2016
  *      Author: dhrups
  */
-#include "servoControl.h"
+#include "ServoControl.h"
 
 bool _SERVO1_EN = 0;
 bool _SERVO2_EN = 0;

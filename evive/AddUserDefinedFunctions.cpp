@@ -1,10 +1,10 @@
 /*
- * userDefinedFunctions.cpp
+ * addFunction.cpp
  *
  *  Created on: Jul 30, 2016
  *      Author: dhrups
  */
- #include "userDefinedFunctions.h"
+ #include "AddUserDefinedFunctions.h"
 
 /////////////////Setup and loop functions for user defined functions/////////////////
 

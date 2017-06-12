@@ -1,6 +1,6 @@
 //Derived from ultralcd.cpp in Marlin-RC used in 3D printers
 //Modified for http://evive.cc by Dhrupal R Shah and Akshat Agarwal
-#include "screen.h"
+#include "Screen.h"
 
 #if ENABLED(SCREEN)
 //#include "language.h"

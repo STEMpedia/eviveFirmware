@@ -13,7 +13,7 @@
  * Target Board: evive
 */
 
-#include "adc_ade7912.h"
+#include "Ade7912_adc.h"
 
 /*---------ADE MACROS/VAR//start----------*/
 

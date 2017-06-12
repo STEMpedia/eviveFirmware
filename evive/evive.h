@@ -5,11 +5,11 @@
  * Version 0.0.3
  *
  * This is licensed under GNU GPL V3 [http://www.gnu.org/licenses/gpl.txt].
- * Written by Dhrupal R Shah for evive platform, Agilo Technologies.
+ * Written by Dhrupal R Shah for evive platform, Agilo Research Pvt. Ltd.
  * Created on: March 1, 2016
- * Last update: 2017, Jan 31
+ * Updated on: 2017, May 31
  * Contact: support@evive.cc
- * Copyright (c) 2017 Agilo Technologies.  All rights reserved.
+ * Copyright (c) 2017 Agilo Research Pvt. Ltd.  All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,26 +75,26 @@
 #include <SPI.h>
 #include <Wire.h>
 
-#include "configuration.h"
-#include "evivePins.h"
-#include "language.h"
-#include "language_en.h"
-#include "bitmaps.h"
-#include "screen.h"
-#include "navkey.h"
-#include "button.h"
-#include "potentiometer.h"
-#include "slideSwitch.h"
-#include "motor.h"
-#include "serialMonitor.h"
+#include "Configuration.h"
+#include "EvivePins.h"
+#include "Language.h"
+#include "Language_en.h"
+#include "Bitmaps.h"
+#include "Screen.h"
+#include "Navkey.h"
+#include "Button.h"
+#include "Potentiometer.h"
+#include "SlideSwitch.h"
+#include "Motor.h"
+#include "SerialMonitor.h"
 #include "Servo.h"
-#include "servoControl.h"
-#include "stepper.h"
-#include "action.h"
-#include "adc_ade7912.h"
-#include "dac_MCP4725.h"
-#include "Adafruit_MPR121.h"
-#include "userDefinedFunctions.h"
+#include "ServoControl.h"
+#include "Stepper.h"
+#include "Action.h"
+#include "Ade7912_Adc.h"
+#include "Dac_MCP4725.h"
+#include "MPR121_Touch.h"
+#include "AddUserDefinedFunctions.h"
 //#include "screenImplementation.h"
 
 #endif

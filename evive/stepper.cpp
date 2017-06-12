@@ -76,7 +76,7 @@
  */
 
 //#include "Arduino.h"
-#include "stepper.h"
+#include "Stepper.h"
 
 
 Stepper::Stepper(){
