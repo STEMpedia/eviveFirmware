@@ -25,6 +25,7 @@ class TftSerial{
 		String s;//string to be printed
 		double d;
 		float f;
+		int lines;
 	public:
 		TftSerial(); //internally creates the class for tft.
 		void    begin();//innitialises the tft
@@ -34,7 +35,7 @@ class TftSerial{
 		void	print(int i);
 		void  print(char c);
 		void 	print(String s);
-		void	print(double, int = 2);
+		//void	print(double, int = 2);
         void 	print(double d);
         void 	print(float f);
 		//void	print(int, int = DEC);

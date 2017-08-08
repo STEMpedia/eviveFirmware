@@ -11,11 +11,9 @@
 		Serial.println(tft.width());
 		Serial.println(tft.height());
 		tft.fillRect(0, TOP_MARGIN, TFT_WIDTH, TFT_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN, ST7735_BLACK);
-		next_line=TOP_MARGIN;
+		next_line=2*ROW_HEIGHT;
 		next_col=0;
-		//tft.setCursor(next_line,next_col);
 		tft.setTextColor(ST7735_RED);
-		//next_line=0;
 	}
 
   void TftSerial :: print(int i)
@@ -72,14 +70,14 @@
 		//tft.print(">");
 		tft.print(c);
 		//next_line=next_line+8;
-		next_col=next_col+8;
+		next_col=next_col + CHAR_WIDTH;
 		
 		if(next_line>=TFT_HEIGHT-ROW_HEIGHT)
-		  next_line=0;
+		  next_line=2*ROW_HEIGHT;
 		if(next_col>TFT_WIDTH-CHAR_WIDTH)
 		{
 			next_col=0;
-			next_line=next_line+16;
+			next_line=next_line + ROW_HEIGHT;
 		}
   }
 
@@ -198,7 +196,7 @@
 		if(next_col>TFT_WIDTH-CHAR_WIDTH)
 		{
 			next_col=0;
-			next_line=next_line+16;
+			next_line=next_line+ROW_HEIGHT;
 		}
   }
 	
@@ -207,12 +205,15 @@
    
    void TftSerial :: println(String s)
    {
-	   next_line=next_line+16;
-	   tft.fillRect(0,next_line,tft.width(),32*(1+s.length()/225),ST7735_BLACK);
+   		lines=(CHAR_WIDTH*s.length()/128)+1;
+   		//Serial.println(lines);
+	   next_line=next_line + ROW_HEIGHT;
+	   tft.fillRect(0,next_line,tft.width(), 2*lines*ROW_HEIGHT, ST7735_BLACK);
 	   next_col=0;
 	   
+	   
 	   print('>');
-	   for(int j=0;j<s.length();j++)
+	   for(int j=0; j<s.length(); j++)
 		{
 			print(s[j]);
 		}

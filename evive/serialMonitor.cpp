@@ -7,7 +7,7 @@ void SerialMonitor::Initalise(long baudRateSelect, uint8_t serialNum) {
 	tft.setCursor(15, TOP_MARGIN);
 	tft.setTextColor(ST7735_YELLOW, ST7735_BLACK);
 	tft.print("Serial Monitor  ");
-	serialObject.ln =3;
+	serialObject.lineNumCurrent =3;
 	tft.print(baudRateSelect);
 	switch (serialNum) {
 		case 0:
@@ -30,20 +30,21 @@ void SerialMonitor::Initalise(long baudRateSelect, uint8_t serialNum) {
 void SerialMonitor::serial0PrintMsg() {
 	if (Serial.available() > 0) {
 		msg = Serial.readString();
-		l = lnCount(msg.length());
-		if (ln + l > 16) {
-			tft.fillRect(0, 3 * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
+		linesMsg = linesCount(msg.length());
+		if (lineNumCurrent + linesMsg > 16) {
+			tft.fillRect(0, lineNumCurrent * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * (16-lineNumCurrent) + CHAR_HEIGHT, ST7735_BLACK);
+			tft.fillRect(0, 3 * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * linesMsg + CHAR_HEIGHT, ST7735_BLACK);
 			tft.setCursor(0, CHAR_HEIGHT * 3);
 			tft.print("> ");
 			tft.print(msg);
-			ln = 3;
+			lineNumCurrent = 3;
 		}
-		tft.fillRect(0, ln * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
+		tft.fillRect(0, lineNumCurrent * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * linesMsg + CHAR_HEIGHT, ST7735_BLACK);
 		tft.setTextColor(ST7735_WHITE);
-		tft.setCursor(0, CHAR_HEIGHT * ln);
+		tft.setCursor(0, CHAR_HEIGHT * lineNumCurrent);
 		tft.print("> ");
 		tft.print(msg);
-		ln = ln + l;
+		lineNumCurrent = lineNumCurrent + linesMsg;
 		msg = "";
 	}
 }
@@ -51,20 +52,21 @@ void SerialMonitor::serial0PrintMsg() {
 void SerialMonitor::serial2PrintMsg() {
 	if (Serial2.available() > 0) {
 		msg2 = Serial2.readString();
-		l = lnCount(msg2.length());
-		if (ln + l > 16) {
-			tft.fillRect(0, 3 * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
+		linesMsg = linesCount(msg2.length());
+		if (lineNumCurrent + linesMsg > 16) {
+			tft.fillRect(0, lineNumCurrent * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * (16-lineNumCurrent) + CHAR_HEIGHT, ST7735_BLACK);	
+			tft.fillRect(0, 3 * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * linesMsg + CHAR_HEIGHT, ST7735_BLACK);
 			tft.setCursor(0, CHAR_HEIGHT * 3);
 			tft.print("> ");
 			tft.print(msg2);
-			ln = 3;
+			lineNumCurrent = 3;
 		}
-		tft.fillRect(0, ln * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
+		tft.fillRect(0, lineNumCurrent * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * linesMsg + CHAR_HEIGHT, ST7735_BLACK);
 		tft.setTextColor(ST7735_MAGENTA);
-		tft.setCursor(0, CHAR_HEIGHT * ln);
+		tft.setCursor(0, CHAR_HEIGHT * lineNumCurrent);
 		tft.print("> ");
 		tft.print(msg2);
-		ln = ln + l;
+		lineNumCurrent = lineNumCurrent + linesMsg;
 		msg2 = "";
 	}
 }
@@ -72,65 +74,60 @@ void SerialMonitor::serial2PrintMsg() {
 void SerialMonitor::serial3PrintMsg() {
 	if (Serial3.available() > 0) {
 		msg3 = Serial3.readString();
-		l = lnCount(msg3.length());
-		if (ln + l > 16) {
-			tft.fillRect(0, 3 * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
+		linesMsg = linesCount(msg3.length());
+		if (lineNumCurrent + linesMsg > 16) {
+			tft.fillRect(0, lineNumCurrent * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * (16-lineNumCurrent) + CHAR_HEIGHT, ST7735_BLACK);
+			tft.fillRect(0, 3 * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * linesMsg + CHAR_HEIGHT, ST7735_BLACK);
 			tft.setCursor(0, CHAR_HEIGHT * 3);
 			tft.print("> ");
 			tft.print(msg3);
-			ln = 3;
+			lineNumCurrent = 3;
 		}
-		tft.fillRect(0, ln * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
-		tft.setCursor(0, CHAR_HEIGHT * ln);
+		tft.fillRect(0, lineNumCurrent * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * linesMsg + CHAR_HEIGHT, ST7735_BLACK);
+		tft.setCursor(0, CHAR_HEIGHT * lineNumCurrent);
 		tft.print("> ");
 		tft.print(msg3);
-		ln = ln + l;
+		lineNumCurrent = lineNumCurrent + linesMsg;
 		msg3 = "";
 	}
 }
 
-int SerialMonitor::lnCount(int ln) {
-	if (ln == 0 || ln < 25)
-		return 1;
-	else if (ln == 25 || ln < 51)
-		return 2;
-	else if (ln == 51 || ln < 77)
-		return 3;
-	else if (ln == 77 || ln < 103)
-		return 4;
-	else if (ln == 103 || ln < 129)
-		return 5;
-	else if (ln == 129 || ln < 155)
-		return 6;
-	else if (ln == 155 || ln < 181)
-		return 7;
-	else if (ln == 181 || ln < 207)
-		return 8;
-	else if (ln == 207 || ln < 233)
-		return 9;
-	else if (ln == 233 || ln < 259)
-		return 10;
-	else if (ln == 259 || ln < 285)
-		return 11;
-	else if (ln == 285 || ln < 311)
-		return 12;
-	else if (ln == 311 || ln < 337)
-		return 13;
-	else if (ln == 337 || ln < 363)
-		return 14;
-	else if (ln == 363 || ln < 390)
-		return 15;
-	else
-		return 16;
+uint8_t SerialMonitor::linesCount(int lengthMsg) {
+	if(lengthMsg>=390) return 16;
+	return (uint8_t(1+lengthMsg/25));
+	
+	// if (lineNumCurrent == 0 || lineNumCurrent < 25)
+		// return 1;
+	// else if (lineNumCurrent == 25 || lineNumCurrent < 51)
+		// return 2;
+	// else if (lineNumCurrent == 51 || lineNumCurrent < 77)
+		// return 3;
+	// else if (lineNumCurrent == 77 || lineNumCurrent < 103)
+		// return 4;
+	// else if (lineNumCurrent == 103 || lineNumCurrent < 129)
+		// return 5;
+	// else if (lineNumCurrent == 129 || lineNumCurrent < 155)
+		// return 6;
+	// else if (lineNumCurrent == 155 || lineNumCurrent < 181)
+		// return 7;
+	// else if (lineNumCurrent == 181 || lineNumCurrent < 207)
+		// return 8;
+	// else if (lineNumCurrent == 207 || lineNumCurrent < 233)
+		// return 9;
+	// else if (lineNumCurrent == 233 || lineNumCurrent < 259)
+		// return 10;
+	// else if (lineNumCurrent == 259 || lineNumCurrent < 285)
+		// return 11;
+	// else if (lineNumCurrent == 285 || lineNumCurrent < 311)
+		// return 12;
+	// else if (lineNumCurrent == 311 || lineNumCurrent < 337)
+		// return 13;
+	// else if (lineNumCurrent == 337 || lineNumCurrent < 363)
+		// return 14;
+	// else if (lineNumCurrent == 363 || lineNumCurrent < 390)
+		// return 15;
+	// else
+		// return 16;
 }
 
-// Linear interpolation
-/* void SerialMonitor::serialSetup(){
- int i = serialSelect();
- if(i == 0) Serial.begin(baudSelect());
- else if(i == 1) serialObject.begin(baudSelect());
- else if (i == 2) Serial2.begin(baudSelect());
- else Serial3.begin(baudSelect());
-
- } */
 SerialMonitor serialObject;

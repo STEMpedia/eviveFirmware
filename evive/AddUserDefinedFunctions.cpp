@@ -56,12 +56,18 @@ void setup_user_def_fun_3(){
 void loop_user_def_fun_3(){
 	// put your user defined (custom) code here, to run repeatedly:
   //serialMonitorTFT.println(123.123);
-  
-	serialMonitorTFT.println(analogRead(A9));
+  serialMonitorTFT.println("Value of potentiometer number 1 is ");
+	serialMonitorTFT.println(1.0333253232);
+	serialMonitorTFT.print(1.0333253232);
+	serialMonitorTFT.print(analogRead(A9));
+	serialMonitorTFT.print('A');
+		//serialMonitorTFT.print(12.123);
+			//serialMonitorTFT.println(425);
 	delay(200);
 	//serialMonitorTFT.println();
 	//serialMonitorTFT.println("");
 	// delay(200);
+  /*
 	serialMonitorTFT.print(analogRead(A10));
 	serialMonitorTFT.print(analogRead(A9));
 	serialMonitorTFT.print(analogRead(A8));
@@ -70,7 +76,7 @@ void loop_user_def_fun_3(){
 	serialMonitorTFT.print(analogRead(A9));
 	serialMonitorTFT.print(analogRead(A8));
 	serialMonitorTFT.print(analogRead(A7));	
-	serialMonitorTFT.println();
+	serialMonitorTFT.println();*/
 	delay(200);
 	//serialMonitorTFT.println();
 	delay(1000);
