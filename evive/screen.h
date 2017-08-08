@@ -27,24 +27,24 @@
 #ifndef BOTTOM_MARGIN
 #define BOTTOM_MARGIN     2
 #endif
-#ifndef LCD_HEIGHT
-#define LCD_HEIGHT      128
+#ifndef TFT_HEIGHT
+#define TFT_HEIGHT      128
 #endif
-#ifndef LCD_WIDTH
-#define LCD_WIDTH       160
+#ifndef TFT_WIDTH
+#define TFT_WIDTH       160
 #endif
-#ifndef LCD_WIDTH_BY_2
-#define LCD_WIDTH_BY_2  80
+#ifndef TFT_WIDTH_BY_2
+#define TFT_WIDTH_BY_2  80
 #endif
 
 //No varible can be assigned any value here as variables are actually declared in motor.cpp
 //Using extern, variables can be used in other libraries without declaration.
 extern volatile bool DAC_ON_OFF;
 extern volatile bool OSCILLOSCOPE_ON_OFF;
-extern TFT_ST7735 lcd;
+extern TFT_ST7735 tft;
 
-void lcd_init();
-void lcd_update();
+void tft_init();
+void tft_update();
 
 char* itostr2(const uint8_t& x);
 char* itostr31(const int& xx);

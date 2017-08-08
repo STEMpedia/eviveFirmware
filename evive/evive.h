@@ -2,7 +2,7 @@
  * This firmware is developed for evive v1
  * evive library includes all the sub libraries supplied with the firmware
  * and other pre-installed arduino libraries
- * Version 0.0.3
+ * Version 1.0.2
  *
  * This is licensed under GNU GPL V3 [http://www.gnu.org/licenses/gpl.txt].
  * Written by Dhrupal R Shah for evive platform, Agilo Research Pvt. Ltd.
@@ -75,7 +75,10 @@
 #include <SPI.h>
 #include <Wire.h>
 
+
+
 #include "Configuration.h"
+
 #include "EvivePins.h"
 #include "Language.h"
 #include "Language_en.h"
@@ -95,6 +98,8 @@
 #include "Dac_MCP4725.h"
 #include "MPR121_Touch.h"
 #include "AddUserDefinedFunctions.h"
+#include "TftSerial.h"
+#include "Plot.h"
 //#include "screenImplementation.h"
 
 #endif

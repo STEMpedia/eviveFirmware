@@ -1,9 +1,9 @@
 #ifndef EVIVEPINS_H
 #define EVIVEPINS_H
 
-#define LCD_RST        	47
-#define LCD_CS        	48
-#define LCD_DC        	49
+#define TFT_RST        	47
+#define TFT_CS        	48
+#define TFT_DC        	49
 #define SPI_MISO 				50
 #define SPI_MOSI 				51
 #define SPI_SCK 				52

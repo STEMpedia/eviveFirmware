@@ -14,15 +14,15 @@ unsigned long lastServoMoveTime = 0;
 
 void controlServo(){
 	//Serial.println("ServoCtrl");
-	if((millis() - lastServoMoveTime) > MIN_TIME2)  
-	 if(_SERVO1_EN){
+	if((millis() - lastServoMoveTime) > MIN_TIME2){
+	 if(_SERVO1_EN)
 	 { prevAngleServo1 = servo1.read();
-	 	 servo1.write(int(map(pot1.getValue(),0, 1023, 0, 170)));
+	 	 servo1.write(int(map(pot1.getValue(),0, 1023, 0, 180)));
 	 	 //Serial.println(servo1.read());
 	 }
 	 if(_SERVO2_EN)
 	 { prevAngleServo2 = servo2.read();
-		 servo2.write(int(map(pot2.getValue(),0, 1023, 0, 170)));
+		 servo2.write(int(map(pot2.getValue(),0, 1023, 0, 180)));
 	 }
 	 lastServoMoveTime = millis();
 	}

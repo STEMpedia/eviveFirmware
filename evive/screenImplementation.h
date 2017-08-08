@@ -24,18 +24,18 @@
 #ifndef BOTTOM_MARGIN
 #define BOTTOM_MARGIN   2
 #endif
-#ifndef LCD_HEIGHT
-#define LCD_HEIGHT      128
+#ifndef TFT_HEIGHT
+#define TFT_HEIGHT      128
 #endif
-#ifndef LCD_WIDTH
-#define LCD_WIDTH       160
+#ifndef TFT_WIDTH
+#define TFT_WIDTH       160
 #endif
-#ifndef LCD_WIDTH_BY_2
-#define LCD_WIDTH_BY_2  80
+#ifndef TFT_WIDTH_BY_2
+#define TFT_WIDTH_BY_2  80
 #endif
-//#define LCD_STR_UPLEVEL 	'^'
-#define LCD_STR_ARROW_RIGHT ">"
-#define LCD_STR_UPLEVEL     "\x03"
+//#define TFT_STR_UPLEVEL 	'^'
+#define TFT_STR_ARROW_RIGHT ">"
+#define TFT_STR_UPLEVEL     "\x03"
 #define BATT_X							140
 #define BATT_Y							4
 #define BATT_WIDTH					17
@@ -49,33 +49,34 @@ void batteryUpdate();
 void vvrUpdate();
 static void printVvr();
 static void drawStatusBar();
-//Actual implementation of the LCD display routines
-//Adafruit_ST7735 lcd = Adafruit_ST7735(LCD_CS, LCD_DC, LCD_RST);
+//Actual implementation of the TFT display routines
+//Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 
-TFT_ST7735 lcd = TFT_ST7735();
+TFT_ST7735 tft = TFT_ST7735();
 extern int8_t encoderPosition;
 
-static void lcd_implementation_init() {
-	//lcd.initR();
-	//lcd.initR(SCREEN_TAB);
-	lcd.init();
-	lcd.setRotation(1);
-	lcd.setTextWrap(true);
-	lcd.fillScreen(ST7735_BLACK);
-	lcd.drawBitmap(45, 29, evive_logo, 71, 71, ST7735_BLUE);
+static void tft_implementation_init() {
+	//tft.initR();
+	//tft.initR(SCREEN_TAB);
+	tft.init();
+	tft.setRotation(1);
+	//tft.setTextWrap(false);
+	tft.fillScreen(ST7735_BLACK);
+	tft.drawBitmap(45, 29, evive_logo, 71, 71, ST7735_BLUE);
 	delay(MIN_TIME5);	//DELAY HERE. DO NOT CALL THIS MORE THAN ONCE EVER EVER EVER
-	lcd.fillScreen(ST7735_BLACK);
-	lcd.setTextSize(1);
+	tft.fillScreen(ST7735_BLACK);
+	tft.setTextSize(1);
 	drawStatusBar();
+	//SD.begin(34);
 }
 
 static void drawBattery() {
-	lcd.drawFastHLine(BATT_X, BATT_Y, BATT_WIDTH - 2, BATT_COLOR);
-	lcd.drawFastVLine(BATT_X + BATT_WIDTH - 2, BATT_Y, BATT_HEIGHT + 1,	BATT_COLOR);
-	lcd.drawFastVLine(BATT_X + BATT_WIDTH - 1, BATT_Y + 2, 4, ST7735_WHITE);
-	lcd.drawFastVLine(BATT_X + BATT_WIDTH, BATT_Y + 2, 4, ST7735_WHITE);
-	lcd.drawFastHLine(BATT_X, BATT_Y + BATT_HEIGHT, BATT_WIDTH - 2, BATT_COLOR);
-	lcd.drawFastVLine(BATT_X, BATT_Y, BATT_HEIGHT, BATT_COLOR);
+	tft.drawFastHLine(BATT_X, BATT_Y, BATT_WIDTH - 2, BATT_COLOR);
+	tft.drawFastVLine(BATT_X + BATT_WIDTH - 2, BATT_Y, BATT_HEIGHT + 1,	BATT_COLOR);
+	tft.drawFastVLine(BATT_X + BATT_WIDTH - 1, BATT_Y + 2, 4, ST7735_WHITE);
+	tft.drawFastVLine(BATT_X + BATT_WIDTH, BATT_Y + 2, 4, ST7735_WHITE);
+	tft.drawFastHLine(BATT_X, BATT_Y + BATT_HEIGHT, BATT_WIDTH - 2, BATT_COLOR);
+	tft.drawFastVLine(BATT_X, BATT_Y, BATT_HEIGHT, BATT_COLOR);
 }
 
 void batteryUpdate() {
@@ -89,13 +90,13 @@ void batteryUpdate() {
 		widthMeter = 10;
 	else
 		widthMeter = BATT_WIDTH - 3;
-	lcd.fillRect(BATT_X + 1, BATT_Y + 1, widthMeter, BATT_HEIGHT - 1, BATT_COLOR);
+	tft.fillRect(BATT_X + 1, BATT_Y + 1, widthMeter, BATT_HEIGHT - 1, BATT_COLOR);
 }
 
 static void drawStatusBar() {
-	lcd.setTextColor(ST7735_CYAN);
-	lcd.setCursor(0, 3);
-	lcd.print("evive");
+	tft.setTextColor(ST7735_CYAN);
+	tft.setCursor(0, 3);
+	tft.print("evive");
 	drawBattery();
 	batteryUpdate();
 	printVvr();
@@ -106,147 +107,143 @@ static void drawStatusBar() {
 //}
 
 static void printVvr() {
-	lcd.setCursor(70, 3);
-	lcd.print("VVR: ");
+	tft.setCursor(70, 3);
+	tft.print("VVR: ");
 }
 void vvrUpdate() {
 	vvr = analogRead(VARSUPPLYLEVEL);
 	if (pre_vvr - vvr > 4 || pre_vvr - vvr < -4) {
-		lcd.setTextColor(ST7735_RED);
-		lcd.setCursor(70 + 24, 3);
-		lcd.fillRect(70 + 24, 3, 35, 7, ST7735_BLACK);
-		lcd.print(vvr * VVR_MULTIPLIER);
+		tft.setTextColor(ST7735_RED);
+		tft.setCursor(70 + 24, 3);
+		tft.fillRect(70 + 24, 3, 35, 7, ST7735_BLACK);
+		tft.print(vvr * VVR_MULTIPLIER);
 		pre_vvr = vvr;
 	}
 }
 
-static void lcd_implementation_drawmenu_generic(uint8_t row, const char* pstr,
+static void tft_implementation_drawmenu_generic(uint8_t row, const char* pstr,
     char pre_char, char post_char) {
-		lcd.fillRect( LEFT_MARGIN ,
-	TOP_MARGIN + ROW_HEIGHT * row, LCD_WIDTH - RIGHT_MARGIN - CHAR_WIDTH * 1,
+		tft.fillRect( LEFT_MARGIN ,
+	TOP_MARGIN + ROW_HEIGHT * row, TFT_WIDTH - RIGHT_MARGIN - CHAR_WIDTH * 1,
 	ROW_HEIGHT, ST7735_BLACK);
 	char c;
-	uint8_t n = LCD_WIDTH / CHAR_WIDTH;
-	lcd.setCursor(LEFT_MARGIN, TOP_MARGIN + (row) * ROW_HEIGHT);
-	lcd.print(pre_char);
+	uint8_t n = TFT_WIDTH / CHAR_WIDTH;
+	tft.setCursor(LEFT_MARGIN, TOP_MARGIN + (row) * ROW_HEIGHT);
+	tft.print(pre_char);
 	while (((c = pgm_read_byte(pstr)) != '\0') && (n > 0)) {
-		lcd.print(c);
+		tft.print(c);
 		pstr++;
 		n--;
 	}
-	//lcd.fillRect(2 + LEFT_MARGIN + LCD_WIDTH - n * CHAR_WIDTH,
-	//TOP_MARGIN + ROW_HEIGHT * row, LCD_WIDTH - RIGHT_MARGIN - CHAR_WIDTH * 1,
+	//tft.fillRect(2 + LEFT_MARGIN + TFT_WIDTH - n * CHAR_WIDTH,
+	//TOP_MARGIN + ROW_HEIGHT * row, TFT_WIDTH - RIGHT_MARGIN - CHAR_WIDTH * 1,
 	//ROW_HEIGHT, ST7735_BLACK);
-	lcd.setCursor(LCD_WIDTH - RIGHT_MARGIN - CHAR_WIDTH * 1,
+	tft.setCursor(TFT_WIDTH - RIGHT_MARGIN - CHAR_WIDTH * 1,
 	TOP_MARGIN + (row) * ROW_HEIGHT);
-	lcd.print(post_char);
+	tft.print(post_char);
 }
 
-static void lcd_implementation_drawmenu_setting_edit_generic(uint8_t row,
+static void tft_implementation_drawmenu_setting_edit_generic(uint8_t row,
     const char* pstr, char pre_char, char data) {
-	lcd.setCursor(TOP_MARGIN + (row) * ROW_HEIGHT, LEFT_MARGIN);
-	lcd.print(pre_char);
-	lcd.print("  ");
-	lcd.print(pstr);
-	lcd.setCursor((row - 1) * ROW_HEIGHT,
-	LCD_WIDTH - RIGHT_MARGIN - CHAR_WIDTH * 1);
-	lcd.print(data);
+	tft.setCursor(TOP_MARGIN + (row) * ROW_HEIGHT, LEFT_MARGIN);
+	tft.print(pre_char);
+	tft.print("  ");
+	tft.print(pstr);
+	tft.setCursor((row - 1) * ROW_HEIGHT,
+	TFT_WIDTH - RIGHT_MARGIN - CHAR_WIDTH * 1);
+	tft.print(data);
 }
 
-#define lcd_implementation_drawmenu_setting_edit_int3_selected(row, pstr, pstr2, data, minValue, maxValue) lcd_implementation_drawmenu_setting_edit_generic(row, pstr, '>', itostr3(*(data)))
-#define lcd_implementation_drawmenu_setting_edit_int3(row, pstr, pstr2, data, minValue, maxValue) lcd_implementation_drawmenu_setting_edit_generic(row, pstr, ' ', itostr3(*(data)))
-#define lcd_implementation_drawmenu_setting_edit_float3_selected(row, pstr, pstr2, data, minValue, maxValue) lcd_implementation_drawmenu_setting_edit_generic(row, pstr, '>', ftostr3(*(data)))
-#define lcd_implementation_drawmenu_setting_edit_float3(row, pstr, pstr2, data, minValue, maxValue) lcd_implementation_drawmenu_setting_edit_generic(row, pstr, ' ', ftostr3(*(data)))
-#define lcd_implementation_drawmenu_setting_edit_float32_selected(row, pstr, pstr2, data, minValue, maxValue) lcd_implementation_drawmenu_setting_edit_generic(row, pstr, '>', ftostr32(*(data)))
-#define lcd_implementation_drawmenu_setting_edit_float32(row, pstr, pstr2, data, minValue, maxValue) lcd_implementation_drawmenu_setting_edit_generic(row, pstr, ' ', ftostr32(*(data)))
-#define lcd_implementation_drawmenu_setting_edit_float5_selected(row, pstr, pstr2, data, minValue, maxValue) lcd_implementation_drawmenu_setting_edit_generic(row, pstr, '>', ftostr5(*(data)))
-#define lcd_implementation_drawmenu_setting_edit_float5(row, pstr, pstr2, data, minValue, maxValue) lcd_implementation_drawmenu_setting_edit_generic(row, pstr, ' ', ftostr5(*(data)))
-#define lcd_implementation_drawmenu_setting_edit_float52_selected(row, pstr, pstr2, data, minValue, maxValue) lcd_implementation_drawmenu_setting_edit_generic(row, pstr, '>', ftostr52(*(data)))
-#define lcd_implementation_drawmenu_setting_edit_float52(row, pstr, pstr2, data, minValue, maxValue) lcd_implementation_drawmenu_setting_edit_generic(row, pstr, ' ', ftostr52(*(data)))
-#define lcd_implementation_drawmenu_setting_edit_float51_selected(row, pstr, pstr2, data, minValue, maxValue) lcd_implementation_drawmenu_setting_edit_generic(row, pstr, '>', ftostr51(*(data)))
-#define lcd_implementation_drawmenu_setting_edit_float51(row, pstr, pstr2, data, minValue, maxValue) lcd_implementation_drawmenu_setting_edit_generic(row, pstr, ' ', ftostr51(*(data)))
-#define lcd_implementation_drawmenu_setting_edit_long5_selected(row, pstr, pstr2, data, minValue, maxValue) lcd_implementation_drawmenu_setting_edit_generic(row, pstr, '>', ftostr5(*(data)))
-#define lcd_implementation_drawmenu_setting_edit_long5(row, pstr, pstr2, data, minValue, maxValue) lcd_implementation_drawmenu_setting_edit_generic(row, pstr, ' ', ftostr5(*(data)))
-#define lcd_implementation_drawmenu_setting_edit_bool_selected(row, pstr, pstr2, data) lcd_implementation_drawmenu_setting_edit_generic_P(row, pstr, '>', (*(data))?PSTR(MSG_ON):PSTR(MSG_OFF))
-#define lcd_implementation_drawmenu_setting_edit_bool(row, pstr, pstr2, data) lcd_implementation_drawmenu_setting_edit_generic_P(row, pstr, ' ', (*(data))?PSTR(MSG_ON):PSTR(MSG_OFF))
+#define tft_implementation_drawmenu_setting_edit_int3_selected(row, pstr, pstr2, data, minValue, maxValue) tft_implementation_drawmenu_setting_edit_generic(row, pstr, '>', itostr3(*(data)))
+#define tft_implementation_drawmenu_setting_edit_int3(row, pstr, pstr2, data, minValue, maxValue) tft_implementation_drawmenu_setting_edit_generic(row, pstr, ' ', itostr3(*(data)))
+#define tft_implementation_drawmenu_setting_edit_float3_selected(row, pstr, pstr2, data, minValue, maxValue) tft_implementation_drawmenu_setting_edit_generic(row, pstr, '>', ftostr3(*(data)))
+#define tft_implementation_drawmenu_setting_edit_float3(row, pstr, pstr2, data, minValue, maxValue) tft_implementation_drawmenu_setting_edit_generic(row, pstr, ' ', ftostr3(*(data)))
+#define tft_implementation_drawmenu_setting_edit_float32_selected(row, pstr, pstr2, data, minValue, maxValue) tft_implementation_drawmenu_setting_edit_generic(row, pstr, '>', ftostr32(*(data)))
+#define tft_implementation_drawmenu_setting_edit_float32(row, pstr, pstr2, data, minValue, maxValue) tft_implementation_drawmenu_setting_edit_generic(row, pstr, ' ', ftostr32(*(data)))
+#define tft_implementation_drawmenu_setting_edit_float5_selected(row, pstr, pstr2, data, minValue, maxValue) tft_implementation_drawmenu_setting_edit_generic(row, pstr, '>', ftostr5(*(data)))
+#define tft_implementation_drawmenu_setting_edit_float5(row, pstr, pstr2, data, minValue, maxValue) tft_implementation_drawmenu_setting_edit_generic(row, pstr, ' ', ftostr5(*(data)))
+#define tft_implementation_drawmenu_setting_edit_float52_selected(row, pstr, pstr2, data, minValue, maxValue) tft_implementation_drawmenu_setting_edit_generic(row, pstr, '>', ftostr52(*(data)))
+#define tft_implementation_drawmenu_setting_edit_float52(row, pstr, pstr2, data, minValue, maxValue) tft_implementation_drawmenu_setting_edit_generic(row, pstr, ' ', ftostr52(*(data)))
+#define tft_implementation_drawmenu_setting_edit_float51_selected(row, pstr, pstr2, data, minValue, maxValue) tft_implementation_drawmenu_setting_edit_generic(row, pstr, '>', ftostr51(*(data)))
+#define tft_implementation_drawmenu_setting_edit_float51(row, pstr, pstr2, data, minValue, maxValue) tft_implementation_drawmenu_setting_edit_generic(row, pstr, ' ', ftostr51(*(data)))
+#define tft_implementation_drawmenu_setting_edit_long5_selected(row, pstr, pstr2, data, minValue, maxValue) tft_implementation_drawmenu_setting_edit_generic(row, pstr, '>', ftostr5(*(data)))
+#define tft_implementation_drawmenu_setting_edit_long5(row, pstr, pstr2, data, minValue, maxValue) tft_implementation_drawmenu_setting_edit_generic(row, pstr, ' ', ftostr5(*(data)))
+#define tft_implementation_drawmenu_setting_edit_bool_selected(row, pstr, pstr2, data) tft_implementation_drawmenu_setting_edit_generic_P(row, pstr, '>', (*(data))?PSTR(MSG_ON):PSTR(MSG_OFF))
+#define tft_implementation_drawmenu_setting_edit_bool(row, pstr, pstr2, data) tft_implementation_drawmenu_setting_edit_generic_P(row, pstr, ' ', (*(data))?PSTR(MSG_ON):PSTR(MSG_OFF))
 
-void lcd_implementation_drawedit(const char* pstr, char* value) {
-	lcd.setCursor(TOP_MARGIN, LEFT_MARGIN);
-	lcd.print(pstr);
-	lcd.print(':');
-	lcd.setCursor(TOP_MARGIN, LCD_WIDTH - RIGHT_MARGIN - CHAR_WIDTH * 1);
-	lcd.print(value);
+void tft_implementation_drawedit(const char* pstr, char* value) {
+	tft.setCursor(TOP_MARGIN, LEFT_MARGIN);
+	tft.print(pstr);
+	tft.print(':');
+	tft.setCursor(TOP_MARGIN, TFT_WIDTH - RIGHT_MARGIN - CHAR_WIDTH * 1);
+	tft.print(value);
 }
-#define lcd_implementation_drawmenu_back_selected(row, pstr, data) lcd_implementation_drawmenu_generic(row, pstr, LCD_STR_UPLEVEL[0], LCD_STR_UPLEVEL[0])
-#define lcd_implementation_drawmenu_back(row, pstr, data) lcd_implementation_drawmenu_generic(row, pstr, ' ', LCD_STR_UPLEVEL[0])
-#define lcd_implementation_drawmenu_submenu_selected(row, pstr, data) lcd_implementation_drawmenu_generic(row, pstr, '>', char(175));
-#define lcd_implementation_drawmenu_submenu(row, pstr, data) lcd_implementation_drawmenu_generic(row, pstr, ' ', char(175));//LCD_STR_ARROW_RIGHT[0])
-#define lcd_implementation_drawmenu_function_selected(row, pstr, data) lcd_implementation_drawmenu_generic(row, pstr, '>', ' ')
-#define lcd_implementation_drawmenu_function(row, pstr, data) lcd_implementation_drawmenu_generic(row, pstr, ' ', ' ')
+#define tft_implementation_drawmenu_back_selected(row, pstr, data) tft_implementation_drawmenu_generic(row, pstr, TFT_STR_UPLEVEL[0], TFT_STR_UPLEVEL[0])
+#define tft_implementation_drawmenu_back(row, pstr, data) tft_implementation_drawmenu_generic(row, pstr, ' ', TFT_STR_UPLEVEL[0])
+#define tft_implementation_drawmenu_submenu_selected(row, pstr, data) tft_implementation_drawmenu_generic(row, pstr, '>', char(175));
+#define tft_implementation_drawmenu_submenu(row, pstr, data) tft_implementation_drawmenu_generic(row, pstr, ' ', char(175));//TFT_STR_ARROW_RIGHT[0])
+#define tft_implementation_drawmenu_function_selected(row, pstr, data) tft_implementation_drawmenu_generic(row, pstr, '>', ' ')
+#define tft_implementation_drawmenu_function(row, pstr, data) tft_implementation_drawmenu_generic(row, pstr, ' ', ' ')
 
-void lcd_implementation_clear_full() {
-	lcd.fillScreen(ST7735_BLACK);
-}
-
-void lcd_implementation_clear_menu() {
-	lcd.fillRect(0, TOP_MARGIN, LCD_WIDTH,
-	LCD_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN, ST7735_BLACK);
+void tft_implementation_clear_full() {
+	tft.fillScreen(ST7735_BLACK);
 }
 
-void lcd_implementation_text_and_background_color(uint16_t text_clr,
+void tft_implementation_clear_menu() {
+	tft.fillRect(0, TOP_MARGIN, TFT_WIDTH,
+	TFT_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN, ST7735_BLACK);
+}
+
+void tft_implementation_text_and_background_color(uint16_t text_clr,
     uint16_t text_background_clr) {
-	lcd.setTextColor(text_clr, text_background_clr);
+	tft.setTextColor(text_clr, text_background_clr);
 }
 
 //control status functions
 
-void lcd_implementation_control_status_motor(bool sec) {
-	lcd.setTextColor(ST7735_RED, ST7735_BLACK);
+void tft_implementation_control_status_motor(bool sec) {
+	tft.setTextColor(ST7735_RED, ST7735_BLACK);
 	if (sec) {
-		//lcd.fillRect(LCD_WIDTH_BY_2+45,TOP_MARGIN+ROW_HEIGHT*3, 39, ROW_HEIGHT*4, ST7735_BLACK);
-		lcd.setCursor(LCD_WIDTH_BY_2 + 45, TOP_MARGIN + ROW_HEIGHT * 3);
-		lcd.print(motor2.getPWM());
-		lcd.print("  ");
-		lcd.setCursor(LCD_WIDTH_BY_2 + 45, TOP_MARGIN + ROW_HEIGHT * 5);
-		lcd.print(motor2.dir1);
-		lcd.setCursor(LCD_WIDTH_BY_2 + 45, TOP_MARGIN + ROW_HEIGHT * 6);
-		lcd.print(motor2.dir2);
+		//tft.fillRect(TFT_WIDTH_BY_2+45,TOP_MARGIN+ROW_HEIGHT*3, 39, ROW_HEIGHT*4, ST7735_BLACK);
+		tft.setCursor(TFT_WIDTH_BY_2 + 45, TOP_MARGIN + ROW_HEIGHT * 3);
+		tft.print(motor2.getPWM());
+		tft.print("  ");
+		tft.setCursor(TFT_WIDTH_BY_2 + 45, TOP_MARGIN + ROW_HEIGHT * 5);
+		tft.print(motor2.dir1);
+		tft.setCursor(TFT_WIDTH_BY_2 + 45, TOP_MARGIN + ROW_HEIGHT * 6);
+		tft.print(motor2.dir2);
 	} else {
-		//lcd.fillRect(45,TOP_MARGIN+ROW_HEIGHT*3, 39, ROW_HEIGHT*4, ST7735_BLACK);
-		lcd.setCursor(45, TOP_MARGIN + ROW_HEIGHT * 3);
-		lcd.print(motor1.getPWM());
-		lcd.print("  ");
-		lcd.setCursor(45, TOP_MARGIN + ROW_HEIGHT * 5);
-		lcd.print(motor1.dir1);
-		lcd.setCursor(45, TOP_MARGIN + ROW_HEIGHT * 6);
-		lcd.print(motor1.dir2);
+		//tft.fillRect(45,TOP_MARGIN+ROW_HEIGHT*3, 39, ROW_HEIGHT*4, ST7735_BLACK);
+		tft.setCursor(45, TOP_MARGIN + ROW_HEIGHT * 3);
+		tft.print(motor1.getPWM());
+		tft.print("  ");
+		tft.setCursor(45, TOP_MARGIN + ROW_HEIGHT * 5);
+		tft.print(motor1.dir1);
+		tft.setCursor(45, TOP_MARGIN + ROW_HEIGHT * 6);
+		tft.print(motor1.dir2);
 	}
 }
 
 unsigned long lastServoImplement = 0;
 
-void lcd_implementation_control_status_servo(bool sec) {
-	lcd.setTextColor(ST7735_RED, ST7735_BLACK);
+void tft_implementation_control_status_servo(bool sec) {
+	tft.setTextColor(ST7735_RED, ST7735_BLACK);
 
-	if (sec
-	    && prevValueServo2()
-	        != servo2.read() && (millis()-lastServoImplement)> MIN_TIME1) {
-		//lcd.drawLine(LCD_WIDTH_BY_2+40,105,LCD_WIDTH_BY_2+40+20*sin((-prevValueServo2()-90)*3.14/180),75+20*cos((-prevValueServo2()-90)*3.14/180),ST7735_BLACK);
-		//lcd.drawLine(LCD_WIDTH_BY_2+40,105,LCD_WIDTH_BY_2+40+20*sin((-servo2.read()-90)*3.14/180),75+20*cos((-servo2.read()-90)*3.14/180),ST7735_GREEN);
-		lcd.setCursor(LCD_WIDTH_BY_2 + 50, TOP_MARGIN + ROW_HEIGHT * 3);
-		lcd.print(servo2.read());
-		lcd.print("  ");
+	if (sec && prevValueServo2()!= servo2.read() && (millis()-lastServoImplement)> MIN_TIME1) {
+		//tft.drawLine(TFT_WIDTH_BY_2+40,105,TFT_WIDTH_BY_2+40+20*sin((-prevValueServo2()-90)*3.14/180),75+20*cos((-prevValueServo2()-90)*3.14/180),ST7735_BLACK);
+		//tft.drawLine(TFT_WIDTH_BY_2+40,105,TFT_WIDTH_BY_2+40+20*sin((-servo2.read()-90)*3.14/180),75+20*cos((-servo2.read()-90)*3.14/180),ST7735_GREEN);
+		tft.setCursor(TFT_WIDTH_BY_2 + 50, TOP_MARGIN + ROW_HEIGHT * 3);
+		tft.print(servo2.read());
+		tft.print("  ");
 		//Serial.println("went in 2");
 		lastServoImplement = millis();
 	}
-	if (~sec
-	    && prevValueServo1()
-	        != servo1.read() && (millis()-lastServoImplement)> MIN_TIME1) {
-		//lcd.drawLine(40,105,40+20*sin((-prevValueServo1()-90)*3.14/180),75+20*cos((-prevValueServo1()-90)*3.14/180),ST7735_BLACK);
-		//lcd.drawLine(40,105,40+20*sin((-servo1.read()-90)*3.14/180),75+20*cos((-servo1.read()-90)*3.14/180),ST7735_GREEN);
-		lcd.setCursor(50, TOP_MARGIN + ROW_HEIGHT * 3);
-		lcd.print(servo1.read());
-		lcd.print("  ");
+	if (~sec && prevValueServo1() != servo1.read() && (millis()-lastServoImplement)> MIN_TIME1) {
+		//tft.drawLine(40,105,40+20*sin((-prevValueServo1()-90)*3.14/180),75+20*cos((-prevValueServo1()-90)*3.14/180),ST7735_BLACK);
+		//tft.drawLine(40,105,40+20*sin((-servo1.read()-90)*3.14/180),75+20*cos((-servo1.read()-90)*3.14/180),ST7735_GREEN);
+		tft.setCursor(50, TOP_MARGIN + ROW_HEIGHT * 3);
+		tft.print(servo1.read());
+		tft.print("  ");
 		//Serial.println("went in 1");
 		lastServoImplement = millis();
 	}
@@ -257,126 +254,126 @@ bool stps;
 bool dir1;
 bool dir2;
 
-void lcd_implementation_control_status_stepper() {
+void tft_implementation_control_status_stepper() {
 	if (stps != digitalRead(TACTILESW1) || dir1 != digitalRead(SLIDESW1_D2)
 	    || dir2 != digitalRead(SLIDESW1_D1))//change the screen only if a variable is changed
 	        {
-		lcd.setTextColor(ST7735_RED, ST7735_BLACK);
-		lcd.setCursor(50, TOP_MARGIN + ROW_HEIGHT * 7);
-		lcd.print("\n Stepper Direction : ");
+		tft.setTextColor(ST7735_RED, ST7735_BLACK);
+		tft.setCursor(50, TOP_MARGIN + ROW_HEIGHT * 7);
+		tft.print("\n Stepper Direction : ");
 		dir1 = digitalRead(SLIDESW1_D2);
 		dir2 = digitalRead(SLIDESW1_D1);
 		if (dir1) {
-			lcd.print("Dir 1");
+			tft.print("Dir 1");
 		} else if (dir2)
-			lcd.print("Dir 2");
+			tft.print("Dir 2");
 		else
-			lcd.print("0   ");
-		lcd.print("\n Speed :");
+			tft.print("0   ");
+		tft.print("\n Speed :");
 		stps = digitalRead(TACTILESW1);
 		if (stps) {
-			lcd.print("10x");
+			tft.print("10x");
 		} else
-			lcd.print("x  ");
+			tft.print("x  ");
 	}
 }
 
-void lcd_control_status_template() {
-	lcd.setTextColor(ST7735_RED);
-	lcd_implementation_clear_menu();
+void tft_control_status_template() {
+	tft.setTextColor(ST7735_RED);
+	tft_implementation_clear_menu();
 	if (_MOTOR1_EN) {
-		lcd.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 1);
-		lcd.println("   Motor 1");
-		lcd.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 3);
-		lcd.println(" PWM:");
-		lcd.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 4);
-		lcd.println(" States:");
-		lcd.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 5);
-		lcd.println("  Dir1:");
-		lcd.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 6);
-		lcd.print("  Dir2:");
+		tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 1);
+		tft.println("   Motor 1");
+		tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 3);
+		tft.println(" PWM:");
+		tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 4);
+		tft.println(" States:");
+		tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 5);
+		tft.println("  Dir1:");
+		tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 6);
+		tft.print("  Dir2:");
 	} else {
 		if (_SERVO1_EN) {
-			lcd.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 1);
-			lcd.println("   Servo 1");
-			//lcd.drawBitmap(15, 50, semiCircle, 80, 25, ST7735_YELLOW);
-			lcd.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 3);
-			lcd.println("  Angle:");
+			tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 1);
+			tft.println("   Servo 1");
+			//tft.drawBitmap(15, 50, semiCircle, 80, 25, ST7735_YELLOW);
+			tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 3);
+			tft.println("  Angle:");
 		}
 	}
 	if (_MOTOR2_EN) {
-		lcd.setCursor(LCD_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 1);
-		lcd.println("   Motor 2");
-		lcd.setCursor(LCD_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 3);
-		lcd.println(" PWM:");
-		lcd.setCursor(LCD_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 4);
-		lcd.println(" States:");
-		lcd.setCursor(LCD_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 5);
-		lcd.print("  Dir1:");
-		lcd.setCursor(LCD_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 6);
-		lcd.print("  Dir2:");
+		tft.setCursor(TFT_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 1);
+		tft.println("   Motor 2");
+		tft.setCursor(TFT_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 3);
+		tft.println(" PWM:");
+		tft.setCursor(TFT_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 4);
+		tft.println(" States:");
+		tft.setCursor(TFT_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 5);
+		tft.print("  Dir1:");
+		tft.setCursor(TFT_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 6);
+		tft.print("  Dir2:");
 	} else {
 		if (_SERVO2_EN) {
-			lcd.setCursor(LCD_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 1);
-			lcd.println("   Servo 2");
-			//lcd.drawBitmap(LCD_WIDTH_BY_2+15, 80, semiCircle, 50, 25, ST7735_YELLOW);
-			lcd.setCursor(LCD_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 3);
-			lcd.println("  Angle:");
+			tft.setCursor(TFT_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 1);
+			tft.println("   Servo 2");
+			//tft.drawBitmap(TFT_WIDTH_BY_2+15, 80, semiCircle, 50, 25, ST7735_YELLOW);
+			tft.setCursor(TFT_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 3);
+			tft.println("  Angle:");
 		}
 	}
 }
 
-void lcd_sensing_status_template(bool probeVIConfig) {
+void tft_sensing_status_template(bool probeVIConfig) {
 	ade791x_init();
-	lcd.setTextColor(ST7735_RED);
-	lcd_implementation_clear_menu();
-	lcd.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 1);
-	lcd.println("   Probe V");
-	lcd.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 3);
-	lcd.println("   V");
-	lcd.setCursor(LCD_WIDTH_BY_2, TOP_MARGIN + ROW_HEIGHT * 1);
-	lcd.println("  Probe I/V");
-	lcd.setCursor(LCD_WIDTH_BY_2, TOP_MARGIN + ROW_HEIGHT * 3);
+	tft.setTextColor(ST7735_RED);
+	tft_implementation_clear_menu();
+	tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 1);
+	tft.println("   Probe V");
+	tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 3);
+	tft.println("   V");
+	tft.setCursor(TFT_WIDTH_BY_2, TOP_MARGIN + ROW_HEIGHT * 1);
+	tft.println("  Probe I/V");
+	tft.setCursor(TFT_WIDTH_BY_2, TOP_MARGIN + ROW_HEIGHT * 3);
 	if (probeVIConfig)
-		lcd.print("  A");
+		tft.print("  A");
 	else
-		lcd.print("  V");
+		tft.print("  V");
 }
 
-void lcd_implementation_sensing_status(bool probeVIConfig) {
+void tft_implementation_sensing_status(bool probeVIConfig) {
 	//Add code here
-	lcd.setTextColor(ST7735_YELLOW, ST7735_BLACK);
-	lcd.setCursor(LEFT_MARGIN + 19, TOP_MARGIN + ROW_HEIGHT * 2);
-	lcd.print(ade791x_read_v1() / 1000.0, 2);
-	lcd.print("    ");
-	lcd.setCursor(LCD_WIDTH_BY_2 + 12, TOP_MARGIN + ROW_HEIGHT * 2);
+	tft.setTextColor(ST7735_YELLOW, ST7735_BLACK);
+	tft.setCursor(LEFT_MARGIN + 19, TOP_MARGIN + ROW_HEIGHT * 2);
+	tft.print(ade791x_read_v1() / 1000.0, 2);
+	tft.print("    ");
+	tft.setCursor(TFT_WIDTH_BY_2 + 12, TOP_MARGIN + ROW_HEIGHT * 2);
 
 	if (probeVIConfig)
-		lcd.print(ade791x_read_im() / 1000.0, 2);
+		tft.print(ade791x_read_im() / 1000.0, 2);
 	else
-		lcd.print(ade791x_read_vim() / 1000.0, 2);
-	lcd.print("    ");
+		tft.print(ade791x_read_vim() / 1000.0, 2);
+	tft.print("    ");
 
 	// long V1 = ade791x_read_v1()/1000.0;
-	// if(V1<0)	lcd.setCursor(LEFT_MARGIN-CHAR_WIDTH+19, TOP_MARGIN+ROW_HEIGHT*2);
-	// else lcd.setCursor(LEFT_MARGIN+19, TOP_MARGIN+ROW_HEIGHT*2);
-	// lcd.print(V1,2);
-	// lcd.print("    ");
+	// if(V1<0)	tft.setCursor(LEFT_MARGIN-CHAR_WIDTH+19, TOP_MARGIN+ROW_HEIGHT*2);
+	// else tft.setCursor(LEFT_MARGIN+19, TOP_MARGIN+ROW_HEIGHT*2);
+	// tft.print(V1,2);
+	// tft.print("    ");
 
 	// if(probeVIConfig){
 	// long IM = ade791x_read_im()/1000.0;
-	// if(V1<0)	lcd.setCursor(LCD_WIDTH_BY_2+12-CHAR_WIDTH, TOP_MARGIN+ROW_HEIGHT*2);
-	// else lcd.setCursor(LCD_WIDTH_BY_2+12, TOP_MARGIN+ROW_HEIGHT*2);
-	// lcd.print(IM,2);
+	// if(V1<0)	tft.setCursor(TFT_WIDTH_BY_2+12-CHAR_WIDTH, TOP_MARGIN+ROW_HEIGHT*2);
+	// else tft.setCursor(TFT_WIDTH_BY_2+12, TOP_MARGIN+ROW_HEIGHT*2);
+	// tft.print(IM,2);
 	// }
 
 	// else {
 	// long VIM = ade791x_read_vim()/1000.0;
-	// if(VIM<0)	lcd.setCursor(LCD_WIDTH_BY_2+12-CHAR_WIDTH, TOP_MARGIN+ROW_HEIGHT*2);
-	// else lcd.setCursor(LCD_WIDTH_BY_2+12, TOP_MARGIN+ROW_HEIGHT*2);
-	// lcd.print(VIM,2);
+	// if(VIM<0)	tft.setCursor(TFT_WIDTH_BY_2+12-CHAR_WIDTH, TOP_MARGIN+ROW_HEIGHT*2);
+	// else tft.setCursor(TFT_WIDTH_BY_2+12, TOP_MARGIN+ROW_HEIGHT*2);
+	// tft.print(VIM,2);
 	// }
-	// lcd.print("    ");
+	// tft.print("    ");
 }
 
 //-------------mini oscilloscope/start--------------//
@@ -388,13 +385,13 @@ void lcd_implementation_sensing_status(bool probeVIConfig) {
 const int SAMPLES = 160;
 const int DOTS_DIV = 20;
 //range0, range1, rate, TRIG_Modes, TRIG_E_DN/UP ch0_off, ch1_off, trig_lv, Send, log
-const int MENU_TOTAL_ITEMS = 10;
+const int MENU_TOTAL_ITEMS = 11;
 
 #define GRAPH_TOP_MARGIN			9
 #define GRAPH_LEFT_MARGIN			0
-#define LCD_HEIGHT_TOP_MARGIN 119
-#define LCD_GRAPH_MID					69
-#define LCD_GRPAH_MID_TOP_MARGIN 60
+#define TFT_HEIGHT_TOP_MARGIN 119
+#define TFT_GRAPH_MID					69
+#define TFT_GRPAH_MID_TOP_MARGIN 60
 
 //const int ad_sw = A11;                    // Analog 3 pin for switches
 //const int ad_ch0 = A5;                   // Analog 4 pin for channel 0
@@ -458,6 +455,8 @@ byte trig_mode = TRIG_AUTO, trig_lv = 50, trig_edge = TRIG_E_UP, trig_ch = 1; //
 
 byte Start = 1;  // Start sampling
 byte menu = 1;  // Default menu
+
+bool updateData = true;
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 static void CheckSW();
@@ -498,6 +497,7 @@ static void CheckSW() {
 }
 
 static void menuUpdate() {
+	Serial.println(menu);
 	switch (menu) {
 		case 1:
 			if (menuMove == 3) {
@@ -511,7 +511,7 @@ static void menuUpdate() {
 					range0++;
 				if (range0 == RANGE_MAX_CH0) {
 					ch0_mode = MODE_OFF;
-					lcd.fillRect(0, GRAPH_LEFT_MARGIN, LCD_WIDTH, LCD_HEIGHT_TOP_MARGIN,
+					tft.fillRect(0, GRAPH_LEFT_MARGIN, TFT_WIDTH, TFT_HEIGHT_TOP_MARGIN,
 					BGCOLOR);
 					//DrawGrid;
 				}
@@ -529,7 +529,7 @@ static void menuUpdate() {
 					range1++;
 				if (range1 == RANGE_MAX_CH1) {
 					ch1_mode = MODE_OFF;
-					lcd.fillRect(0, GRAPH_LEFT_MARGIN, LCD_WIDTH, LCD_HEIGHT_TOP_MARGIN,
+					tft.fillRect(0, GRAPH_LEFT_MARGIN, TFT_WIDTH, TFT_HEIGHT_TOP_MARGIN,
 					BGCOLOR);
 				}
 			}
@@ -562,41 +562,41 @@ static void menuUpdate() {
 			break;
 		case 6:
 			if (menuMove == 3) {
-				lcd.setCursor(LCD_WIDTH - 7, LCD_GRAPH_MID - ch0_off - 3);
-				lcd.setTextColor(BGCOLOR);
-				lcd.print(char(174));
+				tft.setCursor(TFT_WIDTH - 7, TFT_GRAPH_MID - ch0_off - 3);
+				tft.setTextColor(BGCOLOR);
+				tft.print(char(174));
 				ch0_off--;
-				lcd.setCursor(LCD_WIDTH - 7, LCD_GRAPH_MID - ch0_off - 3);
-				lcd.setTextColor(CH1COLOR);
-				lcd.print(char(174));
+				tft.setCursor(TFT_WIDTH - 7, TFT_GRAPH_MID - ch0_off - 3);
+				tft.setTextColor(CH1COLOR);
+				tft.print(char(174));
 			} else {
-				lcd.setCursor(LCD_WIDTH - 7, LCD_GRAPH_MID - ch0_off - 3);
-				lcd.setTextColor(BGCOLOR);
-				lcd.print(char(174));
+				tft.setCursor(TFT_WIDTH - 7, TFT_GRAPH_MID - ch0_off - 3);
+				tft.setTextColor(BGCOLOR);
+				tft.print(char(174));
 				ch0_off++;
-				lcd.setCursor(LCD_WIDTH - 7, LCD_GRAPH_MID - ch0_off - 3);
-				lcd.setTextColor(CH1COLOR);
-				lcd.print(char(174));
+				tft.setCursor(TFT_WIDTH - 7, TFT_GRAPH_MID - ch0_off - 3);
+				tft.setTextColor(CH1COLOR);
+				tft.print(char(174));
 
 			}
 			break;
 		case 7:
 			if (menuMove == 3) {
-				lcd.setCursor(LCD_WIDTH - 7, LCD_GRAPH_MID - ch1_off - 3);
-				lcd.setTextColor(BGCOLOR);
-				lcd.print(char(174));
+				tft.setCursor(TFT_WIDTH - 7, TFT_GRAPH_MID - ch1_off - 3);
+				tft.setTextColor(BGCOLOR);
+				tft.print(char(174));
 				ch1_off--;
-				lcd.setCursor(LCD_WIDTH - 7, LCD_GRAPH_MID - ch1_off - 3);
-				lcd.setTextColor(CH2COLOR);
-				lcd.print(char(174));
+				tft.setCursor(TFT_WIDTH - 7, TFT_GRAPH_MID - ch1_off - 3);
+				tft.setTextColor(CH2COLOR);
+				tft.print(char(174));
 			} else {
-				lcd.setCursor(LCD_WIDTH - 7, LCD_GRAPH_MID - ch1_off - 3);
-				lcd.setTextColor(BGCOLOR);
-				lcd.print(char(174));
+				tft.setCursor(TFT_WIDTH - 7, TFT_GRAPH_MID - ch1_off - 3);
+				tft.setTextColor(BGCOLOR);
+				tft.print(char(174));
 				ch1_off++;
-				lcd.setCursor(LCD_WIDTH - 7, LCD_GRAPH_MID - ch1_off - 3);
-				lcd.setTextColor(CH2COLOR);
-				lcd.print(char(174));
+				tft.setCursor(TFT_WIDTH - 7, TFT_GRAPH_MID - ch1_off - 3);
+				tft.setTextColor(CH2COLOR);
+				tft.print(char(174));
 			}
 			break;
 		case 8:
@@ -609,17 +609,24 @@ static void menuUpdate() {
 			SendData();
 			break;
 		case 10:
-			if (menuMove == 3) {
-				/*File myFile= SD.open("evive_file.csv",FILE_WRITE);
+			if (menuMove == 3) {/*
+				File myFile= SD.open("evive_file.csv",FILE_WRITE);
 				 if(myFile) Serial.println("file successfully opened");
 				 for(int j=0;j<SAMPLES;j++)
 				 {
 				 myFile.print(data[0][j]);
 				 myFile.print(",");
 				 myFile.print(data[2][j]);
-				 }*/
+				 }
+				 myFile.close();*/
 			}
 			//ADD DATA LOGGING FUNCTION WITH SD CARD
+			break;
+		case 11: 
+			if (menuMove==3)
+			{
+				updateData=!updateData;
+			}
 			break;
 		default:
 			break;
@@ -638,88 +645,94 @@ static void SendData() {
 
 static void DrawGrid() {
 	for (int x = 0; x <= SAMPLES; x += 2) { // Horizontal Line
-		for (int y = GRAPH_TOP_MARGIN; y <= LCD_HEIGHT; y += DOTS_DIV) {
-			lcd.drawPixel(x, y, GRIDCOLOR);
+		for (int y = GRAPH_TOP_MARGIN; y <= TFT_HEIGHT; y += DOTS_DIV) {
+			tft.drawPixel(x, y, GRIDCOLOR);
 			CheckSW();
 		}
-		if (LCD_HEIGHT == 128)
-			lcd.drawPixel(x, LCD_HEIGHT - 1, GRIDCOLOR);
+		if (TFT_HEIGHT == 128)
+			tft.drawPixel(x, TFT_HEIGHT - 1, GRIDCOLOR);
 	}
 	for (int x = 0; x <= SAMPLES; x += DOTS_DIV) { // Vertical Line
-		for (int y = GRAPH_TOP_MARGIN; y <= LCD_HEIGHT; y += 2) {
-			lcd.drawPixel(x, y, GRIDCOLOR);
+		for (int y = GRAPH_TOP_MARGIN; y <= TFT_HEIGHT; y += 2) {
+			tft.drawPixel(x, y, GRIDCOLOR);
 			CheckSW();
 		}
 	}
 
-	lcd.setCursor(LCD_WIDTH - 7, LCD_GRAPH_MID - ch0_off - 3);
-	lcd.setTextColor(CH1COLOR);
-	lcd.print(char(174));
-	lcd.setCursor(LCD_WIDTH - 7, LCD_GRAPH_MID - ch1_off - 3);
-	lcd.setTextColor(CH2COLOR);
-	lcd.print(char(174));
+	tft.setCursor(TFT_WIDTH - 7, TFT_GRAPH_MID - ch0_off - 3);
+	tft.setTextColor(CH1COLOR);
+	tft.print(char(174));
+	tft.setCursor(TFT_WIDTH - 7, TFT_GRAPH_MID - ch1_off - 3);
+	tft.setTextColor(CH2COLOR);
+	tft.print(char(174));
 }
 
 static void DrawText() {
 	int itr;
-	lcd.fillRect(GRAPH_LEFT_MARGIN, 0, 160, 9, ST7735_WHITE);
-	lcd.setTextSize(1);
-	lcd.fillRect(GRAPH_LEFT_MARGIN, 0, 40, 9, ST7735_RED);
-	lcd.setTextColor(ST7735_WHITE);
+	tft.fillRect(GRAPH_LEFT_MARGIN, 0, 160, 9, ST7735_WHITE);
+	tft.setTextSize(1);
+	tft.fillRect(GRAPH_LEFT_MARGIN, 0, 40, 9, ST7735_RED);
+	tft.setTextColor(ST7735_WHITE);
 
 	for (itr = 0; itr < 4; itr++) {
-		lcd.setCursor((itr) * 41, 1);
+		tft.setCursor((itr) * 41, 1);
 		if (itr + menu > MENU_TOTAL_ITEMS)
 			PrintMenuItem(itr + menu - MENU_TOTAL_ITEMS);
 		else
 			PrintMenuItem(itr + menu);
-		lcd.setTextColor(ST7735_RED);
+		tft.setTextColor(ST7735_RED);
 	}
 }
 
 static void PrintMenuItem(int item) {
 	switch (item) {
 		case 1:
-			lcd.print(Ranges[range0]);
-//			lcd.println("/D");
+			tft.print(Ranges[range0]);
+//			tft.println("/D");
 			break;
 		case 2:
-			lcd.print(Ranges[range1]);
-//			lcd.println("/D");
+			tft.print(Ranges[range1]);
+//			tft.println("/D");
 			break;
 		case 3:
-			lcd.print(Rates[rate]);
-			lcd.println("/D");
+			tft.print(Rates[rate]);
+			tft.println("/D");
 			break;
 		case 4:
-			lcd.println(TRIG_Modes[trig_mode]);
+			tft.println(TRIG_Modes[trig_mode]);
 			break;
 		case 5:
-			lcd.println(trig_edge == TRIG_E_UP ? "UP" : "DN");
+			tft.println(trig_edge == TRIG_E_UP ? "UP" : "DN");
 			break;
 		case 6:
-			lcd.print("01:");
-			lcd.println(
+			tft.print("01:");
+			tft.println(
 			    (ch0_off * MILLIVOL_per_dot[range0] > 1000) ?
 			        ch0_off * MILLIVOL_per_dot[range0] / 1000.0 :
 			        ch0_off * MILLIVOL_per_dot[range0]);
 			break;
 		case 7:
-			lcd.print("02:");
-			lcd.println(
+			tft.print("02:");
+			tft.println(
 			    (ch1_off * MILLIVOL_per_dot[range1] > 1000) ?
 			        ch1_off * MILLIVOL_per_dot[range1] / 1000.0 :
 			        ch1_off * MILLIVOL_per_dot[range1]);
 			break;
 		case 8:
-			lcd.print("TLV:");
-			lcd.println(trig_lv);
+			tft.print("TLV:");
+			tft.println(trig_lv);
 			break;
 		case 9:
-			lcd.println("Send");
+			tft.println("Send");
 			break;
 		case 10:
-			lcd.println("---");     //save to SD card
+			tft.println("---");     //save to SD card
+			break;
+		case 11:
+			if(updateData)
+				tft.print("stop");
+			else
+				tft.print("start");
 			break;
 		default:
 			break;
@@ -729,11 +742,11 @@ static void PrintMenuItem(int item) {
 //To draw grid at given x. Will be used while ploting
 static void DrawGrid(int x) {
 	if ((x % 2) == 0)
-		for (int y = GRAPH_TOP_MARGIN; y <= LCD_HEIGHT; y += DOTS_DIV)
-			lcd.drawPixel(x, y, GRIDCOLOR);
+		for (int y = GRAPH_TOP_MARGIN; y <= TFT_HEIGHT; y += DOTS_DIV)
+			tft.drawPixel(x, y, GRIDCOLOR);
 	if ((x % DOTS_DIV) == 0)
-		for (int y = GRAPH_TOP_MARGIN; y <= LCD_HEIGHT; y += 2)
-			lcd.drawPixel(x, y, GRIDCOLOR);
+		for (int y = GRAPH_TOP_MARGIN; y <= TFT_HEIGHT; y += 2)
+			tft.drawPixel(x, y, GRIDCOLOR);
 }
 
 static void ClearAndDrawGraph() {
@@ -744,23 +757,23 @@ static void ClearAndDrawGraph() {
 	for (int x = 0; x < (SAMPLES - 1); x++) {
 		if (ch0_mode != MODE_OFF) {
 			//remove previous data
-			if (data[clear][x + 1] <= (LCD_GRPAH_MID_TOP_MARGIN - ch0_off + 1))
-				lcd.drawLine(x, LCD_GRAPH_MID - data[clear][x], x + 1,
-				LCD_GRAPH_MID - data[clear][x + 1], BGCOLOR);
+			if (data[clear][x + 1] <= (TFT_GRPAH_MID_TOP_MARGIN - ch0_off + 1))
+				tft.drawLine(x, TFT_GRAPH_MID - data[clear][x], x + 1,
+				TFT_GRAPH_MID - data[clear][x + 1], BGCOLOR);
 			//display new data
-			if (data[sample][x + 1] <= (LCD_GRPAH_MID_TOP_MARGIN - ch0_off + 1))
-				lcd.drawLine(x, LCD_GRAPH_MID - data[sample][x], x + 1,
-				LCD_GRAPH_MID - data[sample][x + 1], CH1COLOR);
+			if (data[sample][x + 1] <= (TFT_GRPAH_MID_TOP_MARGIN - ch0_off + 1))
+				tft.drawLine(x, TFT_GRAPH_MID - data[sample][x], x + 1,
+				TFT_GRAPH_MID - data[sample][x + 1], CH1COLOR);
 		}
 		if (ch1_mode != MODE_OFF) {
 			//remove previous data
-			if (data[clear + 1][x + 1] <= (LCD_GRPAH_MID_TOP_MARGIN - ch1_off + 1))
-				lcd.drawLine(x, LCD_GRAPH_MID - data[clear + 1][x], x + 1,
-				LCD_GRAPH_MID - data[clear + 1][x + 1], BGCOLOR);
+			if (data[clear + 1][x + 1] <= (TFT_GRPAH_MID_TOP_MARGIN - ch1_off + 1))
+				tft.drawLine(x, TFT_GRAPH_MID - data[clear + 1][x], x + 1,
+				TFT_GRAPH_MID - data[clear + 1][x + 1], BGCOLOR);
 			//display new data
-			if (data[sample + 1][x + 1] <= (LCD_GRPAH_MID_TOP_MARGIN - ch1_off + 1))
-				lcd.drawLine(x, LCD_GRAPH_MID - data[sample + 1][x], x + 1,
-				LCD_GRAPH_MID - data[sample + 1][x + 1], CH2COLOR);
+			if (data[sample + 1][x + 1] <= (TFT_GRPAH_MID_TOP_MARGIN - ch1_off + 1))
+				tft.drawLine(x, TFT_GRAPH_MID - data[sample + 1][x], x + 1,
+				TFT_GRAPH_MID - data[sample + 1][x + 1], CH2COLOR);
 		}
 		CheckSW();
 	}
@@ -775,20 +788,20 @@ static void ClearAndDrawDot(int i) {
 		clear = 2;
 
 	if (ch0_mode != MODE_OFF) {
-		if (data[clear][i] <= (LCD_GRPAH_MID_TOP_MARGIN - ch0_off + 1))
-			lcd.drawLine(i - 1, LCD_GRAPH_MID - data[clear][i - 1], i,
-			LCD_GRAPH_MID - data[clear][i], BGCOLOR);
-		if (data[sample + 0][i] <= (LCD_GRPAH_MID_TOP_MARGIN - ch0_off + 1))
-			lcd.drawLine(i - 1, LCD_GRAPH_MID - data[sample][i - 1], i,
-			LCD_GRAPH_MID - data[sample][i], CH1COLOR);
+		if (data[clear][i] <= (TFT_GRPAH_MID_TOP_MARGIN - ch0_off + 1))
+			tft.drawLine(i - 1, TFT_GRAPH_MID - data[clear][i - 1], i,
+			TFT_GRAPH_MID - data[clear][i], BGCOLOR);
+		if (data[sample + 0][i] <= (TFT_GRPAH_MID_TOP_MARGIN - ch0_off + 1))
+			tft.drawLine(i - 1, TFT_GRAPH_MID - data[sample][i - 1], i,
+			TFT_GRAPH_MID - data[sample][i], CH1COLOR);
 	}
 	if (ch1_mode != MODE_OFF) {
-		if (data[clear + 1][i] <= (LCD_GRPAH_MID_TOP_MARGIN - ch1_off + 1))
-			lcd.drawLine(i - 1, LCD_GRAPH_MID - data[clear + 1][i - 1], i,
-			LCD_GRAPH_MID - data[clear + 1][i], BGCOLOR);
-		if (data[sample + 1][i] <= (LCD_GRPAH_MID_TOP_MARGIN - ch1_off + 1))
-			lcd.drawLine(i - 1, LCD_GRAPH_MID - data[sample + 1][i - 1], i,
-			LCD_GRAPH_MID - data[sample + 1][i], CH2COLOR);
+		if (data[clear + 1][i] <= (TFT_GRPAH_MID_TOP_MARGIN - ch1_off + 1))
+			tft.drawLine(i - 1, TFT_GRAPH_MID - data[clear + 1][i - 1], i,
+			TFT_GRAPH_MID - data[clear + 1][i], BGCOLOR);
+		if (data[sample + 1][i] <= (TFT_GRPAH_MID_TOP_MARGIN - ch1_off + 1))
+			tft.drawLine(i - 1, TFT_GRAPH_MID - data[sample + 1][i - 1], i,
+			TFT_GRAPH_MID - data[sample + 1][i], CH2COLOR);
 	}
 
 	DrawGrid(i);
@@ -796,10 +809,10 @@ static void ClearAndDrawDot(int i) {
 
 static void DrawGraph() {
 	for (int x = 0; x < SAMPLES; x++) {
-		if (data[sample + 0][x] <= (LCD_GRPAH_MID_TOP_MARGIN - ch0_off + 1))
-			lcd.drawPixel(x, LCD_GRAPH_MID - data[sample + 0][x], CH1COLOR);
-		if (data[sample + 1][x] <= (LCD_GRPAH_MID_TOP_MARGIN - ch1_off + 1))
-			lcd.drawPixel(x, LCD_GRAPH_MID - data[sample + 1][x], CH2COLOR);
+		if (data[sample + 0][x] <= (TFT_GRPAH_MID_TOP_MARGIN - ch0_off + 1))
+			tft.drawPixel(x, TFT_GRAPH_MID - data[sample + 0][x], CH1COLOR);
+		if (data[sample + 1][x] <= (TFT_GRPAH_MID_TOP_MARGIN - ch1_off + 1))
+			tft.drawPixel(x, TFT_GRAPH_MID - data[sample + 1][x], CH2COLOR);
 	}
 }
 
@@ -809,8 +822,8 @@ static void ClearGraph() {
 	if (sample == 0)
 		clear = 2;
 	for (int x = 0; x < SAMPLES; x++) {
-		lcd.drawPixel(x, LCD_GRAPH_MID - data[clear + 0][x], BGCOLOR);
-		lcd.drawPixel(x, LCD_GRAPH_MID - data[clear + 1][x], BGCOLOR);
+		tft.drawPixel(x, TFT_GRAPH_MID - data[clear + 0][x], BGCOLOR);
+		tft.drawPixel(x, TFT_GRAPH_MID - data[clear + 1][x], BGCOLOR);
 	}
 }
 
@@ -818,8 +831,8 @@ int ConvertMilliVoltToPixel(long value, byte range, int off) {
 	//Serial.println(value);
 	value = value / (MILLIVOL_per_dot[range]) + off;
 	// Serial.println(value);
-	value = value >= (LCD_HEIGHT_TOP_MARGIN - off + 1) ?
-	LCD_HEIGHT_TOP_MARGIN - off :
+	value = value >= (TFT_HEIGHT_TOP_MARGIN - off + 1) ?
+	TFT_HEIGHT_TOP_MARGIN - off :
 	                                                     value;
 														 
 	//Serial.println(value);
@@ -831,8 +844,8 @@ int ConvertMilliVoltToPixel1(long value, byte range, int off) {
 	//Serial.println(value);
 	value = value / (MILLIVOL_per_dot[range]) + off;
 	// Serial.println(value);
-	value = value >= (LCD_HEIGHT_TOP_MARGIN - off + 1) ?
-	LCD_HEIGHT_TOP_MARGIN - off :
+	value = value >= (TFT_HEIGHT_TOP_MARGIN - off + 1) ?
+	TFT_HEIGHT_TOP_MARGIN - off :
 	                                                     value;
 														 
 	//Serial.println(value);
@@ -843,8 +856,8 @@ int ConvertMilliVoltToPixel2(long value, byte range, int off) {
 	//Serial.println(value);
 	value = value / (MILLIVOL_per_dot[range]) + off;
 	// Serial.println(value);
-	value = value >= (LCD_HEIGHT_TOP_MARGIN - off + 1) ?
-	LCD_HEIGHT_TOP_MARGIN - off :
+	value = value >= (TFT_HEIGHT_TOP_MARGIN - off + 1) ?
+	TFT_HEIGHT_TOP_MARGIN - off :
 	                                                     value;
 														 
 	//Serial.println(value);
@@ -853,19 +866,19 @@ int ConvertMilliVoltToPixel2(long value, byte range, int off) {
 
 int v;
 void evive_oscilloscope() {
-	lcd.fillScreen(BGCOLOR);
-	lcd.setTextColor(ST7735_RED);
-	lcd.setTextWrap(0);
-	lcd.setTextSize(3);
-	lcd.setCursor(15, 20);
-	lcd.print("evive's");
-	lcd.setCursor(10, 70);
-	lcd.setTextSize(2);
-	lcd.print("Oscilloscope");
+	tft.fillScreen(BGCOLOR);
+	tft.setTextColor(ST7735_RED);
+	tft.setTextWrap(0);
+	tft.setTextSize(3);
+	tft.setCursor(15, 20);
+	tft.print("evive's");
+	tft.setCursor(10, 70);
+	tft.setTextSize(2);
+	tft.print("Oscilloscope");
 	ade791x_init();
 	delay(500);
-	lcd.fillScreen(BGCOLOR);
-	lcd.setTextSize(1);
+	tft.fillScreen(BGCOLOR);
+	tft.setTextSize(1);
 	DrawGrid();
 	DrawText();
 	//pinMode(5, OUTPUT);
@@ -928,8 +941,7 @@ static void evive_oscilloscope_loop() {
 				break;
 		}
 	}
-
-	// sample and draw depending on the sampling rate
+if(updateData){// sample and draw depending on the sampling rate
 	if (rate <= 5 && Start) {
 		// change the index for the double buffer
 		if (sample == 0)
@@ -998,6 +1010,8 @@ static void evive_oscilloscope_loop() {
 			}
 			// Serial.println(millis()-st0);
 		}
+
+
 		ClearAndDrawGraph();
 		CheckSW();
 		DrawGrid();
@@ -1028,7 +1042,7 @@ static void evive_oscilloscope_loop() {
 					break;
 			}
 			if (rate < 6) { // sampling rate has been changed
-				lcd_implementation_clear_menu();
+				tft_implementation_clear_menu();
 				break;
 			}
 			st += r_[rate - 6];
@@ -1063,17 +1077,20 @@ static void evive_oscilloscope_loop() {
 	} else {
 		CheckSW();
 	}
+}
+	
 	if (trig_mode == TRIG_ONE)
 		Start = 0;
 	else
 		Start = 1;
 	//Serial.println(micros()-t);
+	//Serial.println(updateData);
 }
 
 //-------------mini oscilloscope/end--------------//
 
 //-------------Serial Monitor/Start---------------//
-void lcd_implementation_serial_monitor() {
+void tft_implementation_serial_monitor() {
 
 	if (Serial.available()) {
 		serialObject.serial0PrintMsg();
@@ -1214,65 +1231,65 @@ int ligitalRead(uint8_t pin) {
 /*LigitalRead fn*/
 
 //Logic analyser Template
-void lcd_digital_pin_state_monitor_template() {
-	lcd.setCursor(0, 16);
-	lcd.setTextColor(ST7735_RED);
-	lcd.print("DIGITAL PINS");
-	lcd.setCursor(0, 24);
+void tft_digital_pin_state_monitor_template() {
+	tft.setCursor(0, 16);
+	tft.setTextColor(ST7735_RED);
+	tft.print("DIGITAL PINS");
+	tft.setCursor(0, 24);
 	uint8_t pinNumber;
-	lcd.setTextColor(ST7735_GREEN, ST7735_BLACK);
+	tft.setTextColor(ST7735_GREEN, ST7735_BLACK);
 	for (pinNumber = 0; pinNumber < 40; pinNumber++) {   // printing digital pins
 
-		lcd.setCursor((pinNumber % 6) * 3 + (pinNumber % 6) * 24,
+		tft.setCursor((pinNumber % 6) * 3 + (pinNumber % 6) * 24,
 		    24 + (pinNumber / 6) * 8);
 		if (pinNumber <= 17)
-			lcd.print(pinNumber + 2);
+			tft.print(pinNumber + 2);
 		else
-			lcd.print(pinNumber + 4);
-		lcd.print(":");
+			tft.print(pinNumber + 4);
+		tft.print(":");
 	}
 }
 
-void lcd_analog_pin_state_monitor_template() {
+void tft_analog_pin_state_monitor_template() {
 	uint8_t pinNumber;
-	lcd.setCursor(0, 80);
-	lcd.setTextColor(ST7735_RED);
-	lcd.setTextWrap(0);
-	lcd.print("ANALOG PINS");
-	lcd.setTextColor(ST7735_GREEN, ST7735_BLACK);
-	lcd.setCursor(118, 80);
-	lcd.print(0);
+	tft.setCursor(0, 80);
+	tft.setTextColor(ST7735_RED);
+	tft.setTextWrap(0);
+	tft.print("ANALOG PINS");
+	tft.setTextColor(ST7735_GREEN, ST7735_BLACK);
+	tft.setCursor(118, 80);
+	tft.print(0);
 	for (pinNumber = 0; pinNumber < 16; pinNumber++) {  //printing analog pins
-		lcd.setCursor((pinNumber % 3) * 3 + (pinNumber % 3) * 56,
+		tft.setCursor((pinNumber % 3) * 3 + (pinNumber % 3) * 56,
 		    88 + (pinNumber / 3) * 8);
-		lcd.print(pinNumber + 1);
+		tft.print(pinNumber + 1);
 	}
 }
 
 /*Logic Analyser */
-static void lcd_implementation_digital_pin_state() {
+static void tft_implementation_digital_pin_state() {
 	uint8_t pinNumber;
 	bool j;
-	lcd.setTextColor(ST7735_WHITE, ST7735_BLACK);
+	tft.setTextColor(ST7735_WHITE, ST7735_BLACK);
 	for (pinNumber = 0; pinNumber < 40; pinNumber++) {   // printing digital pins
-		lcd.setCursor(CHAR_WIDTH * 3 + (pinNumber % 6) * 3 + (pinNumber % 6) * 24,
+		tft.setCursor(CHAR_WIDTH * 3 + (pinNumber % 6) * 3 + (pinNumber % 6) * 24,
 		    24 + (pinNumber / 6) * 8);
 		j = ligitalRead(digitalpinno[pinNumber]);
-		lcd.print(j);
+		tft.print(j);
 	}
 }
 
-static void lcd_implementation_analog_pin_state() {
+static void tft_implementation_analog_pin_state() {
 	uint8_t pinNumber = 0;
-	lcd.setTextColor(ST7735_YELLOW, ST7735_BLACK);
-	lcd.setCursor(134, 80);
-	lcd.print(analogRead(pinNumber));
-	lcd.print("   ");
+	tft.setTextColor(ST7735_YELLOW, ST7735_BLACK);
+	tft.setCursor(134, 80);
+	tft.print(analogRead(pinNumber));
+	tft.print("   ");
 	for (pinNumber = 0; pinNumber < 16; pinNumber++) {  //printing analog pins
-		lcd.setCursor(14 + (pinNumber % 3) * 3 + (pinNumber % 3) * 56,
+		tft.setCursor(14 + (pinNumber % 3) * 3 + (pinNumber % 3) * 56,
 		    88 + (pinNumber / 3) * 8);
-		lcd.print(analogRead(pinNumber + 1));
-		lcd.print("   ");
+		tft.print(analogRead(pinNumber + 1));
+		tft.print("   ");
 	}
 }
 
@@ -1280,63 +1297,63 @@ static void lcd_implementation_analog_pin_state() {
 void displayFrequenccyAmplitude() {
 	//Only update on screen, if values are changed
 	if (oldIncrement != increment) {
-		lcd.setCursor(10, 60);
+		tft.setCursor(10, 60);
 		if (encoderPosition == 5)
-			lcd.print("-");
+			tft.print("-");
 		else
-			lcd.print(8.5 + 8.3 * (increment - 1));
-		lcd.print("  ");
+			tft.print(8.5 + 8.3 * (increment - 1));
+		tft.print("  ");
 		//   Serial.println(increment);
 	}
 	if (oldAmplitude != amplitude) {
-		lcd.setCursor(10, 90);
+		tft.setCursor(10, 90);
 		if (encoderPosition == 5)
-			lcd.print(amplitude * 5.0);
+			tft.print(amplitude * 5.0);
 		else
-			lcd.print(amplitude * 2.5);
+			tft.print(amplitude * 2.5);
 		//   Serial.println(amplitude);
 	}
 }
 
-void lcd_implementation_dac_template() {
-	lcd.fillScreen(ST7735_BLACK);
-	lcd.setTextColor(ST7735_GREEN);
-	lcd.setCursor(10, 30);
+void tft_implementation_dac_template() {
+	tft.fillScreen(ST7735_BLACK);
+	tft.setTextColor(ST7735_GREEN);
+	tft.setCursor(10, 30);
 	switch (encoderPosition + 1) {
 		case 1:
-			lcd.print(MSG_SINE);
+			tft.print(MSG_SINE);
 			break;
 		case 2:
-			lcd.print(MSG_SQUARE);
+			tft.print(MSG_SQUARE);
 			break;
 		case 3:
-			lcd.print(MSG_TRIANGULAR);
+			tft.print(MSG_TRIANGULAR);
 			break;
 		case 4:
-			lcd.print(MSG_SAWTOOTH_UP);
+			tft.print(MSG_SAWTOOTH_UP);
 			break;
 		case 5:
-			lcd.print(MSG_SAWTOOTH_DOWN);
+			tft.print(MSG_SAWTOOTH_DOWN);
 			break;
 		case 6:
-			lcd.print(MSG_ANALOG_OUT);
+			tft.print(MSG_ANALOG_OUT);
 			break;
 	}
 
-	lcd.setTextColor(ST7735_WHITE);
-	lcd.setCursor(10, 50);
-	lcd.print("Frequency (Hz):");
-	lcd.setCursor(10, 80);
-	lcd.print("Amplitude (V):");
-	lcd.setTextColor(ST7735_YELLOW, ST7735_BLACK);
-	lcd.setCursor(10, 60);
+	tft.setTextColor(ST7735_WHITE);
+	tft.setCursor(10, 50);
+	tft.print("Frequency (Hz):");
+	tft.setCursor(10, 80);
+	tft.print("Amplitude (V):");
+	tft.setTextColor(ST7735_YELLOW, ST7735_BLACK);
+	tft.setCursor(10, 60);
 	if (encoderPosition + 1 == 6)
-		lcd.print("-");
+		tft.print("-");
 	else
-		lcd.print(8.5 + 8.3 * (increment - 1));
-	lcd.print("  ");
-	lcd.setCursor(10, 90);
-	lcd.print(amplitude * 2.5);
+		tft.print(8.5 + 8.3 * (increment - 1));
+	tft.print("  ");
+	tft.setCursor(10, 90);
+	tft.print(amplitude * 2.5);
 }
 
 #endif

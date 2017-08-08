@@ -4,11 +4,11 @@ SerialMonitor::SerialMonitor() {
 }
 
 void SerialMonitor::Initalise(long baudRateSelect, uint8_t serialNum) {
-	lcd.setCursor(15, TOP_MARGIN);
-	lcd.setTextColor(ST7735_YELLOW, ST7735_BLACK);
-	lcd.print("Serial Monitor  ");
+	tft.setCursor(15, TOP_MARGIN);
+	tft.setTextColor(ST7735_YELLOW, ST7735_BLACK);
+	tft.print("Serial Monitor  ");
 	serialObject.ln =3;
-	lcd.print(baudRateSelect);
+	tft.print(baudRateSelect);
 	switch (serialNum) {
 		case 0:
 			Serial.begin(baudRateSelect);
@@ -32,17 +32,17 @@ void SerialMonitor::serial0PrintMsg() {
 		msg = Serial.readString();
 		l = lnCount(msg.length());
 		if (ln + l > 16) {
-			lcd.fillRect(0, 3 * CHAR_HEIGHT, LCD_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
-			lcd.setCursor(0, CHAR_HEIGHT * 3);
-			lcd.print("> ");
-			lcd.print(msg);
+			tft.fillRect(0, 3 * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
+			tft.setCursor(0, CHAR_HEIGHT * 3);
+			tft.print("> ");
+			tft.print(msg);
 			ln = 3;
 		}
-		lcd.fillRect(0, ln * CHAR_HEIGHT, LCD_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
-		lcd.setTextColor(ST7735_WHITE);
-		lcd.setCursor(0, CHAR_HEIGHT * ln);
-		lcd.print("> ");
-		lcd.print(msg);
+		tft.fillRect(0, ln * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
+		tft.setTextColor(ST7735_WHITE);
+		tft.setCursor(0, CHAR_HEIGHT * ln);
+		tft.print("> ");
+		tft.print(msg);
 		ln = ln + l;
 		msg = "";
 	}
@@ -53,17 +53,17 @@ void SerialMonitor::serial2PrintMsg() {
 		msg2 = Serial2.readString();
 		l = lnCount(msg2.length());
 		if (ln + l > 16) {
-			lcd.fillRect(0, 3 * CHAR_HEIGHT, LCD_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
-			lcd.setCursor(0, CHAR_HEIGHT * 3);
-			lcd.print("> ");
-			lcd.print(msg2);
+			tft.fillRect(0, 3 * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
+			tft.setCursor(0, CHAR_HEIGHT * 3);
+			tft.print("> ");
+			tft.print(msg2);
 			ln = 3;
 		}
-		lcd.fillRect(0, ln * CHAR_HEIGHT, LCD_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
-		lcd.setTextColor(ST7735_MAGENTA);
-		lcd.setCursor(0, CHAR_HEIGHT * ln);
-		lcd.print("> ");
-		lcd.print(msg2);
+		tft.fillRect(0, ln * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
+		tft.setTextColor(ST7735_MAGENTA);
+		tft.setCursor(0, CHAR_HEIGHT * ln);
+		tft.print("> ");
+		tft.print(msg2);
 		ln = ln + l;
 		msg2 = "";
 	}
@@ -74,16 +74,16 @@ void SerialMonitor::serial3PrintMsg() {
 		msg3 = Serial3.readString();
 		l = lnCount(msg3.length());
 		if (ln + l > 16) {
-			lcd.fillRect(0, 3 * CHAR_HEIGHT, LCD_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
-			lcd.setCursor(0, CHAR_HEIGHT * 3);
-			lcd.print("> ");
-			lcd.print(msg3);
+			tft.fillRect(0, 3 * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
+			tft.setCursor(0, CHAR_HEIGHT * 3);
+			tft.print("> ");
+			tft.print(msg3);
 			ln = 3;
 		}
-		lcd.fillRect(0, ln * CHAR_HEIGHT, LCD_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
-		lcd.setCursor(0, CHAR_HEIGHT * ln);
-		lcd.print("> ");
-		lcd.print(msg3);
+		tft.fillRect(0, ln * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * l + CHAR_HEIGHT, ST7735_BLACK);
+		tft.setCursor(0, CHAR_HEIGHT * ln);
+		tft.print("> ");
+		tft.print(msg3);
 		ln = ln + l;
 		msg3 = "";
 	}

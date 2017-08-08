@@ -4,8 +4,8 @@
 //IMPORTANT: uncomment the desired user defined functions and give desired name
 #define USER_DEFINED_FUNCTION_1 	"Eg: Blink"
 #define USER_DEFINED_FUNCTION_2 	"Eg: Blink Analog Input"
-#define USER_DEFINED_FUNCTION_3 	"User Def fun name 3"
-#define USER_DEFINED_FUNCTION_4 	"User Def fun name 4"
+#define USER_DEFINED_FUNCTION_3 	"Eg: TftSerial on A9"
+#define USER_DEFINED_FUNCTION_4 	"Eg: Plot A9"
 #define USER_DEFINED_FUNCTION_5 	"User Def fun name 5"
 
 

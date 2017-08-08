@@ -1,4 +1,4 @@
-//Derived from ultralcd.cpp in Marlin-RC used in 3D printers
+//Derived from ultratft.cpp in Marlin-RC used in 3D printers
 //Modified for http://evive.cc by Dhrupal R Shah and Akshat Agarwal
 #include "Screen.h"
 
@@ -7,9 +7,9 @@
 //#include "status.h"
 #include "screenImplementation.h"
 
-//#define LCD_UPDATE_INTERVAL 100
-#define LCD_NUM_LINES  11
-#define LCD_CLICKED (menuMove==2)
+//#define TFT_UPDATE_INTERVAL 100
+#define TFT_NUM_LINES  11
+#define TFT_CLICKED (menuMove==2)
 
 #ifndef ENCODER_STEPS_PER_MENU_ITEM
 	#define ENCODER_STEPS_PER_MENU_ITEM 1
@@ -26,46 +26,46 @@ unsigned long lastStatusUpdateTime = 0;
 
 typedef void (*menuFunc_t)();	// Function pointer to menu function.
 
-static void lcd_home_menu();
-static void lcd_control_menu();
-static void lcd_control_motors_menu();
-static void lcd_control_servos_menu();
-//static void lcd_control_pot_menu();
-//static void lcd_control_slidesw_menu();
-//static void lcd_control_tactilesw_menu();
-static void lcd_sensing_menu();
-//static void lcd_log_menu();
-static void lcd_pin_state();
-static void lcd_evive_oscilloscope();
-static void lcd_serial_select_menu();
-static void lcd_baud_menu();
-static void lcd_serial_monitor_setup();
-static void lcd_serial_monitor();
-static void lcd_pin_state_menu();
-static void lcd_dac_menu();
-static void lcd_user_def_menu();
-static void lcd_remove_function_menu();
-static void lcd_control_motor1();
-static void lcd_control_motor2();
-static void lcd_control_motor12();
-static void lcd_control_servo1();
-static void lcd_control_servo2();
-static void lcd_control_servo12();
-static void lcd_control_stepper();
-static void lcd_control_status();
-static void lcd_sensing_VV();
-static void lcd_sensing_VI();
-static void lcd_sensing_status_VV();
-static void lcd_sensing_status_VI();
-static void lcd_digital_pin_state_setup();
-static void lcd_analog_pin_state_setup();
-static void lcd_digital_pin_state();
-static void lcd_analog_pin_state();
-static void lcd_digi_ana_pin_state_setup();
-static void lcd_digi_ana_pin_state();
-static void lcd_dac_function_generator();
-static void lcd_touch_sensors_setup();
-static void lcd_touch_sensors();
+static void tft_home_menu();
+static void tft_control_menu();
+static void tft_control_motors_menu();
+static void tft_control_servos_menu();
+//static void tft_control_pot_menu();
+//static void tft_control_slidesw_menu();
+//static void tft_control_tactilesw_menu();
+static void tft_sensing_menu();
+//static void tft_log_menu();
+static void tft_pin_state();
+static void tft_evive_oscilloscope();
+static void tft_serial_select_menu();
+static void tft_baud_menu();
+static void tft_serial_monitor_setup();
+static void tft_serial_monitor();
+static void tft_pin_state_menu();
+static void tft_dac_menu();
+static void tft_user_def_menu();
+static void tft_remove_function_menu();
+static void tft_control_motor1();
+static void tft_control_motor2();
+static void tft_control_motor12();
+static void tft_control_servo1();
+static void tft_control_servo2();
+static void tft_control_servo12();
+static void tft_control_stepper();
+static void tft_control_status();
+static void tft_sensing_VV();
+static void tft_sensing_VI();
+static void tft_sensing_status_VV();
+static void tft_sensing_status_VI();
+static void tft_digital_pin_state_setup();
+static void tft_analog_pin_state_setup();
+static void tft_digital_pin_state();
+static void tft_analog_pin_state();
+static void tft_digi_ana_pin_state_setup();
+static void tft_digi_ana_pin_state();
+static void tft_dac_function_generator();
+static void tft_touch_sensors_setup();
+static void tft_touch_sensors();
 static void add_user_def_fun_1();
 static void add_user_def_fun_2();
 static void add_user_def_fun_3();
@@ -77,7 +77,7 @@ long baudrate[]={9600, 115200, 250000, 300,1200,2400,4800,19200,38400,57600,7488
 uint8_t serialSelect;
 
 #if ENABLED(SDSUPPORT)
-	static void lcd_sdcard_menu();
+	static void tft_sdcard_menu();
     static void menu_action_sdfile(const char* filename, char* longFilename);
     static void menu_action_sddirectory(const char* filename, char* longFilename);
 #endif
@@ -93,17 +93,17 @@ uint8_t currentMenuViewOffset=0;              /* scroll offset in the current me
 //moved menupress and menumove, lastKeyMoveTime to navkey.h. They are extern variables, so can be accessed.
 int8_t encoderPosition;
 uint8_t _menuItemNr;
-menuFunc_t currentMenu = lcd_home_menu; /* function pointer to the currently active menu, assgined to home menu. Default: home menu*/
-uint8_t lcdDrawUpdate = 2;                  /* Set to none-zero when the LCD needs to draw, decreased after every draw. 
-Set to 2 in LCD routines so the LCD gets at least 1 full redraw (first redraw is partial) */
+menuFunc_t currentMenu = tft_home_menu; /* function pointer to the currently active menu, assgined to home menu. Default: home menu*/
+uint8_t tftDrawUpdate = 2;                  /* Set to none-zero when the TFT needs to draw, decreased after every draw. 
+Set to 2 in TFT routines so the TFT gets at least 1 full redraw (first redraw is partial) */
 //prevMenu and prevEncoderPosition are used to store the previous menu location when editing settings.
 menuFunc_t prevMenu = NULL;
 uint8_t prevEncoderPosition;
-//Variables used when editing values (There are more in ultralcd, if ever edit menu is included)
+//Variables used when editing values (There are more in ultratft, if ever edit menu is included)
 menuFunc_t callbackFunc;
 
 /* Helper macros for menu */
-//_draw menu item is assigned values from 0 to (LCD_NUM_LINES -1), while _lineNr is the menu item numbers to be drawn
+//_draw menu item is assigned values from 0 to (TFT_NUM_LINES -1), while _lineNr is the menu item numbers to be drawn
 #define START_MENU() do { \
 		/*Serial.print("Start encoder position: ");\
 		Serial.println(encoderPosition);\
@@ -111,13 +111,13 @@ menuFunc_t callbackFunc;
 		Serial.println(currentMenuViewOffset);*/\
     if (encoderPosition < currentMenuViewOffset) currentMenuViewOffset = encoderPosition;\
     uint8_t _lineNr = currentMenuViewOffset;\
-    bool wasClicked = LCD_CLICKED; \
-    for(uint8_t _drawLineNr = 0; _drawLineNr < LCD_NUM_LINES; _drawLineNr++, _lineNr++) { \
+    bool wasClicked = TFT_CLICKED; \
+    for(uint8_t _drawLineNr = 0; _drawLineNr < TFT_NUM_LINES; _drawLineNr++, _lineNr++) { \
         _menuItemNr = 0;
 		
 #define MENU_ITEM(type, label, args...) do { \
     if (_menuItemNr == _lineNr) { \
-        if (lcdDrawUpdate) { \
+        if (tftDrawUpdate) { \
           /*Serial.print("encoder position: ");\
           Serial.println(encoderPosition);\
           Serial.print("Current menu view offset: ");\
@@ -132,14 +132,14 @@ menuFunc_t callbackFunc;
             if ((encoderPosition) == _menuItemNr) { \
             	/*Serial.print("Select Printed Menu item:");\
             	Serial.println(_menuItemNr);*/\
-				      lcd_implementation_text_and_background_color(ST7735_BLACK, ST7735_RED);\
-				      lcd_implementation_drawmenu_ ## type ## _selected (_drawLineNr, _label_pstr , ## args ); \
+				      tft_implementation_text_and_background_color(ST7735_BLACK, ST7735_RED);\
+				      tft_implementation_drawmenu_ ## type ## _selected (_drawLineNr, _label_pstr , ## args ); \
             }\
             else{\
             	/*Serial.print("Printed Menu item:");\
             	Serial.println(_menuItemNr);*/\
-				      lcd_implementation_text_and_background_color(ST7735_RED, ST7735_BLACK);\
-              lcd_implementation_drawmenu_ ## type (_drawLineNr, _label_pstr , ## args ); \
+				      tft_implementation_text_and_background_color(ST7735_RED, ST7735_BLACK);\
+              tft_implementation_drawmenu_ ## type (_drawLineNr, _label_pstr , ## args ); \
             }\
         }\
         if (wasClicked && (encoderPosition == _menuItemNr)) {\
@@ -155,7 +155,7 @@ menuFunc_t callbackFunc;
 #define MENU_ITEM_EDIT_CALLBACK(type, label, args...) MENU_ITEM(setting_edit_callback_ ## type, label, PSTR(label) , ## args )
 #define END_MENU() \
 		if (encoderPosition >= _menuItemNr) {\
-      lcdDrawUpdate=2; \
+      tftDrawUpdate=2; \
       encoderPosition = 0; \
       currentMenuViewOffset=0; \
       _lineNr=0;\
@@ -163,14 +163,14 @@ menuFunc_t callbackFunc;
 		else if (encoderPosition < 0) {\
     	/*Serial.print("End Else 0 encoder position: ");\
     	Serial.println(encoderPosition);*/\
-      lcdDrawUpdate=2; \
+      tftDrawUpdate=2; \
       encoderPosition=_menuItemNr-1; \
-      currentMenuViewOffset=(encoderPosition-LCD_NUM_LINES+1>0)?encoderPosition-LCD_NUM_LINES+1:currentMenuViewOffset;\
+      currentMenuViewOffset=(encoderPosition-TFT_NUM_LINES+1>0)?encoderPosition-TFT_NUM_LINES+1:currentMenuViewOffset;\
       _lineNr=0;\
     }\
-    else if (encoderPosition >= currentMenuViewOffset + LCD_NUM_LINES) { \
-      currentMenuViewOffset = encoderPosition  - LCD_NUM_LINES + 1; \
-      lcdDrawUpdate = 2; \
+    else if (encoderPosition >= currentMenuViewOffset + TFT_NUM_LINES) { \
+      currentMenuViewOffset = encoderPosition  - TFT_NUM_LINES + 1; \
+      tftDrawUpdate = 2; \
       _lineNr = currentMenuViewOffset - 1; \
       _drawLineNr = -1; } \
 		} } while(0)
@@ -185,35 +185,37 @@ void back_menu_process(menuFunc_t data)
 {
 	if(menuMove == 4)  
 	{
-//		lcd_quick_feedback();
+//		tft_quick_feedback();
 		menu_action_back(data);
+		tft_implementation_clear_menu();
 	}
 }
 		
 /**
  * General function to go directly to a menu
  */
-static void lcd_goto_menu(menuFunc_t menu, const bool feedback = false, const uint32_t encoder = 0) {
+static void tft_goto_menu(menuFunc_t menu, const bool feedback = false, const uint32_t encoder = 0) {
   if (currentMenu != menu) {
-    lcd_implementation_clear_menu();
-    lcdDrawUpdate=2;
+    tft_implementation_clear_menu();
+    tftDrawUpdate=2;
     currentMenu = menu;
     encoderPosition = encoder;
   }
 }
-//See function lcd_status_screen() for examples of how to handle pages without any menus on them
+//See function tft_status_screen() for examples of how to handle pages without any menus on them
 
-static void lcd_returnto_home()	{lcd_goto_menu(lcd_home_menu);}
+static void tft_returnto_home()	{tft_goto_menu(tft_home_menu);}
 	
-void lcd_update(){			//will be called always in loop
+void tft_update(){			//will be called always in loop
 	navKeyUpdate();       //Return values as per navigation key is pressed/move or not (This will update menuMove and menuPress)
 	if (menuMove != 0 || menuPress != 0){
-		lcdDrawUpdate = 1;
+		tftDrawUpdate = 1;
 		
 		if (menuPress == 1)
-		{	lcd_implementation_clear_menu();
-			currentMenu = lcd_home_menu;
+		{	tft_implementation_clear_menu();
+			currentMenu = tft_home_menu;
 			encoderPosition = 0;
+			actionRemoveAll();
 		}
 		else if(menuMove == 3)
 			encoderPosition++;
@@ -227,10 +229,10 @@ void lcd_update(){			//will be called always in loop
 		
 	}
     (*currentMenu)();	
-    //if (lcdDrawUpdate == 2)
-    //    lcd_implementation_clear_menu();					//implement in lcd implementation
-    if (lcdDrawUpdate)
-        lcdDrawUpdate--;
+    //if (tftDrawUpdate == 2)
+    //    tft_implementation_clear_menu();					//implement in tft implementation
+    if (tftDrawUpdate)
+        tftDrawUpdate--;
     if (millis()>lastStatusUpdateTime+MIN_TIME2)
     {
     	batteryUpdate();
@@ -242,256 +244,256 @@ void lcd_update(){			//will be called always in loop
 /*
 *"Home" menu
 */
-static void lcd_home_menu(){
+static void tft_home_menu(){
 	START_MENU();
-	MENU_ITEM(submenu, MSG_CONTROL, lcd_control_menu);
-	MENU_ITEM(submenu, MSG_SENSING, lcd_sensing_menu);
-	MENU_ITEM(function, MSG_OSCILLOSCOPE, lcd_evive_oscilloscope);
-	MENU_ITEM(submenu, MSG_SERIAL_MONITOR, lcd_serial_select_menu);
-  MENU_ITEM(submenu, MSG_PIN_STATE, lcd_pin_state_menu);
-  MENU_ITEM(submenu, MSG_DAC, lcd_dac_menu);
-  MENU_ITEM(function, MSG_CAP_TOUCH, lcd_touch_sensors_setup);
-  MENU_ITEM(submenu, MSG_USER_DEF, lcd_user_def_menu);
-//  MENU_ITEM(submenu, MSG_REMOVE_FUNCTION, lcd_remove_function_menu);
+	MENU_ITEM(submenu, MSG_CONTROL, tft_control_menu);
+	MENU_ITEM(submenu, MSG_SENSING, tft_sensing_menu);
+	MENU_ITEM(function, MSG_OSCILLOSCOPE, tft_evive_oscilloscope);
+	MENU_ITEM(submenu, MSG_SERIAL_MONITOR, tft_serial_select_menu);
+  MENU_ITEM(submenu, MSG_PIN_STATE, tft_pin_state_menu);
+  MENU_ITEM(submenu, MSG_DAC, tft_dac_menu);
+  MENU_ITEM(function, MSG_CAP_TOUCH, tft_touch_sensors_setup);
+  MENU_ITEM(submenu, MSG_USER_DEF, tft_user_def_menu);
+//  MENU_ITEM(submenu, MSG_REMOVE_FUNCTION, tft_remove_function_menu);
 	//add menu
   END_MENU();
 }
 	
-static void lcd_control_menu(){
+static void tft_control_menu(){
 	START_MENU();
-	MENU_ITEM(submenu, MSG_CONTROL_MOTOR, lcd_control_motors_menu);
-	MENU_ITEM(submenu, MSG_CONTROL_SERVO, lcd_control_servos_menu);
-	MENU_ITEM(function, MSG_CONTROL_STEPPER_MOTOR, lcd_control_stepper);
+	MENU_ITEM(submenu, MSG_CONTROL_MOTOR, tft_control_motors_menu);
+	MENU_ITEM(submenu, MSG_CONTROL_SERVO, tft_control_servos_menu);
+	MENU_ITEM(function, MSG_CONTROL_STEPPER_MOTOR, tft_control_stepper);
     END_MENU();	
-	EXIT_MENU(lcd_home_menu);
+	EXIT_MENU(tft_home_menu);
 }
 
-static void lcd_control_motors_menu(){
+static void tft_control_motors_menu(){
 	START_MENU();
-	MENU_ITEM(function, MSG_CONTROL_MOTOR1, lcd_control_motor1 );
-	MENU_ITEM(function, MSG_CONTROL_MOTOR2, lcd_control_motor2 );
-	MENU_ITEM(function, MSG_CONTROL_MOTOR12, lcd_control_motor12 );
+	MENU_ITEM(function, MSG_CONTROL_MOTOR1, tft_control_motor1 );
+	MENU_ITEM(function, MSG_CONTROL_MOTOR2, tft_control_motor2 );
+	MENU_ITEM(function, MSG_CONTROL_MOTOR12, tft_control_motor12 );
 	END_MENU();
-	EXIT_MENU(lcd_control_menu);
+	EXIT_MENU(tft_control_menu);
 }
 
-static void lcd_control_motor1(){
+static void tft_control_motor1(){
 	addMotor1();
-	lcd_control_status_template();
-	currentMenu = lcd_control_status;
+	tft_control_status_template();
+	currentMenu = tft_control_status;
 		//add this function to list of active functions
-	//lcd_implementation_ ..... ()				//display motors and servo	
+	//tft_implementation_ ..... ()				//display motors and servo	
 }
 
-static void lcd_control_motor2(){
+static void tft_control_motor2(){
 	addMotor2();
-	lcd_control_status_template();
-	currentMenu = lcd_control_status;
+	tft_control_status_template();
+	currentMenu = tft_control_status;
 	//add this function to list of active functions
-	//lcd_implementation_ ..... ()				//display motors and servo
+	//tft_implementation_ ..... ()				//display motors and servo
 }
 
-static void lcd_control_motor12(){
+static void tft_control_motor12(){
 	addMotor12();
-	lcd_control_status_template();
-	currentMenu = lcd_control_status;
+	tft_control_status_template();
+	currentMenu = tft_control_status;
 	//add this function to list of active functions
-	//lcd_implementation_ ..... ()				//display motors and servo	
+	//tft_implementation_ ..... ()				//display motors and servo	
 }
 
-static void lcd_control_servos_menu(){
+static void tft_control_servos_menu(){
 	START_MENU();
-	MENU_ITEM(function, MSG_CONTROL_SERVO1, lcd_control_servo1 );
-	MENU_ITEM(function, MSG_CONTROL_SERVO2, lcd_control_servo2 );
-	MENU_ITEM(function, MSG_CONTROL_SERVO12, lcd_control_servo12 );
+	MENU_ITEM(function, MSG_CONTROL_SERVO1, tft_control_servo1 );
+	MENU_ITEM(function, MSG_CONTROL_SERVO2, tft_control_servo2 );
+	MENU_ITEM(function, MSG_CONTROL_SERVO12, tft_control_servo12 );
 	END_MENU();
-	EXIT_MENU(lcd_control_menu);
+	EXIT_MENU(tft_control_menu);
 }
 
-static void lcd_control_servo1(){
+static void tft_control_servo1(){
 	addServo1();
-	lcd_control_status_template();
-	currentMenu = lcd_control_status;
+	tft_control_status_template();
+	currentMenu = tft_control_status;
 	//add this function to list of active functions
-	//lcd_implementation_ ..... ()				//display motors and servo
+	//tft_implementation_ ..... ()				//display motors and servo
 }
 
-static void lcd_control_servo2(){
+static void tft_control_servo2(){
 	addServo2();
-	lcd_control_status_template();
-	currentMenu = lcd_control_status;
+	tft_control_status_template();
+	currentMenu = tft_control_status;
 	//add this function to list of active functions
-	//lcd_implementation_ ..... ()				//display motors and servo
+	//tft_implementation_ ..... ()				//display motors and servo
 }
 
-static void lcd_control_servo12(){
+static void tft_control_servo12(){
 	addServo12();
-	lcd_control_status_template();
-	currentMenu = lcd_control_status;
+	tft_control_status_template();
+	currentMenu = tft_control_status;
 	//add this function to list of active functions
-	//lcd_implementation_ ..... ()				//display motors and servo
+	//tft_implementation_ ..... ()				//display motors and servo
 }
 
-static void lcd_control_stepper(){
+static void tft_control_stepper(){
 	addStepper();
-	lcd_control_status_template();
-	currentMenu = lcd_control_status;
-	//lcd_implementation_ ..... ()				//display motors and servo
+	tft_control_status_template();
+	currentMenu = tft_control_status;
+	//tft_implementation_ ..... ()				//display motors and servo
 }
 
-static void lcd_control_status(){
-	if(_MOTOR1_EN)	lcd_implementation_control_status_motor(0);
-	else if(_SERVO1_EN)	lcd_implementation_control_status_servo(0);
-	if(_MOTOR2_EN)	lcd_implementation_control_status_motor(1);
-	else if(_SERVO2_EN)	lcd_implementation_control_status_servo(1);
-	if(_STEPPER_EN)	lcd_implementation_control_status_stepper();
-	back_menu_process(lcd_control_menu);
+static void tft_control_status(){
+	if(_MOTOR1_EN)	tft_implementation_control_status_motor(0);
+	else if(_SERVO1_EN)	tft_implementation_control_status_servo(0);
+	if(_MOTOR2_EN)	tft_implementation_control_status_motor(1);
+	else if(_SERVO2_EN)	tft_implementation_control_status_servo(1);
+	if(_STEPPER_EN)	tft_implementation_control_status_stepper();
+	back_menu_process(tft_control_menu);
 }
 
-static void lcd_sensing_menu(){
+static void tft_sensing_menu(){
 	START_MENU();
-	MENU_ITEM(function, MSG_SENSING_PROBE_VV, lcd_sensing_VV );
-	MENU_ITEM(function, MSG_SENSING_PROBE_VI, lcd_sensing_VI );
+	MENU_ITEM(function, MSG_SENSING_PROBE_VV, tft_sensing_VV );
+	MENU_ITEM(function, MSG_SENSING_PROBE_VI, tft_sensing_VI );
 	END_MENU();
-	EXIT_MENU(lcd_control_menu);
+	EXIT_MENU(tft_control_menu);
 }
 
-static void lcd_sensing_VV(){
-	lcd_sensing_status_template(0);
-	currentMenu=lcd_sensing_status_VV;
+static void tft_sensing_VV(){
+	tft_sensing_status_template(0);
+	currentMenu=tft_sensing_status_VV;
 }
 
-static void lcd_sensing_status_VV(){
-	lcd_implementation_sensing_status(0);
+static void tft_sensing_status_VV(){
+	tft_implementation_sensing_status(0);
 }
 
-static void lcd_sensing_VI(){
-	lcd_sensing_status_template(1);
-	currentMenu=lcd_sensing_status_VI;
+static void tft_sensing_VI(){
+	tft_sensing_status_template(1);
+	currentMenu=tft_sensing_status_VI;
 }
 
-static void lcd_sensing_status_VI(){
-	lcd_implementation_sensing_status(1);
+static void tft_sensing_status_VI(){
+	tft_implementation_sensing_status(1);
 }
 
-static void lcd_evive_oscilloscope(){
+static void tft_evive_oscilloscope(){
   evive_oscilloscope();
   navKeyDettachInterruptMenuPress();
-  lcd_implementation_clear_full();
+  tft_implementation_clear_full();
   delay(MIN_TIME2);
   drawStatusBar();
-  lcdDrawUpdate = 2;
+  tftDrawUpdate = 2;
 }
 
-static void lcd_serial_select_menu(){
+static void tft_serial_select_menu(){
   START_MENU();
-  MENU_ITEM(submenu, MSG_SERIAL0, lcd_baud_menu);
-  MENU_ITEM(submenu, MSG_SERIAL2, lcd_baud_menu);
-  MENU_ITEM(submenu, MSG_SERIAL3, lcd_baud_menu);
+  MENU_ITEM(submenu, MSG_SERIAL0, tft_baud_menu);
+  MENU_ITEM(submenu, MSG_SERIAL2, tft_baud_menu);
+  MENU_ITEM(submenu, MSG_SERIAL3, tft_baud_menu);
   END_MENU();
-  EXIT_MENU(lcd_home_menu);
+  EXIT_MENU(tft_home_menu);
 }
 
-static void lcd_baud_menu(){
+static void tft_baud_menu(){
   serialSelect = prevEncoderPosition;
 #ifdef __DEBUG__
 	Serial.println(serialSelect);
 #endif
 	START_MENU();
-  MENU_ITEM(function, MSG_BAUD_9600, lcd_serial_monitor_setup);
-  MENU_ITEM(function, MSG_BAUD_115200, lcd_serial_monitor_setup);
-	MENU_ITEM(function, MSG_BAUD_250000, lcd_serial_monitor_setup);
-	MENU_ITEM(function, MSG_BAUD_300, lcd_serial_monitor_setup);
-  MENU_ITEM(function, MSG_BAUD_1200, lcd_serial_monitor_setup);
-  MENU_ITEM(function, MSG_BAUD_2400, lcd_serial_monitor_setup);
-  MENU_ITEM(function, MSG_BAUD_4800, lcd_serial_monitor_setup);
-  MENU_ITEM(function, MSG_BAUD_19200, lcd_serial_monitor_setup);
-  MENU_ITEM(function, MSG_BAUD_38400, lcd_serial_monitor_setup);
-  MENU_ITEM(function, MSG_BAUD_57600, lcd_serial_monitor_setup);
-  MENU_ITEM(function, MSG_BAUD_74880, lcd_serial_monitor_setup);
-  MENU_ITEM(function, MSG_BAUD_230400, lcd_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_9600, tft_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_115200, tft_serial_monitor_setup);
+	MENU_ITEM(function, MSG_BAUD_250000, tft_serial_monitor_setup);
+	MENU_ITEM(function, MSG_BAUD_300, tft_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_1200, tft_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_2400, tft_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_4800, tft_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_19200, tft_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_38400, tft_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_57600, tft_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_74880, tft_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_230400, tft_serial_monitor_setup);
   END_MENU();
-  EXIT_MENU(lcd_serial_monitor);
+  EXIT_MENU(tft_serial_monitor);
 }
 
-static void lcd_serial_monitor_setup(){
-//  currentMenu = lcd_baud_menu;
+static void tft_serial_monitor_setup(){
+//  currentMenu = tft_baud_menu;
 #ifdef __DEBUG__
 	Serial.println(encoderPosition);
 #endif
-	lcd_implementation_clear_menu();
+	tft_implementation_clear_menu();
   serialObject.Initalise(baudrate[encoderPosition], serialSelect);
-  currentMenu = lcd_serial_monitor;
+  currentMenu = tft_serial_monitor;
 }
 
-static void lcd_serial_monitor(){
-	lcd_implementation_serial_monitor();
-	back_menu_process(lcd_serial_select_menu);
+static void tft_serial_monitor(){
+	tft_implementation_serial_monitor();
+	back_menu_process(tft_serial_select_menu);
 }
 
-//static void lcd_log_menu(){
+//static void tft_log_menu(){
 //	//add code here
 //}
 
 /*Logic analyser */
-static void lcd_pin_state_menu(){
+static void tft_pin_state_menu(){
   START_MENU();
-  MENU_ITEM(function, MSG_DIGITAL_PIN_STATE, lcd_digital_pin_state_setup);
-  MENU_ITEM(function, MSG_ANALOG_PIN_STATE, lcd_analog_pin_state_setup);
-  MENU_ITEM(function, MSG_DIGI_ANA_PIN_STATE, lcd_digi_ana_pin_state_setup);
+  MENU_ITEM(function, MSG_DIGITAL_PIN_STATE, tft_digital_pin_state_setup);
+  MENU_ITEM(function, MSG_ANALOG_PIN_STATE, tft_analog_pin_state_setup);
+  MENU_ITEM(function, MSG_DIGI_ANA_PIN_STATE, tft_digi_ana_pin_state_setup);
   END_MENU();
-  EXIT_MENU(lcd_home_menu);
+  EXIT_MENU(tft_home_menu);
 }
 
-static void lcd_digital_pin_state_setup(){
-	lcd_implementation_clear_menu();
-  lcd_digital_pin_state_monitor_template();
-  currentMenu = lcd_digital_pin_state;
+static void tft_digital_pin_state_setup(){
+	tft_implementation_clear_menu();
+  tft_digital_pin_state_monitor_template();
+  currentMenu = tft_digital_pin_state;
 }
 
-static void lcd_analog_pin_state_setup(){
-	lcd_implementation_clear_menu();
-  lcd_analog_pin_state_monitor_template();
-  currentMenu = lcd_analog_pin_state;
+static void tft_analog_pin_state_setup(){
+	tft_implementation_clear_menu();
+  tft_analog_pin_state_monitor_template();
+  currentMenu = tft_analog_pin_state;
 }
 
-static void lcd_digi_ana_pin_state_setup(){
-	lcd_implementation_clear_menu();
-	lcd_digital_pin_state_monitor_template();
-	lcd_analog_pin_state_monitor_template();
-	currentMenu = lcd_digi_ana_pin_state;
+static void tft_digi_ana_pin_state_setup(){
+	tft_implementation_clear_menu();
+	tft_digital_pin_state_monitor_template();
+	tft_analog_pin_state_monitor_template();
+	currentMenu = tft_digi_ana_pin_state;
 }
 
-static void lcd_digital_pin_state(){
-	lcd_implementation_digital_pin_state();
-	back_menu_process(lcd_pin_state_menu);
+static void tft_digital_pin_state(){
+	tft_implementation_digital_pin_state();
+	back_menu_process(tft_pin_state_menu);
 }
 
-static void lcd_analog_pin_state(){
-	lcd_implementation_analog_pin_state();
-	back_menu_process(lcd_pin_state_menu);
+static void tft_analog_pin_state(){
+	tft_implementation_analog_pin_state();
+	back_menu_process(tft_pin_state_menu);
 }
 
-static void lcd_digi_ana_pin_state(){
-	lcd_implementation_digital_pin_state();
-	lcd_implementation_analog_pin_state();
-	back_menu_process(lcd_pin_state_menu);
+static void tft_digi_ana_pin_state(){
+	tft_implementation_digital_pin_state();
+	tft_implementation_analog_pin_state();
+	back_menu_process(tft_pin_state_menu);
 }
 
-static void lcd_dac_menu(){
+static void tft_dac_menu(){
 	START_MENU();
-	MENU_ITEM(function, MSG_SINE, lcd_dac_function_generator );
-	MENU_ITEM(function, MSG_SQUARE, lcd_dac_function_generator );
-	MENU_ITEM(function, MSG_TRIANGULAR, lcd_dac_function_generator );
-	MENU_ITEM(function, MSG_SAWTOOTH_UP, lcd_dac_function_generator );
-	MENU_ITEM(function, MSG_SAWTOOTH_DOWN, lcd_dac_function_generator );
-	MENU_ITEM(function, MSG_ANALOG_OUT, lcd_dac_function_generator );
+	MENU_ITEM(function, MSG_SINE, tft_dac_function_generator );
+	MENU_ITEM(function, MSG_SQUARE, tft_dac_function_generator );
+	MENU_ITEM(function, MSG_TRIANGULAR, tft_dac_function_generator );
+	MENU_ITEM(function, MSG_SAWTOOTH_UP, tft_dac_function_generator );
+	MENU_ITEM(function, MSG_SAWTOOTH_DOWN, tft_dac_function_generator );
+	MENU_ITEM(function, MSG_ANALOG_OUT, tft_dac_function_generator );
 	END_MENU();
-	EXIT_MENU(lcd_home_menu);
+	EXIT_MENU(tft_home_menu);
 }
 
-static void lcd_dac_function_generator(){
-	currentMenu = lcd_dac_menu;
+static void tft_dac_function_generator(){
+	currentMenu = tft_dac_menu;
 	Serial.println(encoderPosition);
 	navKeyAttachInterruptMenuPress();
 
@@ -504,7 +506,7 @@ static void lcd_dac_function_generator(){
   ADCSRA |= PS_32;    // set our own prescaler to 64
 
 	setFrequencyAmplitude();
-	lcd_implementation_dac_template();
+	tft_implementation_dac_template();
 
   DAC_ON_OFF = 1;
 
@@ -533,7 +535,7 @@ static void lcd_dac_function_generator(){
 		}
 	}
 	navKeyDettachInterruptMenuPress();
-	lcd_implementation_clear_full();
+	tft_implementation_clear_full();
   /*Normal Speed ADC*/
   // set up the ADC
   ADCSRA &= ~PS_32;  // remove bits set to speed up ADC
@@ -542,7 +544,7 @@ static void lcd_dac_function_generator(){
   ADCSRA |= PS_128;    // set prescaler to 128 as set by Arduino library
   delay(MIN_TIME5);
   drawStatusBar();
-  lcdDrawUpdate = 2;
+  tftDrawUpdate = 2;
 }
 
 void navKeyInterruptCenterPress(){
@@ -556,25 +558,25 @@ void navKeyInterruptCenterPress(){
 uint16_t lasttouched = 0;
 uint16_t currtouched = 0;
 
-static void lcd_touch_sensors_setup(){
-	lcd_implementation_clear_menu();
-	lcd.setCursor(40, TOP_MARGIN);
-	lcd.setTextColor(ST7735_CYAN, ST7735_BLACK);
-	lcd.println("Touch Sensors");
+static void tft_touch_sensors_setup(){
+	tft_implementation_clear_menu();
+	tft.setCursor(40, TOP_MARGIN);
+	tft.setTextColor(ST7735_CYAN, ST7735_BLACK);
+	tft.println("Touch Sensors");
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
   // Default address is 0x5A, if tied to 3.3V its 0x5B
   // If tied to SDA its 0x5C and if SCL then 0x5D
   if (!cap.begin(0x5A)) {
-  	lcd.print("ERROR");
+  	tft.print("ERROR");
     Serial.println("MPR121 not found, check wiring?");
     return;
   }
   Serial.println("MPR121 found!");
-  currentMenu = lcd_touch_sensors;
+  currentMenu = tft_touch_sensors;
 }
 
-static void lcd_touch_sensors(){
+static void tft_touch_sensors(){
     // put your user defined (custom) code here, to run repeatedly:
     currtouched = cap.touched();
 
@@ -582,15 +584,15 @@ static void lcd_touch_sensors(){
       // it if *is* touched and *wasnt* touched before, alert!
       if ((currtouched & _BV(i)) && !(lasttouched & _BV(i)) ) {
         Serial.print(i); Serial.println(" touched");
-        lcd.setCursor(i*7+(i/10)*8,50);
-        lcd.print(i+1);
+        tft.setCursor(i*7+(i/10)*8,50);
+        tft.print(i+1);
         tone(BUZZER,200+100*i,200);
       }
       // if it *was* touched and now *isnt*, alert!
       if (!(currtouched & _BV(i)) && (lasttouched & _BV(i)) ) {
         Serial.print(i); Serial.println(" released");
-        //lcd.setCursor(i*10,100);
-        lcd.fillRect(i*7+(i/10)*7,50, 7+((i+1)/10)*7, 7, ST7735_BLACK);
+        //tft.setCursor(i*10,100);
+        tft.fillRect(i*7+(i/10)*7,50, 7+((i+1)/10)*7, 7, ST7735_BLACK);
       }
     }
 
@@ -616,10 +618,14 @@ static void lcd_touch_sensors(){
 #endif
     // put a delay so it isn't overwhelming
     delay(100);
-    back_menu_process(lcd_home_menu);
+    back_menu_process(tft_home_menu);
 }
 
-static void lcd_user_def_menu(){
+static void tft_user_def_menu(){
+	if(tftDrawUpdate){
+		actionRemoveAll();
+		//tft_implementation_clear_menu();
+	}
 	START_MENU();
 	#ifdef USER_DEFINED_FUNCTION_1
 		MENU_ITEM(function, USER_DEFINED_FUNCTION_1, add_user_def_fun_1 );
@@ -638,7 +644,7 @@ static void lcd_user_def_menu(){
 	#endif	
 
 	END_MENU();
-	EXIT_MENU(lcd_home_menu);
+	EXIT_MENU(tft_home_menu);
 }
 
 static void add_user_def_fun_1(){
@@ -666,17 +672,17 @@ static void add_user_def_fun_5(){
 	remove_other_user_def_fun(5);
 }
 
-static void lcd_remove_function_menu(){
+/* static void tft_remove_function_menu(){
 //	START_MENU();
 //	for(uint8_t i = 0; i < actionFuncListNum; i++)
 //		MENU_ITEM(function, actionFuncList[i], actionRemove);
 //	END_MENU();
-//	EXIT_MENU(lcd_home_menu);
+//	EXIT_MENU(tft_home_menu);
 }
 
 static void actionRemove(){
 	actionRemove(encoderPosition+1);
-}
+} */
 
 
 /**
@@ -685,8 +691,8 @@ There are certain #defines for menu_edit type entries, if we end up including th
 /**
 *Menu actions
 */
-static void menu_action_back(menuFunc_t func) { lcd_goto_menu(func); }
-static void menu_action_submenu(menuFunc_t func) { lcd_goto_menu(func); }
+static void menu_action_back(menuFunc_t func) { tft_goto_menu(func); }
+static void menu_action_submenu(menuFunc_t func) { tft_goto_menu(func); }
 static void menu_action_function(menuFunc_t func) { (*func)(); }
 
 #if ENABLED(SDSUPPORT)
@@ -698,7 +704,7 @@ static void menu_action_function(menuFunc_t func) { (*func)(); }
     for (c = &cmd[4]; *c; c++) *c = tolower(*c);
     enqueuecommand(cmd);
     enqueuecommands_P(PSTR("M24"));
-    lcd_return_to_status();
+    tft_return_to_status();
   }
 
   static void menu_action_sddirectory(const char* filename, char* longFilename) {
@@ -715,14 +721,14 @@ static void menu_action_setting_edit_callback_bool(const char* pstr, bool* ptr, 
 }
 
 //Put a #define SCREENOFF which turns off all screen initialisations and everything for like a battery saver application
-bool lcd_clicked() { return LCD_CLICKED; }
+bool tft_clicked() { return TFT_CLICKED; }
 
-void lcd_init(){
+void tft_init(){
 //#ifdef __DEEBUG__
 	Serial.println("Setup loop ends");
 //#endif
-	pinMode(LCD_CS,OUTPUT);
-	lcd_implementation_init();
+	pinMode(TFT_CS,OUTPUT);
+	tft_implementation_init();
 }
 /*********************************/
 /** Number to string conversion **/

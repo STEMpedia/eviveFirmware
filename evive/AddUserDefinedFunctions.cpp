@@ -45,22 +45,48 @@ void loop_user_def_fun_2(){
 }
 
 // the setup function runs once when you select the user defined function
+TftSerial serialMonitorTFT = TftSerial();
 void setup_user_def_fun_3(){
 	// put your setup code here:
+  serialMonitorTFT.begin();
+  pinMode(A9,INPUT);
 }
 
 // the loop function runs continuously when you select the user defined function
 void loop_user_def_fun_3(){
 	// put your user defined (custom) code here, to run repeatedly:
+  //serialMonitorTFT.println(123.123);
+  
+	serialMonitorTFT.println(analogRead(A9));
+	delay(200);
+	//serialMonitorTFT.println();
+	//serialMonitorTFT.println("");
+	// delay(200);
+	serialMonitorTFT.print(analogRead(A10));
+	serialMonitorTFT.print(analogRead(A9));
+	serialMonitorTFT.print(analogRead(A8));
+	serialMonitorTFT.print(analogRead(A7));
+	serialMonitorTFT.print(analogRead(A10));
+	serialMonitorTFT.print(analogRead(A9));
+	serialMonitorTFT.print(analogRead(A8));
+	serialMonitorTFT.print(analogRead(A7));	
+	serialMonitorTFT.println();
+	delay(200);
+	//serialMonitorTFT.println();
+	delay(1000);
 }
 
 // the setup function runs once when you select the user defined function
+
+Plotter pl = Plotter();
 void setup_user_def_fun_4(){
   // put your setup code here:
+  pl.begin(1024);
 }
 // the loop function runs continuously when you select the user defined function
 void loop_user_def_fun_4(){
 	// put your user defined (custom) code here, to run repeatedly:
+  pl.draw(analogRead(A9));
 }
 
 // the setup function runs once when you select the user defined function

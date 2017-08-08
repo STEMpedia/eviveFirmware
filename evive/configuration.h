@@ -5,6 +5,9 @@
 
 #define SCREEN
 
+//The following macro needs to be uncommented to use/load evive as a library.
+//#define EVIVE_LIBRARY_MODE
+
 /* DEBUG MODE: comment this line to disable debugging messages over serial console*/
 //#define __DEBUG__
 
@@ -49,6 +52,43 @@ const unsigned char PS_16 = (1 << ADPS2);
 const unsigned char PS_32 = (1 << ADPS2) | (1 << ADPS0);
 const unsigned char PS_64 = (1 << ADPS2) | (1 << ADPS1);
 const unsigned char PS_128 = (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
+
+//TFT related macros
+//Comment (uncomment) based on the Screen Tab type of TFT Display, ie BLACKTAB or GREENTAB
+//Identify TFT, if you get Red color in place of Blue or vice versa.
+#define SCREEN_TAB INITR_GREENTAB
+//#define SCREEN_TAB INITR_BLACKTAB
+
+#ifndef ROW_HEIGHT
+#define ROW_HEIGHT      10
+#endif
+#ifndef CHAR_HEIGHT
+#define CHAR_HEIGHT     8
+#endif
+#ifndef CHAR_WIDTH
+#define CHAR_WIDTH      6
+#endif
+#ifndef LEFT_MARGIN
+#define LEFT_MARGIN     2
+#endif
+#ifndef RIGHT_MARGIN
+#define RIGHT_MARGIN    2
+#endif
+#ifndef TOP_MARGIN
+#define TOP_MARGIN      14
+#endif
+#ifndef BOTTOM_MARGIN
+#define BOTTOM_MARGIN   2
+#endif
+#ifndef TFT_HEIGHT
+#define TFT_HEIGHT      128
+#endif
+#ifndef TFT_WIDTH
+#define TFT_WIDTH       160
+#endif
+#ifndef TFT_WIDTH_BY_2
+#define TFT_WIDTH_BY_2  80
+#endif
 
 #endif
 

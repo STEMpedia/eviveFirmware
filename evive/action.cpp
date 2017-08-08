@@ -9,7 +9,7 @@
  * This is licensed under GNU GPL V3 [http://www.gnu.org/licenses/gpl.txt].
  * Written by Dhrupal R Shah for evive platform, Agilo Technologies.
  * Contact: support@evive.cc
- * Copyright (c) 2017 Agilo Technologies.  All rights reserved.
+ * Copyright (c) 2017 Agilo Research.  All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,6 +93,11 @@ void actionRemove(uint8_t removeFunNum) {
 		actionFuncList[i] = actionFuncList[i + 1];
 	actionFuncListNum--;
 }
+
+void actionRemoveAll() {
+	actionFuncListNum = 0;
+}
+
 void action() {
 //	Serial.println(actionFuncListNum);
 	for (uint8_t i = 0; i < actionFuncListNum; i++) {
