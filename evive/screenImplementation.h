@@ -96,7 +96,7 @@ void batteryUpdate() {
 static void drawStatusBar() {
 	tft.setTextColor(ST7735_CYAN);
 	tft.setCursor(0, 3);
-	tft.print("evive");
+	tft.print(F("evive"));
 	drawBattery();
 	batteryUpdate();
 	printVvr();
@@ -108,7 +108,7 @@ static void drawStatusBar() {
 
 static void printVvr() {
 	tft.setCursor(70, 3);
-	tft.print("VVR: ");
+	tft.print(F("VVR: "));
 }
 void vvrUpdate() {
 	vvr = analogRead(VARSUPPLYLEVEL);
@@ -143,7 +143,7 @@ static void tft_implementation_drawmenu_generic(uint8_t row, const char* pstr,
 	tft.print(post_char);
 }
 
-static void tft_implementation_drawmenu_setting_edit_generic(uint8_t row,
+/*static void tft_implementation_drawmenu_setting_edit_generic(uint8_t row,
     const char* pstr, char pre_char, char data) {
 	tft.setCursor(TOP_MARGIN + (row) * ROW_HEIGHT, LEFT_MARGIN);
 	tft.print(pre_char);
@@ -152,7 +152,7 @@ static void tft_implementation_drawmenu_setting_edit_generic(uint8_t row,
 	tft.setCursor((row - 1) * ROW_HEIGHT,
 	TFT_WIDTH - RIGHT_MARGIN - CHAR_WIDTH * 1);
 	tft.print(data);
-}
+}*/
 
 #define tft_implementation_drawmenu_setting_edit_int3_selected(row, pstr, pstr2, data, minValue, maxValue) tft_implementation_drawmenu_setting_edit_generic(row, pstr, '>', itostr3(*(data)))
 #define tft_implementation_drawmenu_setting_edit_int3(row, pstr, pstr2, data, minValue, maxValue) tft_implementation_drawmenu_setting_edit_generic(row, pstr, ' ', itostr3(*(data)))
@@ -234,7 +234,7 @@ void tft_implementation_control_status_servo(bool sec) {
 		//tft.drawLine(TFT_WIDTH_BY_2+40,105,TFT_WIDTH_BY_2+40+20*sin((-servo2.read()-90)*3.14/180),75+20*cos((-servo2.read()-90)*3.14/180),ST7735_GREEN);
 		tft.setCursor(TFT_WIDTH_BY_2 + 50, TOP_MARGIN + ROW_HEIGHT * 3);
 		tft.print(servo2.read());
-		tft.print("  ");
+		tft.print(F("  "));
 		//Serial.println("went in 2");
 		lastServoImplement = millis();
 	}
@@ -243,7 +243,7 @@ void tft_implementation_control_status_servo(bool sec) {
 		//tft.drawLine(40,105,40+20*sin((-servo1.read()-90)*3.14/180),75+20*cos((-servo1.read()-90)*3.14/180),ST7735_GREEN);
 		tft.setCursor(50, TOP_MARGIN + ROW_HEIGHT * 3);
 		tft.print(servo1.read());
-		tft.print("  ");
+		tft.print(F("  "));
 		//Serial.println("went in 1");
 		lastServoImplement = millis();
 	}
@@ -260,21 +260,21 @@ void tft_implementation_control_status_stepper() {
 	        {
 		tft.setTextColor(ST7735_RED, ST7735_BLACK);
 		tft.setCursor(50, TOP_MARGIN + ROW_HEIGHT * 7);
-		tft.print("\n Stepper Direction : ");
+		tft.print(F("\n Stepper Direction : "));
 		dir1 = digitalRead(SLIDESW1_D2);
 		dir2 = digitalRead(SLIDESW1_D1);
 		if (dir1) {
-			tft.print("Dir 1");
+			tft.print(F("Dir 1"));
 		} else if (dir2)
-			tft.print("Dir 2");
+			tft.print(F("Dir 2"));
 		else
-			tft.print("0   ");
-		tft.print("\n Speed :");
+			tft.print(F("0   "));
+		tft.print(F("\n Speed :"));
 		stps = digitalRead(TACTILESW1);
 		if (stps) {
-			tft.print("10x");
+			tft.print(F("10x"));
 		} else
-			tft.print("x  ");
+			tft.print(F("x  "));
 	}
 }
 
@@ -283,42 +283,42 @@ void tft_control_status_template() {
 	tft_implementation_clear_menu();
 	if (_MOTOR1_EN) {
 		tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 1);
-		tft.println("   Motor 1");
+		tft.println(F("   Motor 1"));
 		tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 3);
-		tft.println(" PWM:");
+		tft.println(F(" PWM:"));
 		tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 4);
-		tft.println(" States:");
+		tft.println(F(" States:"));
 		tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 5);
-		tft.println("  Dir1:");
+		tft.println(F("  Dir1:"));
 		tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 6);
-		tft.print("  Dir2:");
+		tft.print(F("  Dir2:"));
 	} else {
 		if (_SERVO1_EN) {
 			tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 1);
-			tft.println("   Servo 1");
+			tft.println(F("   Servo 1"));
 			//tft.drawBitmap(15, 50, semiCircle, 80, 25, ST7735_YELLOW);
 			tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 3);
-			tft.println("  Angle:");
+			tft.println(F("  Angle:"));
 		}
 	}
 	if (_MOTOR2_EN) {
 		tft.setCursor(TFT_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 1);
-		tft.println("   Motor 2");
+		tft.println(F("   Motor 2"));
 		tft.setCursor(TFT_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 3);
-		tft.println(" PWM:");
+		tft.println(F(" PWM:"));
 		tft.setCursor(TFT_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 4);
-		tft.println(" States:");
+		tft.println(F(" States:"));
 		tft.setCursor(TFT_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 5);
-		tft.print("  Dir1:");
+		tft.print(F("  Dir1:"));
 		tft.setCursor(TFT_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 6);
-		tft.print("  Dir2:");
+		tft.print(F("  Dir2:"));
 	} else {
 		if (_SERVO2_EN) {
 			tft.setCursor(TFT_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 1);
-			tft.println("   Servo 2");
+			tft.println(F("   Servo 2"));
 			//tft.drawBitmap(TFT_WIDTH_BY_2+15, 80, semiCircle, 50, 25, ST7735_YELLOW);
 			tft.setCursor(TFT_WIDTH_BY_2 + LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 3);
-			tft.println("  Angle:");
+			tft.println(F("  Angle:"));
 		}
 	}
 }
@@ -328,20 +328,19 @@ void tft_sensing_status_template(bool probeVIConfig) {
 	tft.setTextColor(ST7735_RED);
 	tft_implementation_clear_menu();
 	tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 1);
-	tft.println("   Probe V");
+	tft.println(F("   Probe V"));
 	tft.setCursor(LEFT_MARGIN, TOP_MARGIN + ROW_HEIGHT * 3);
-	tft.println("   V");
+	tft.println(F("   V"));
 	tft.setCursor(TFT_WIDTH_BY_2, TOP_MARGIN + ROW_HEIGHT * 1);
-	tft.println("  Probe I/V");
+	tft.println(F("  Probe I/V"));
 	tft.setCursor(TFT_WIDTH_BY_2, TOP_MARGIN + ROW_HEIGHT * 3);
 	if (probeVIConfig)
-		tft.print("  A");
+		tft.print(F("  A"));
 	else
-		tft.print("  V");
+		tft.print(F("  V"));
 }
 
 void tft_implementation_sensing_status(bool probeVIConfig) {
-	//Add code here
 	tft.setTextColor(ST7735_YELLOW, ST7735_BLACK);
 	tft.setCursor(LEFT_MARGIN + 19, TOP_MARGIN + ROW_HEIGHT * 2);
 	tft.print(ade791x_read_v1() / 1000.0, 2);
@@ -635,7 +634,7 @@ static void menuUpdate() {
 
 static void SendData() {
 	Serial.print(Rates[rate]);
-	Serial.println("/div (20 samples)");
+	Serial.println(F("/div (20 samples)"));
 	for (int i = 0; i < SAMPLES; i++) {
 		Serial.print(data[sample + 0][i] * MILLIVOL_per_dot[range0]);
 		Serial.print(" ");
@@ -696,7 +695,7 @@ static void PrintMenuItem(int item) {
 			break;
 		case 3:
 			tft.print(Rates[rate]);
-			tft.println("/D");
+			tft.println(F("/D"));
 			break;
 		case 4:
 			tft.println(TRIG_Modes[trig_mode]);
@@ -705,34 +704,34 @@ static void PrintMenuItem(int item) {
 			tft.println(trig_edge == TRIG_E_UP ? "UP" : "DN");
 			break;
 		case 6:
-			tft.print("01:");
+			tft.print(F("01:"));
 			tft.println(
 			    (ch0_off * MILLIVOL_per_dot[range0] > 1000) ?
 			        ch0_off * MILLIVOL_per_dot[range0] / 1000.0 :
 			        ch0_off * MILLIVOL_per_dot[range0]);
 			break;
 		case 7:
-			tft.print("02:");
+			tft.print(F("02:"));
 			tft.println(
 			    (ch1_off * MILLIVOL_per_dot[range1] > 1000) ?
 			        ch1_off * MILLIVOL_per_dot[range1] / 1000.0 :
 			        ch1_off * MILLIVOL_per_dot[range1]);
 			break;
 		case 8:
-			tft.print("TLV:");
+			tft.print(F("TLV:"));
 			tft.println(trig_lv);
 			break;
 		case 9:
-			tft.println("Send");
+			tft.println(F("Send"));
 			break;
 		case 10:
-			tft.println("---");     //save to SD card
+			tft.println(F("---"));     //save to SD card
 			break;
 		case 11:
 			if(updateData)
-				tft.print("stop");
+				tft.print(F("stop"));
 			else
-				tft.print("start");
+				tft.print(F("start"));
 			break;
 		default:
 			break;
@@ -807,6 +806,7 @@ static void ClearAndDrawDot(int i) {
 	DrawGrid(i);
 }
 
+/*
 static void DrawGraph() {
 	for (int x = 0; x < SAMPLES; x++) {
 		if (data[sample + 0][x] <= (TFT_GRPAH_MID_TOP_MARGIN - ch0_off + 1))
@@ -826,6 +826,7 @@ static void ClearGraph() {
 		tft.drawPixel(x, TFT_GRAPH_MID - data[clear + 1][x], BGCOLOR);
 	}
 }
+*/
 
 int ConvertMilliVoltToPixel(long value, byte range, int off) {
 	//Serial.println(value);
@@ -896,10 +897,7 @@ void evive_oscilloscope() {
 static void evive_oscilloscope_loop() {
 	//unsigned long t= micros();
 	
-	//Serial.println();
-	//int value =  ade791x_read_v1 ();
-	// value =  ade791x_read_vim ();
-	// ade791x_read_i();
+	//To get PWM on Pin 5 to test the oscilloscope
 	//analogWrite(5,analogRead(A9)/4);
 	if (trig_mode != TRIG_SCAN) {
 		unsigned long st = millis();
@@ -950,7 +948,7 @@ if(updateData){// sample and draw depending on the sampling rate
 			sample = 0;
 
 		if (rate == 0) { // full speed, channel 0 only
-			unsigned long st = millis();
+//			unsigned long st = millis();
 			for (int i = 0; i < SAMPLES; i++) {
 				data[sample + 0][i] = ConvertMilliVoltToPixel(ade791x_read_v1(), range0,
 				    ch0_off);
@@ -960,7 +958,7 @@ if(updateData){// sample and draw depending on the sampling rate
 				data[sample + 1][i] = 0;
 //       Serial.println(millis()-st);
 		} else if (rate == 1) { // full speed, channel 1 only
-			unsigned long st = millis();
+//			unsigned long st = millis();
 			for (int i = 0; i < SAMPLES; i++) {
 				if (range1 < 9)
 					data[sample + 1][i] = ConvertMilliVoltToPixel(ade791x_read_vim(),
@@ -973,7 +971,7 @@ if(updateData){// sample and draw depending on the sampling rate
 				data[sample + 0][i] = 0;
 //      Serial.println(millis()-st);
 		} else if (rate == 2) { // full speed, dual channel
-			unsigned long st = millis();
+//			unsigned long st = millis();
 			for (int i = 0; i < SAMPLES; i++) {
 				data[sample + 0][i] = ConvertMilliVoltToPixel(ade791x_read_v1(), range0,
 				    ch0_off);
@@ -989,7 +987,7 @@ if(updateData){// sample and draw depending on the sampling rate
 		} else if (rate >= 3 && rate <= 5) { // .5ms, 1ms or 2ms sampling
 			const unsigned long r_[] = { 5000 / DOTS_DIV, 10000 / DOTS_DIV, 20000
 			    / DOTS_DIV };
-			unsigned long st0 = millis();
+//			unsigned long st0 = millis();
 			unsigned long st = micros();
 			unsigned long r = r_[rate - 3];
 			//DO NOT ADD ANY STATEMENT INSIDE FOR LOOP
@@ -1055,7 +1053,7 @@ if(updateData){// sample and draw depending on the sampling rate
 			//v=ade791x_read_v1();
 			//Serial.println(v);
 			//Serial.println(ade791x_read_v1());
-			ade791x_read_v1();
+			//ade791x_read_v1();				//An extra execution of read operation thing make it work (some mysterious thing happening, but it works)
 			data[sample + 0][i] = ConvertMilliVoltToPixel1(ade791x_read_v1(), range0,
 			    ch0_off);
 			;
@@ -1084,7 +1082,7 @@ if(updateData){// sample and draw depending on the sampling rate
 	else
 		Start = 1;
 	//Serial.println(micros()-t);
-	//Serial.println(updateData);
+	Serial.println(freeRam());
 }
 
 //-------------mini oscilloscope/end--------------//
@@ -1209,7 +1207,7 @@ static void turnOffPWM(uint8_t timer) {
 	}
 }
 
-int ligitalRead(uint8_t pin) {
+bool ligitalRead(uint8_t pin) {
 
 	uint8_t timer = digitalPinToTimer(pin);
 	uint8_t bit = digitalPinToBitMask(pin);
@@ -1234,7 +1232,7 @@ int ligitalRead(uint8_t pin) {
 void tft_digital_pin_state_monitor_template() {
 	tft.setCursor(0, 16);
 	tft.setTextColor(ST7735_RED);
-	tft.print("DIGITAL PINS");
+	tft.print(F("DIGITAL PINS"));
 	tft.setCursor(0, 24);
 	uint8_t pinNumber;
 	tft.setTextColor(ST7735_GREEN, ST7735_BLACK);
@@ -1255,7 +1253,7 @@ void tft_analog_pin_state_monitor_template() {
 	tft.setCursor(0, 80);
 	tft.setTextColor(ST7735_RED);
 	tft.setTextWrap(0);
-	tft.print("ANALOG PINS");
+	tft.print(F("ANALOG PINS"));
 	tft.setTextColor(ST7735_GREEN, ST7735_BLACK);
 	tft.setCursor(118, 80);
 	tft.print(0);
@@ -1299,10 +1297,10 @@ void displayFrequenccyAmplitude() {
 	if (oldIncrement != increment) {
 		tft.setCursor(10, 60);
 		if (encoderPosition == 5)
-			tft.print("-");
+			tft.print(F("-"));
 		else
 			tft.print(8.5 + 8.3 * (increment - 1));
-		tft.print("  ");
+		tft.print(F("  "));
 		//   Serial.println(increment);
 	}
 	if (oldAmplitude != amplitude) {
@@ -1342,16 +1340,16 @@ void tft_implementation_dac_template() {
 
 	tft.setTextColor(ST7735_WHITE);
 	tft.setCursor(10, 50);
-	tft.print("Frequency (Hz):");
+	tft.print(F("Frequency (Hz):"));
 	tft.setCursor(10, 80);
-	tft.print("Amplitude (V):");
+	tft.print(F("Amplitude (V):"));
 	tft.setTextColor(ST7735_YELLOW, ST7735_BLACK);
 	tft.setCursor(10, 60);
 	if (encoderPosition + 1 == 6)
-		tft.print("-");
+		tft.print(F("-"));
 	else
 		tft.print(8.5 + 8.3 * (increment - 1));
-	tft.print("  ");
+	tft.print(F("  "));
 	tft.setCursor(10, 90);
 	tft.print(amplitude * 2.5);
 }

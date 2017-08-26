@@ -6,7 +6,7 @@ SerialMonitor::SerialMonitor() {
 void SerialMonitor::Initalise(long baudRateSelect, uint8_t serialNum) {
 	tft.setCursor(15, TOP_MARGIN);
 	tft.setTextColor(ST7735_YELLOW, ST7735_BLACK);
-	tft.print("Serial Monitor  ");
+	tft.print(F("Serial Monitor  "));
 	serialObject.lineNumCurrent =3;
 	tft.print(baudRateSelect);
 	switch (serialNum) {
@@ -35,14 +35,14 @@ void SerialMonitor::serial0PrintMsg() {
 			tft.fillRect(0, lineNumCurrent * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * (16-lineNumCurrent) + CHAR_HEIGHT, ST7735_BLACK);
 			tft.fillRect(0, 3 * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * linesMsg + CHAR_HEIGHT, ST7735_BLACK);
 			tft.setCursor(0, CHAR_HEIGHT * 3);
-			tft.print("> ");
+			tft.print(F("> "));
 			tft.print(msg);
 			lineNumCurrent = 3;
 		}
 		tft.fillRect(0, lineNumCurrent * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * linesMsg + CHAR_HEIGHT, ST7735_BLACK);
 		tft.setTextColor(ST7735_WHITE);
 		tft.setCursor(0, CHAR_HEIGHT * lineNumCurrent);
-		tft.print("> ");
+		tft.print(F("> "));
 		tft.print(msg);
 		lineNumCurrent = lineNumCurrent + linesMsg;
 		msg = "";
@@ -57,14 +57,14 @@ void SerialMonitor::serial2PrintMsg() {
 			tft.fillRect(0, lineNumCurrent * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * (16-lineNumCurrent) + CHAR_HEIGHT, ST7735_BLACK);	
 			tft.fillRect(0, 3 * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * linesMsg + CHAR_HEIGHT, ST7735_BLACK);
 			tft.setCursor(0, CHAR_HEIGHT * 3);
-			tft.print("> ");
+			tft.print(F("> "));
 			tft.print(msg2);
 			lineNumCurrent = 3;
 		}
 		tft.fillRect(0, lineNumCurrent * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * linesMsg + CHAR_HEIGHT, ST7735_BLACK);
 		tft.setTextColor(ST7735_MAGENTA);
 		tft.setCursor(0, CHAR_HEIGHT * lineNumCurrent);
-		tft.print("> ");
+		tft.print(F("> "));
 		tft.print(msg2);
 		lineNumCurrent = lineNumCurrent + linesMsg;
 		msg2 = "";
@@ -79,13 +79,13 @@ void SerialMonitor::serial3PrintMsg() {
 			tft.fillRect(0, lineNumCurrent * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * (16-lineNumCurrent) + CHAR_HEIGHT, ST7735_BLACK);
 			tft.fillRect(0, 3 * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * linesMsg + CHAR_HEIGHT, ST7735_BLACK);
 			tft.setCursor(0, CHAR_HEIGHT * 3);
-			tft.print("> ");
+			tft.print(F("> "));
 			tft.print(msg3);
 			lineNumCurrent = 3;
 		}
 		tft.fillRect(0, lineNumCurrent * CHAR_HEIGHT, TFT_WIDTH, CHAR_HEIGHT * linesMsg + CHAR_HEIGHT, ST7735_BLACK);
 		tft.setCursor(0, CHAR_HEIGHT * lineNumCurrent);
-		tft.print("> ");
+		tft.print(F("> "));
 		tft.print(msg3);
 		lineNumCurrent = lineNumCurrent + linesMsg;
 		msg3 = "";

@@ -46,7 +46,7 @@
  */
 #include "action.h"
 
-actionFunc actionFuncList[10] = { };//maximum 10 functions, mofidy to increase size
+actionFunc actionFuncList[7] = { };//maximum 7 functions, mofidy to increase size
 uint8_t actionFuncListNum = 0;			//must be greater than or equals to 0
 
 //for avoiding multiple includes of same function for multiple times in one loop

@@ -41,15 +41,15 @@
 class Potentiometer {
 	public:
 		Potentiometer(byte potPin);
-		Potentiometer(byte potPin, uint16_t sectors);
+		Potentiometer(byte potPin, uint8_t sectors);	//Maximum 255 Sectors
 		uint16_t getValue();
 		uint16_t hadValue();
-		uint16_t getSector();
-		void setSectors(uint16_t sectors);
+		uint8_t getSector();
+		void setSectors(uint8_t sectors);							//Maximum 255 Sectors
 	private:
 		byte _pin;
 		uint16_t _value;
-		uint16_t _sectors;
+		uint8_t _sectors;
 };
 
 extern Potentiometer pot1, pot2;

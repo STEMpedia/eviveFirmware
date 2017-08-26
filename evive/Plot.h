@@ -1,3 +1,6 @@
+/*
+ * Written By Harsh Chittora
+ */
 #ifndef PLOT_H
 #define PLOT_H
 //#include <arduino.h>
@@ -9,13 +12,6 @@
 //#include <SPI.h>
 #include "evive.h"
 //#include "screenImplementation.h"
-
-/*
-
-*/
-
-
-
 
 class Plotter
 {

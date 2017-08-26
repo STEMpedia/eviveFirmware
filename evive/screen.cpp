@@ -44,6 +44,7 @@ static void tft_serial_monitor();
 static void tft_pin_state_menu();
 static void tft_dac_menu();
 static void tft_user_def_menu();
+static void tft_examples_menu();
 static void tft_remove_function_menu();
 static void tft_control_motor1();
 static void tft_control_motor2();
@@ -71,6 +72,11 @@ static void add_user_def_fun_2();
 static void add_user_def_fun_3();
 static void add_user_def_fun_4();
 static void add_user_def_fun_5();
+static void add_example_1();
+static void add_example_2();
+static void add_example_3();
+static void add_example_4();
+static void add_example_5();
 static void actionRemove();
 
 long baudrate[]={9600, 115200, 250000, 300,1200,2400,4800,19200,38400,57600,74880,230400};
@@ -204,7 +210,7 @@ static void tft_goto_menu(menuFunc_t menu, const bool feedback = false, const ui
 }
 //See function tft_status_screen() for examples of how to handle pages without any menus on them
 
-static void tft_returnto_home()	{tft_goto_menu(tft_home_menu);}
+//static void tft_returnto_home()	{tft_goto_menu(tft_home_menu);}
 	
 void tft_update(){			//will be called always in loop
 	navKeyUpdate();       //Return values as per navigation key is pressed/move or not (This will update menuMove and menuPress)
@@ -254,7 +260,9 @@ static void tft_home_menu(){
   MENU_ITEM(submenu, MSG_DAC, tft_dac_menu);
   MENU_ITEM(function, MSG_CAP_TOUCH, tft_touch_sensors_setup);
   MENU_ITEM(submenu, MSG_USER_DEF, tft_user_def_menu);
-//  MENU_ITEM(submenu, MSG_REMOVE_FUNCTION, tft_remove_function_menu);
+#ifdef INCLUDE_EXAMPLES
+  MENU_ITEM(submenu, MSG_EXAMPLES, tft_examples_menu);
+#endif
 	//add menu
   END_MENU();
 }
@@ -355,7 +363,7 @@ static void tft_sensing_menu(){
 	MENU_ITEM(function, MSG_SENSING_PROBE_VV, tft_sensing_VV );
 	MENU_ITEM(function, MSG_SENSING_PROBE_VI, tft_sensing_VI );
 	END_MENU();
-	EXIT_MENU(tft_control_menu);
+	EXIT_MENU(tft_home_menu);
 }
 
 static void tft_sensing_VV(){
@@ -365,6 +373,7 @@ static void tft_sensing_VV(){
 
 static void tft_sensing_status_VV(){
 	tft_implementation_sensing_status(0);
+	back_menu_process(tft_sensing_menu);
 }
 
 static void tft_sensing_VI(){
@@ -374,6 +383,7 @@ static void tft_sensing_VI(){
 
 static void tft_sensing_status_VI(){
 	tft_implementation_sensing_status(1);
+	back_menu_process(tft_sensing_menu);
 }
 
 static void tft_evive_oscilloscope(){
@@ -401,14 +411,14 @@ static void tft_baud_menu(){
 #endif
 	START_MENU();
   MENU_ITEM(function, MSG_BAUD_9600, tft_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_38400, tft_serial_monitor_setup);
   MENU_ITEM(function, MSG_BAUD_115200, tft_serial_monitor_setup);
-	MENU_ITEM(function, MSG_BAUD_250000, tft_serial_monitor_setup);
-	MENU_ITEM(function, MSG_BAUD_300, tft_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_250000, tft_serial_monitor_setup);
+  MENU_ITEM(function, MSG_BAUD_300, tft_serial_monitor_setup);
   MENU_ITEM(function, MSG_BAUD_1200, tft_serial_monitor_setup);
   MENU_ITEM(function, MSG_BAUD_2400, tft_serial_monitor_setup);
   MENU_ITEM(function, MSG_BAUD_4800, tft_serial_monitor_setup);
   MENU_ITEM(function, MSG_BAUD_19200, tft_serial_monitor_setup);
-  MENU_ITEM(function, MSG_BAUD_38400, tft_serial_monitor_setup);
   MENU_ITEM(function, MSG_BAUD_57600, tft_serial_monitor_setup);
   MENU_ITEM(function, MSG_BAUD_74880, tft_serial_monitor_setup);
   MENU_ITEM(function, MSG_BAUD_230400, tft_serial_monitor_setup);
@@ -621,6 +631,7 @@ static void tft_touch_sensors(){
     back_menu_process(tft_home_menu);
 }
 
+
 static void tft_user_def_menu(){
 	if(tftDrawUpdate){
 		actionRemoveAll();
@@ -672,6 +683,58 @@ static void add_user_def_fun_5(){
 	remove_other_user_def_fun(5);
 }
 
+#ifdef INCLUDE_EXAMPLES
+static void tft_examples_menu(){
+	if(tftDrawUpdate){
+		actionRemoveAll();
+		//tft_implementation_clear_menu();
+	}
+	START_MENU();
+	#ifdef EXAMPLE_1
+		MENU_ITEM(function, EXAMPLE_1, add_example_1 );
+	#endif
+	#ifdef EXAMPLE_2
+		MENU_ITEM(function, EXAMPLE_2, add_example_2 );
+	#endif
+	#ifdef EXAMPLE_3
+		MENU_ITEM(function, EXAMPLE_3, add_example_3 );
+	#endif
+	#ifdef EXAMPLE_4
+		MENU_ITEM(function, EXAMPLE_4, add_example_4 );
+	#endif
+	#ifdef EXAMPLE_5
+		MENU_ITEM(function, EXAMPLE_5, add_example_5 );
+	#endif
+
+	END_MENU();
+	EXIT_MENU(tft_home_menu);
+}
+
+static void add_example_1(){
+	add_example(1);
+	remove_other_example(1);
+}
+
+static void add_example_2(){
+	add_example(2);
+	remove_other_example(2);
+}
+
+static void add_example_3(){
+	add_example(3);
+	remove_other_example(3);
+}
+
+static void add_example_4(){
+	add_example(4);
+	remove_other_example(4);
+}
+
+static void add_example_5(){
+	add_example(5);
+	remove_other_example(5);
+}
+#endif
 /* static void tft_remove_function_menu(){
 //	START_MENU();
 //	for(uint8_t i = 0; i < actionFuncListNum; i++)
@@ -725,14 +788,17 @@ bool tft_clicked() { return TFT_CLICKED; }
 
 void tft_init(){
 //#ifdef __DEEBUG__
-	Serial.println("Setup loop ends");
+	Serial.println(F("Setup ends"));
 //#endif
 	pinMode(TFT_CS,OUTPUT);
 	tft_implementation_init();
 }
-/*********************************/
-/** Number to string conversion **/
-/*********************************/
+
+/*
+
+*******************************
+* Number to string conversion *
+*******************************
 
 char conv[8];
 
@@ -985,5 +1051,6 @@ char* ftostr52(const float& x) {
   conv[7] = 0;
   return conv;
 }
+*/
 
 #endif	//SCREEN

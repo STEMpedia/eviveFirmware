@@ -1,4 +1,4 @@
-/*library tested 30 NOVEMBER
+/*
  Made by Deep Goel and Kartik Gupta
  */
 
@@ -9,12 +9,12 @@ Motor::Motor()									//constructor
 	attachMotor(-1, -1, -1);
 }
 
-Motor::Motor(int Dir1, int Dir2, int Pwm)		// parametrised constructor
-    {
+Motor::Motor(uint8_t Dir1, uint8_t Dir2, uint8_t Pwm)		// parametrised constructor
+{
 	attachMotor(Dir1, Dir2, Pwm);
 }
 
-void Motor::attachMotor(int Dir1, int Dir2, int Pwm) {
+void Motor::attachMotor(uint8_t Dir1, uint8_t Dir2, uint8_t Pwm) {
 	pwm_pin = Pwm;
 	dir1_pin = Dir1;
 	dir2_pin = Dir2;
@@ -31,7 +31,7 @@ void Motor::attachMotor(int Dir1, int Dir2, int Pwm) {
 }
 
 void Motor::moveMotor(int Pwm)			//+ve for CW and -ve for CCW.
-    {
+{
 
 	if (Pwm >= 0) {
 		digitalWrite(dir1_pin, HIGH);
@@ -41,26 +41,28 @@ void Motor::moveMotor(int Pwm)			//+ve for CW and -ve for CCW.
 		digitalWrite(dir2_pin, HIGH);
 	}
 	changePWM(Pwm);
-//	Serial.println("PWM=");
-//	Serial.print(Pwm);
+#ifdef __DEBUG__
+		Serial.println(F("PWM="));
+		Serial.print(Pwm);
+#endif
 }
 
-void Motor::moveMotor(int Dir1, int Dir2, int Pwm) {
+void Motor::moveMotor(bool Dir1, bool Dir2, int Pwm) {
 	dir1 = Dir1;
 	dir2 = Dir2;
 	digitalWrite(dir1_pin, Dir1);
 	digitalWrite(dir2_pin, Dir2);
-//	if(Dir1==1 && Dir2==0)
-//		moveMotor(Pwm);
-//	if(Dir1==0 && Dir2==1)
-//		moveMotor(-Pwm);
+	//	if(Dir1==1 && Dir2==0)
+	//		moveMotor(Pwm);
+	//	if(Dir1==0 && Dir2==1)
+	//		moveMotor(-Pwm);
 	changePWM(Pwm);
-
 }
 
 void Motor::stopMotor() 				//By default stop motor will lock motor
 {
 	lockMotor();
+	//freeMotor()						//Uncomment freeMotor if required
 }
 
 void Motor::lockMotor() {
@@ -78,12 +80,12 @@ void Motor::freeMotor() {
 }
 
 void Motor::setMeanSpeed(int Speed)	//Sets the meanspeed with which motor moves when speed=100%
-    {
+{
 	mean_speed = Speed;
 }
 
 void Motor::setMotorSpeed(int Speed)//+ve for CW and -ve for CCW. Speed in percentage of meanspeed
-    {
+{
 	if (Speed > 100)
 		Speed = 100;
 	if (Speed < -100)
@@ -93,7 +95,7 @@ void Motor::setMotorSpeed(int Speed)//+ve for CW and -ve for CCW. Speed in perce
 	moveMotor(Speed * mean_speed / 100);
 }
 
-void Motor::setMotorSpeed(int Dir1, int Dir2, int Speed) {
+void Motor::setMotorSpeed(bool Dir1, bool Dir2, int Speed) {
 	if (Speed > 100)
 		Speed = 100;
 	if (Speed < -100)
@@ -103,13 +105,13 @@ void Motor::setMotorSpeed(int Dir1, int Dir2, int Speed) {
 }
 
 void Motor::changePWM(int Pwm)					//Just to change the PWM
-    {
+{
 	pwm = Pwm > 255 ? 255 : (Pwm < -255 ? -255 : Pwm);
 	analogWrite(pwm_pin, abs(pwm));
 }
 
 void Motor::changeSpeed(int Speed)		//Just to change the speed (In percentage)
-    {
+{
 	if (Speed > 100)
 		Speed = 100;
 	if (Speed < -100)
@@ -183,15 +185,15 @@ Motor motor1, motor2;
 
 void controlMotor() {
 #ifdef __DEBUG__
-	Serial.println("MotorCtrl");
+	Serial.println(F("MotorCtrl"));
 #endif
 	if (_MOTOR1_EN) {
 		motor1.moveMotor(slideSw1.readPin1(), slideSw1.readPin2(),
-		    pot1.getValue() / 4);
+				pot1.getValue() / 4);
 	}
 	if (_MOTOR2_EN) {
 		motor2.moveMotor(slideSw2.readPin1(), slideSw2.readPin2(),
-		    pot2.getValue() / 4);
+				pot2.getValue() / 4);
 	}
 }
 

@@ -14,11 +14,12 @@
 #define BAUDRATE 250000
 #define SERIAL_TIME_OUT 10
 
+#ifndef SCREEN_TAB
 //Comment (uncomment) based on the Screen Tab type of TFT Display, ie BLACKTAB or GREENTAB
 //Identify TFT, if you get Red color in place of Blue or vice versa.
 #define SCREEN_TAB INITR_GREENTAB
 //#define SCREEN_TAB INITR_BLACKTAB
-
+#endif
 
 //////////macros////////////////
 // Macros to support option testing

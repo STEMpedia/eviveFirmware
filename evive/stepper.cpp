@@ -87,7 +87,7 @@ Stepper::Stepper(){
  * two-wire constructor.
  * Sets which wires should control the motor.
  */
-Stepper::Stepper(int number_of_steps, int motor_pin_1, int motor_pin_2)
+Stepper::Stepper(uint16_t number_of_steps, uint8_t motor_pin_1, uint8_t motor_pin_2)
 {
   this->step_number = 0;    // which step the motor is on
   this->direction = 0;      // motor direction
@@ -116,8 +116,8 @@ Stepper::Stepper(int number_of_steps, int motor_pin_1, int motor_pin_2)
  *   constructor for four-pin version
  *   Sets which wires should control the motor.
  */
-Stepper::Stepper(int number_of_steps, int motor_pin_1, int motor_pin_2,
-                                      int motor_pin_3, int motor_pin_4)
+Stepper::Stepper(uint16_t number_of_steps, uint8_t motor_pin_1, uint8_t motor_pin_2,
+                                      uint8_t motor_pin_3, uint8_t motor_pin_4)
 {
   this->step_number = 0;    // which step the motor is on
   this->direction = 0;      // motor direction
@@ -146,9 +146,9 @@ Stepper::Stepper(int number_of_steps, int motor_pin_1, int motor_pin_2,
  *   constructor for five phase motor with five wires
  *   Sets which wires should control the motor.
  */
-Stepper::Stepper(int number_of_steps, int motor_pin_1, int motor_pin_2,
-                                      int motor_pin_3, int motor_pin_4,
-                                      int motor_pin_5)
+Stepper::Stepper(uint16_t number_of_steps, uint8_t motor_pin_1, uint8_t motor_pin_2,
+                                      uint8_t motor_pin_3, uint8_t motor_pin_4,
+                                      uint8_t motor_pin_5)
 {
   this->step_number = 0;    // which step the motor is on
   this->direction = 0;      // motor direction
@@ -173,8 +173,8 @@ Stepper::Stepper(int number_of_steps, int motor_pin_1, int motor_pin_2,
   this->pin_count = 5;
 }
 
-void Stepper::attachStepper(int number_of_steps, int motor_pin_1, int motor_pin_2,
-                                      int motor_pin_3, int motor_pin_4){
+void Stepper::attachStepper(uint16_t number_of_steps, uint8_t motor_pin_1, uint8_t motor_pin_2,
+                                      uint8_t motor_pin_3, uint8_t motor_pin_4){
   this->step_number = 0;    // which step the motor is on
   this->direction = 0;      // motor direction
   this->last_step_time = 0; // time stamp in us of the last step taken

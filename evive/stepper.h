@@ -88,16 +88,16 @@ class Stepper {
   public:
     // constructors:
 	Stepper();
-    Stepper(int number_of_steps, int motor_pin_1, int motor_pin_2);
-    Stepper(int number_of_steps, int motor_pin_1, int motor_pin_2,
-                                 int motor_pin_3, int motor_pin_4);
-    Stepper(int number_of_steps, int motor_pin_1, int motor_pin_2,
-                                 int motor_pin_3, int motor_pin_4,
-                                 int motor_pin_5);
+    Stepper(uint16_t number_of_steps, uint8_t motor_pin_1, uint8_t motor_pin_2);
+    Stepper(uint16_t number_of_steps, uint8_t motor_pin_1, uint8_t motor_pin_2,
+                                 uint8_t motor_pin_3, uint8_t motor_pin_4);
+    Stepper(uint16_t number_of_steps, uint8_t motor_pin_1, uint8_t motor_pin_2,
+                                 uint8_t motor_pin_3, uint8_t motor_pin_4,
+                                 uint8_t motor_pin_5);
 
     //attach stepper
-    void attachStepper(int number_of_steps, int motor_pin_1, int motor_pin_2,
-            int motor_pin_3, int motor_pin_4);
+    void attachStepper(uint16_t number_of_steps, uint8_t motor_pin_1, uint8_t motor_pin_2,
+            uint8_t motor_pin_3, uint8_t motor_pin_4);
     // speed setter method:
     void setSpeed(long whatSpeed);
 
@@ -112,7 +112,7 @@ class Stepper {
     int direction;            // Direction of rotation
     unsigned long step_delay; // delay between steps, in ms, based on speed
     int number_of_steps;      // total number of steps this motor can take
-    int pin_count;            // how many pins are in use.
+    uint8_t pin_count;            // how many pins are in use.
     int step_number;          // which step the motor is on
 
     // motor pin numbers:

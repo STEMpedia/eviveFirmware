@@ -31,7 +31,7 @@
 #ifndef _TFT_ST7735H_
 #define _TFT_ST7735H_
 
-// Only load the fonts defined in User_Setup.h (to save space)
+// Only load the fonts defined in TFT_User_Setup.h (to save space)
 // Set flag so RLE rendering code is optionally compiled
 #ifdef LOAD_GLCD
   #include "glcdfont.c"

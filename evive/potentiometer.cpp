@@ -39,7 +39,7 @@ Potentiometer::Potentiometer(byte potPin){
 	_value = analogRead(_pin);
 }
 
-Potentiometer::Potentiometer(byte potPin, uint16_t sectors){
+Potentiometer::Potentiometer(byte potPin, uint8_t sectors){
 	_pin=potPin;
 	setSectors(sectors);
 }
@@ -52,11 +52,11 @@ uint16_t Potentiometer::hadValue(){
 	return _value;
 }
 
-uint16_t Potentiometer::getSector(){
+uint8_t Potentiometer::getSector(){
 	return analogRead(_pin)/(1024/_sectors);
 }
 
-void Potentiometer::setSectors(uint16_t newSectors){
+void Potentiometer::setSectors(uint8_t newSectors){
 	if (newSectors<1024 && newSectors>0){
 		_sectors=newSectors;
 	}else if (newSectors<0){

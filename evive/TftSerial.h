@@ -27,20 +27,20 @@ class TftSerial{
 		float f;
 		int lines;
 	public:
-		TftSerial(); //internally creates the class for tft.
+		//TftSerial(); //internally creates the class for tft.
 		void    begin();//innitialises the tft
 
 
 		//the print and println functions work same as the serial print and println
 		void	print(int i);
-		void  print(char c);
+		void  	print(char c);
 		void 	print(String s);
 		//void	print(double, int = 2);
         void 	print(double d);
         void 	print(float f);
 		//void	print(int, int = DEC);
 		
-		void  println(char c);
+		void  	println(char c);
 		void	println(int i);
 		void	println(String s);
 		void 	println(void);
@@ -77,9 +77,11 @@ class TftSerial{
 		int next_line;//keep a track of the next line on tft.
 		int next_col;//keep a track of the next column on tft.
 		
+
 	
 		
 };
 int dig(int i);//count the no. of digits in the integer to keep correct track of column
 
+//extern TftSerial TftMonitor;
 #endif

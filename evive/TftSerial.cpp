@@ -1,15 +1,15 @@
 #include "TftSerial.h"
-	TftSerial :: TftSerial()
-	{
-		tft = TFT_ST7735();
-	}
+//	TftSerial :: TftSerial()
+//	{
+//		tft = TFT_ST7735();
+//	}
  
 	void TftSerial :: begin()
 	{
 		//tft.init();
 		//tft.setRotation(1);
-		Serial.println(tft.width());
-		Serial.println(tft.height());
+//		Serial.println(tft.width());
+//		Serial.println(tft.height());
 		tft.fillRect(0, TOP_MARGIN, TFT_WIDTH, TFT_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN, ST7735_BLACK);
 		next_line=2*ROW_HEIGHT;
 		next_col=0;
@@ -61,6 +61,10 @@
 			next_col=0;
 			next_line=next_line+ROW_HEIGHT;
 		}
+
+#ifdef __DEBUG__
+		Serial.println(freeRam());
+#endif
    }	
 
   void TftSerial :: print(char c)
@@ -79,18 +83,26 @@
 			next_col=0;
 			next_line=next_line + ROW_HEIGHT;
 		}
+
+#ifdef __DEBUG__
+		Serial.println(freeRam());
+#endif
   }
 
   void TftSerial :: print(double d)
   {
   	s=String(d);
   	print(s);
+  	#ifdef __DEBUG__
+  			Serial.println(freeRam());
+  	#endif
   }
 
   void TftSerial :: print(float f)
   {
   	s=String(f);
   	print(f);
+
   }
 
   void TftSerial :: println(double d)
@@ -234,3 +246,4 @@
 		return count;
 	}
 
+//TftSerial TftMonitor;
