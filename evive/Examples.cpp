@@ -80,7 +80,7 @@ void loop_example_4(){
 	tft.setTextColor(ST7735_YELLOW, ST7735_BLACK);
 	tft.setCursor(LEFT_MARGIN + 19, TOP_MARGIN + ROW_HEIGHT * 9);
 	tft.print(ade791x_read_v1() / 1000.0);
-	tft.print(ade791x_read_vim() / 1000.0);
+	//tft.print(ade791x_read_vim() / 1000.0);
 	tft.println("    ");
 	delay(100);
 }
