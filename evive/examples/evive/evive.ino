@@ -1,9 +1,9 @@
  /*
-  * Version 1.0.4
+  * Version 1.0.3
   * This firmware is developed for evive [http://evive.cc].
   * This is licensed under GNU GPL V3 [http://www.gnu.org/licenses/gpl.txt].
   * Written by Dhrupal R Shah for evive platform, Agilo Research.
-  * Last update: 2017, August 26, by Dhrupal Shah
+  * Last update: 2017, July 29, by Harsh Chittora
   * Contact: support@evive.cc
   * Copyright (c) 2017 Agilo Research.  All rights reserved.
   *

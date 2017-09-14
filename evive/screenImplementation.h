@@ -234,7 +234,7 @@ void tft_implementation_control_status_servo(bool sec) {
 		//tft.drawLine(TFT_WIDTH_BY_2+40,105,TFT_WIDTH_BY_2+40+20*sin((-servo2.read()-90)*3.14/180),75+20*cos((-servo2.read()-90)*3.14/180),ST7735_GREEN);
 		tft.setCursor(TFT_WIDTH_BY_2 + 50, TOP_MARGIN + ROW_HEIGHT * 3);
 		tft.print(servo2.read());
-		tft.print(F("  "));
+		tft.print("  ");
 		//Serial.println("went in 2");
 		lastServoImplement = millis();
 	}
@@ -243,7 +243,7 @@ void tft_implementation_control_status_servo(bool sec) {
 		//tft.drawLine(40,105,40+20*sin((-servo1.read()-90)*3.14/180),75+20*cos((-servo1.read()-90)*3.14/180),ST7735_GREEN);
 		tft.setCursor(50, TOP_MARGIN + ROW_HEIGHT * 3);
 		tft.print(servo1.read());
-		tft.print(F("  "));
+		tft.print("  ");
 		//Serial.println("went in 1");
 		lastServoImplement = millis();
 	}
@@ -341,6 +341,7 @@ void tft_sensing_status_template(bool probeVIConfig) {
 }
 
 void tft_implementation_sensing_status(bool probeVIConfig) {
+	//Add code here
 	tft.setTextColor(ST7735_YELLOW, ST7735_BLACK);
 	tft.setCursor(LEFT_MARGIN + 19, TOP_MARGIN + ROW_HEIGHT * 2);
 	tft.print(ade791x_read_v1() / 1000.0, 2);
@@ -897,7 +898,10 @@ void evive_oscilloscope() {
 static void evive_oscilloscope_loop() {
 	//unsigned long t= micros();
 	
-	//To get PWM on Pin 5 to test the oscilloscope
+	//Serial.println();
+	//int value =  ade791x_read_v1 ();
+	// value =  ade791x_read_vim ();
+	// ade791x_read_i();
 	//analogWrite(5,analogRead(A9)/4);
 	if (trig_mode != TRIG_SCAN) {
 		unsigned long st = millis();
@@ -1053,7 +1057,7 @@ if(updateData){// sample and draw depending on the sampling rate
 			//v=ade791x_read_v1();
 			//Serial.println(v);
 			//Serial.println(ade791x_read_v1());
-			//ade791x_read_v1();				//An extra execution of read operation thing make it work (some mysterious thing happening, but it works)
+			ade791x_read_v1();
 			data[sample + 0][i] = ConvertMilliVoltToPixel1(ade791x_read_v1(), range0,
 			    ch0_off);
 			;
@@ -1082,7 +1086,7 @@ if(updateData){// sample and draw depending on the sampling rate
 	else
 		Start = 1;
 	//Serial.println(micros()-t);
-	Serial.println(freeRam());
+	//Serial.println(updateData);
 }
 
 //-------------mini oscilloscope/end--------------//

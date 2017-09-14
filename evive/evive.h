@@ -95,17 +95,11 @@
 #include "Stepper.h"
 #include "Action.h"
 #include "Ade7912_Adc.h"
-//#include "Ade7912.h"
 #include "Dac_MCP4725.h"
 #include "MPR121_Touch.h"
 #include "AddUserDefinedFunctions.h"
-#include "TftSerial.h"
-#include "Examples.h"
-#include "Plot.h"
+//#include "TftSerial.h"
+// #include "Plot.h"
 //#include "screenImplementation.h"
-
-#define INCLUDE_EXAMPLES
-
-int freeRam ();
 
 #endif

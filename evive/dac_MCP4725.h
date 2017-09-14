@@ -1,7 +1,6 @@
 /**************************************************************************/
 /*! 
-    @file     Dac_MCP4725.h
-	Copied from Adafruit_MCP4725.h
+    @file     Adafruit_MCP4725.h
     @author   K. Townsend (Adafruit Industries)
 	@license  BSD (see license.txt)
 	

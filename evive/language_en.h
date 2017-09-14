@@ -55,9 +55,9 @@
 #ifndef MSG_DAC
 	#define MSG_DAC									"Beta Function Generator"
 #endif
-//#ifndef MSG_TIMER
-//	#define MSG_TIMER								"Timer"
-//#endif
+#ifndef MSG_TIMER
+	#define MSG_TIMER								"Timer"
+#endif
 #ifndef MSG_IO3V3
 	#define MSG_IO3V3								"Input-Output (3.3V)"
 #endif
@@ -67,12 +67,9 @@
 #ifndef MSG_USER_DEF
 	#define MSG_USER_DEF							"User Defined Programs"
 #endif
-#ifndef MSG_EXAMPLES
-	#define MSG_EXAMPLES							"Examples"
+#ifndef MSG_REMOVE_FUNCTION
+	#define MSG_REMOVE_FUNCTION						"Remove Function"
 #endif
-//#ifndef MSG_REMOVE_FUNCTION
-//	#define MSG_REMOVE_FUNCTION						"Remove Function"
-//#endif
 
 /*
 *CONTROL SECTION

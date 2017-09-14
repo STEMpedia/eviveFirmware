@@ -7,9 +7,16 @@
  */
 #include "evive.h"
 
-int freeRam ()
-{
-  extern int __heap_start, *__brkval;
-  int v;
-  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+#ifdef EVIVE_LIBRARY_MODE
+void setup(){
+	Serial.begin(BAUDRATE);
+	Serial.println("In the setup loop now");
+	tft_init();
+	Serial.println("setup ends");
 }
+
+void loop(){
+	tft_update();
+	action();
+}
+#endif
