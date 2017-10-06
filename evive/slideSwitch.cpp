@@ -2,9 +2,10 @@
  * slideSwitch.cpp
  *
  *  Created on: May 23, 2016
+ *  Updated on:	Oct 5, 2017
  *      Author: dhrups
+ *      Contact: support@evive.cc
  */
-
 
 #include "Button.h"
 
@@ -20,18 +21,20 @@
  * (Note that invert cannot be implied from puEnable since an external  *
  *  pullup could be used.)                                              *
  *----------------------------------------------------------------------*/
-SlideSwitch::SlideSwitch(uint8_t pin1, uint8_t pin2, uint8_t puEnable, uint8_t invert)
+SlideSwitch::SlideSwitch(uint8_t pin1, uint8_t pin2, bool puEnable, bool invert)
 {
     _pin1 = pin1;
     _pin2 = pin2;
     _puEnable = puEnable;
     _invert = invert;
 
-    pinMode(_pin1, INPUT);
-    pinMode(_pin2, INPUT);
-    if (_puEnable != 0){
-        digitalWrite(_pin1, HIGH);       //enable pullup resistor
-        digitalWrite(_pin2, HIGH);       //enable pullup resistor
+    if (_puEnable == 0){
+        pinMode(_pin1, INPUT);
+        pinMode(_pin2, INPUT);
+    }
+    else{
+    	pinMode(_pin1, INPUT_PULLUP);			//enable pullup resistor
+    	pinMode(_pin2, INPUT_PULLUP);  			//enable pullup resistor
     }
     _state1 = digitalRead(_pin1);
     _state2 = digitalRead(_pin2);

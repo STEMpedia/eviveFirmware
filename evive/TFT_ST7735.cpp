@@ -198,7 +198,7 @@ static inline void spi_end(void) {
 ***************************************************************************************/
 void TFT_ST7735::begin(void)
 {
- init();
+ init(tabcolor);
 }
 
 /***************************************************************************************
@@ -207,7 +207,7 @@ void TFT_ST7735::begin(void)
 ***************************************************************************************/
 #define DELAY 0x80
 
-void TFT_ST7735::init(void)
+void TFT_ST7735::init(uint8_t tabColor)
 {
   SPI.begin();
 
@@ -364,7 +364,7 @@ void TFT_ST7735::init(void)
       100 };                  //     100 ms delay
 
 
-     tabcolor = TAB_COLOUR;
+     tabcolor = tabColor;
 
      if (tabcolor == INITB)
      {

@@ -95,39 +95,6 @@ void SerialMonitor::serial3PrintMsg() {
 uint8_t SerialMonitor::linesCount(int lengthMsg) {
 	if(lengthMsg>=390) return 16;
 	return (uint8_t(1+lengthMsg/25));
-	
-	// if (lineNumCurrent == 0 || lineNumCurrent < 25)
-		// return 1;
-	// else if (lineNumCurrent == 25 || lineNumCurrent < 51)
-		// return 2;
-	// else if (lineNumCurrent == 51 || lineNumCurrent < 77)
-		// return 3;
-	// else if (lineNumCurrent == 77 || lineNumCurrent < 103)
-		// return 4;
-	// else if (lineNumCurrent == 103 || lineNumCurrent < 129)
-		// return 5;
-	// else if (lineNumCurrent == 129 || lineNumCurrent < 155)
-		// return 6;
-	// else if (lineNumCurrent == 155 || lineNumCurrent < 181)
-		// return 7;
-	// else if (lineNumCurrent == 181 || lineNumCurrent < 207)
-		// return 8;
-	// else if (lineNumCurrent == 207 || lineNumCurrent < 233)
-		// return 9;
-	// else if (lineNumCurrent == 233 || lineNumCurrent < 259)
-		// return 10;
-	// else if (lineNumCurrent == 259 || lineNumCurrent < 285)
-		// return 11;
-	// else if (lineNumCurrent == 285 || lineNumCurrent < 311)
-		// return 12;
-	// else if (lineNumCurrent == 311 || lineNumCurrent < 337)
-		// return 13;
-	// else if (lineNumCurrent == 337 || lineNumCurrent < 363)
-		// return 14;
-	// else if (lineNumCurrent == 363 || lineNumCurrent < 390)
-		// return 15;
-	// else
-		// return 16;
 }
 
 SerialMonitor serialObject;

@@ -6,7 +6,7 @@
 #ifndef NAVKEY_H
 #define NAVKEY_H
 
-#include <Arduino.h>
+#include "evive.h"
 
 //set range after min/max for all cases like battery powered, USB, VIN
 #define NAVKEYMOVE_UP_LOW       190
@@ -24,7 +24,7 @@
 #define NAVKEY_PRESS			19
 #endif
 #ifndef MIN_TIME1_5
-#define MIN_TIME2					200
+#define MIN_TIME2				200
                
 #endif
 

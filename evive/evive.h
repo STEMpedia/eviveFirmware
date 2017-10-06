@@ -98,8 +98,9 @@
 #include "Dac_MCP4725.h"
 #include "MPR121_Touch.h"
 #include "AddUserDefinedFunctions.h"
-//#include "TftSerial.h"
-// #include "Plot.h"
-//#include "screenImplementation.h"
+#include "Examples.h"
+#include "TftSerial.h"
+#include "Plot.h"
+
 
 #endif

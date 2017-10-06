@@ -14,7 +14,7 @@ class SlideSwitch
     public:
         SlideSwitch();
         SlideSwitch(uint8_t pin1, uint8_t _pin2);
-		SlideSwitch(uint8_t pin1, uint8_t _pin2,  uint8_t puEnable, uint8_t invert);
+		SlideSwitch(uint8_t pin1, uint8_t _pin2,  bool puEnable, bool invert);
 		bool readPin1();
 		bool readPin2();
 

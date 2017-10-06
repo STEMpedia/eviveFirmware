@@ -42,6 +42,7 @@
 #define BATT_HEIGHT					7
 #define BATT_COLOR					ST7735_CYAN
 #define VVR_MULTIPLIER			0.0381
+
 uint16_t pre_vvr = 0, vvr = 0;
 
 static void drawBattery();
@@ -55,10 +56,10 @@ static void drawStatusBar();
 TFT_ST7735 tft = TFT_ST7735();
 extern int8_t encoderPosition;
 
-static void tft_implementation_init() {
+static void tft_implementation_init(uint8_t tabColor) {
 	//tft.initR();
 	//tft.initR(SCREEN_TAB);
-	tft.init();
+	tft.init(tabColor);
 	tft.setRotation(1);
 	//tft.setTextWrap(false);
 	tft.fillScreen(ST7735_BLACK);
@@ -114,6 +115,7 @@ void vvrUpdate() {
 	vvr = analogRead(VARSUPPLYLEVEL);
 	if (pre_vvr - vvr > 4 || pre_vvr - vvr < -4) {
 		tft.setTextColor(ST7735_RED);
+		tft.setTextSize(1);
 		tft.setCursor(70 + 24, 3);
 		tft.fillRect(70 + 24, 3, 35, 7, ST7735_BLACK);
 		tft.print(vvr * VVR_MULTIPLIER);
@@ -207,7 +209,7 @@ void tft_implementation_control_status_motor(bool sec) {
 		//tft.fillRect(TFT_WIDTH_BY_2+45,TOP_MARGIN+ROW_HEIGHT*3, 39, ROW_HEIGHT*4, ST7735_BLACK);
 		tft.setCursor(TFT_WIDTH_BY_2 + 45, TOP_MARGIN + ROW_HEIGHT * 3);
 		tft.print(motor2.getPWM());
-		tft.print("  ");
+		tft.print(F("  "));
 		tft.setCursor(TFT_WIDTH_BY_2 + 45, TOP_MARGIN + ROW_HEIGHT * 5);
 		tft.print(motor2.dir1);
 		tft.setCursor(TFT_WIDTH_BY_2 + 45, TOP_MARGIN + ROW_HEIGHT * 6);
@@ -216,7 +218,7 @@ void tft_implementation_control_status_motor(bool sec) {
 		//tft.fillRect(45,TOP_MARGIN+ROW_HEIGHT*3, 39, ROW_HEIGHT*4, ST7735_BLACK);
 		tft.setCursor(45, TOP_MARGIN + ROW_HEIGHT * 3);
 		tft.print(motor1.getPWM());
-		tft.print("  ");
+		tft.print(F("  "));
 		tft.setCursor(45, TOP_MARGIN + ROW_HEIGHT * 5);
 		tft.print(motor1.dir1);
 		tft.setCursor(45, TOP_MARGIN + ROW_HEIGHT * 6);
@@ -234,7 +236,7 @@ void tft_implementation_control_status_servo(bool sec) {
 		//tft.drawLine(TFT_WIDTH_BY_2+40,105,TFT_WIDTH_BY_2+40+20*sin((-servo2.read()-90)*3.14/180),75+20*cos((-servo2.read()-90)*3.14/180),ST7735_GREEN);
 		tft.setCursor(TFT_WIDTH_BY_2 + 50, TOP_MARGIN + ROW_HEIGHT * 3);
 		tft.print(servo2.read());
-		tft.print("  ");
+		tft.print(F("  "));
 		//Serial.println("went in 2");
 		lastServoImplement = millis();
 	}
@@ -243,7 +245,7 @@ void tft_implementation_control_status_servo(bool sec) {
 		//tft.drawLine(40,105,40+20*sin((-servo1.read()-90)*3.14/180),75+20*cos((-servo1.read()-90)*3.14/180),ST7735_GREEN);
 		tft.setCursor(50, TOP_MARGIN + ROW_HEIGHT * 3);
 		tft.print(servo1.read());
-		tft.print("  ");
+		tft.print(F("  "));
 		//Serial.println("went in 1");
 		lastServoImplement = millis();
 	}
@@ -345,14 +347,14 @@ void tft_implementation_sensing_status(bool probeVIConfig) {
 	tft.setTextColor(ST7735_YELLOW, ST7735_BLACK);
 	tft.setCursor(LEFT_MARGIN + 19, TOP_MARGIN + ROW_HEIGHT * 2);
 	tft.print(ade791x_read_v1() / 1000.0, 2);
-	tft.print("    ");
+	tft.print(F("    "));
 	tft.setCursor(TFT_WIDTH_BY_2 + 12, TOP_MARGIN + ROW_HEIGHT * 2);
 
 	if (probeVIConfig)
 		tft.print(ade791x_read_im() / 1000.0, 2);
 	else
 		tft.print(ade791x_read_vim() / 1000.0, 2);
-	tft.print("    ");
+	tft.print(F("    "));
 
 	// long V1 = ade791x_read_v1()/1000.0;
 	// if(V1<0)	tft.setCursor(LEFT_MARGIN-CHAR_WIDTH+19, TOP_MARGIN+ROW_HEIGHT*2);
@@ -382,10 +384,10 @@ void tft_implementation_sensing_status(bool probeVIConfig) {
 #define txtLINE2   80
 #define txtLINE3   120
 
-const int SAMPLES = 160;
-const int DOTS_DIV = 20;
+const uint8_t SAMPLES = 160;
+const uint8_t DOTS_DIV = 20;
 //range0, range1, rate, TRIG_Modes, TRIG_E_DN/UP ch0_off, ch1_off, trig_lv, Send, log
-const int MENU_TOTAL_ITEMS = 11;
+const uint8_t MENU_TOTAL_ITEMS = 11;
 
 #define GRAPH_TOP_MARGIN			9
 #define GRAPH_LEFT_MARGIN			0
@@ -423,7 +425,7 @@ const int TRIG_E_DN = 1;
 #define RATE_MAX 13
 ///////////////////////0 (single)/1///////2///////3///////4///////5///////6////////7//////8//////9///////10////11////12////13
 //const char *Rates[] = {"F1-1", "F1-2 ", "F2  ", "5ms", "10ms", "20ms", "50ms", "0.1s", "0.2s", "0.5s", "1s", "2s", "5s", "10s"};
-const char *Rates[] = { "1-2.5", "2-2.5", "F2  ", "5ms", "10ms", "20ms", "50ms",
+const char *Rates[] = { "1-2.5", "2-2.5", "Fast", "5ms", "10ms", "20ms", "50ms",
     "0.1s", "0.2s", "0.5s", "1s", "2s", "5s", "10s" };
 
 #define RANGE_MIN 0
@@ -434,7 +436,7 @@ const char *Ranges[] = { " 10V/D", "  5V/D", "  2V/D", "  1V/D", "0.5V/D",
     "0.1A/D", "0.2A/D", "0.5A/D", "1A/D" };
 
 unsigned long startMillis;
-int data[4][SAMPLES]; // keep twice of the number of channels to make it a double buffer
+int8_t data[4][SAMPLES]; // keep twice of the number of channels to make it a double buffer
 byte sample = 0;                           // index for double buffer
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1060,7 +1062,6 @@ if(updateData){// sample and draw depending on the sampling rate
 			ade791x_read_v1();
 			data[sample + 0][i] = ConvertMilliVoltToPixel1(ade791x_read_v1(), range0,
 			    ch0_off);
-			;
 			if (range1 < 9)
 				data[sample + 1][i] = ConvertMilliVoltToPixel2(ade791x_read_vim(),
 				    range1, ch1_off);

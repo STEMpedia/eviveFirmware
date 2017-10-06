@@ -26,22 +26,16 @@ void loop_user_def_fun_1(){
 // the setup function runs once when you select the user defined function
 void setup_user_def_fun_2(){
   // Remove this example code and put your setup code here:
-	// initialize digital pin LED_BUILTIN as an output.
-  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);				// initialize digital pin LED_BUILTIN as an output.
 }
 // the loop function runs continuously when you select the user defined function
 void loop_user_def_fun_2(){
 	// Remove this example code and put your user defined (custom) code here, to run repeatedly:
-  // read the value from the sensor:
-  uint16_t sensorValue = analogRead(A9);
-  // turn the ledPin on
-  digitalWrite(LED_BUILTIN, HIGH);
-  // stop the program for <sensorValue> milliseconds:
-  delay(sensorValue);
-  // turn the ledPin off:
-  digitalWrite(LED_BUILTIN, LOW);
-  // stop the program for for <sensorValue> milliseconds:
-  delay(sensorValue);
+	uint16_t sensorValue = analogRead(A9);	// read the value from the sensor
+    digitalWrite(LED_BUILTIN, HIGH);		// turn the ledPin on
+    delay(sensorValue);						// stop the program for <sensorValue> milliseconds
+  	digitalWrite(LED_BUILTIN, LOW);			// turn the ledPin off
+    delay(sensorValue);						// stop the program for for <sensorValue> milliseconds
 }
 
 // the setup function runs once when you select the user defined function

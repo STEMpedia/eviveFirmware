@@ -43,7 +43,7 @@ extern volatile bool DAC_ON_OFF;
 extern volatile bool OSCILLOSCOPE_ON_OFF;
 extern TFT_ST7735 tft;
 
-void tft_init();
+void tft_init(uint8_t);
 void tft_update();
 
 //char* itostr2(const uint8_t& x);

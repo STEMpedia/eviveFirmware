@@ -31,12 +31,6 @@
 #define POTENTIOMETER_H
 
 #include "evive.h"
-//// Added to fix Arduino 1.0 compile issues 12/11/11 - TVHeadedRobots
-//#if defined(ARDUINO) && ARDUINO < 100
-//#include "WProgram.h"
-//#else
-//#include "Arduino.h"
-//#endif
 
 class Potentiometer {
 	public:

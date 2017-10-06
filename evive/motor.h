@@ -7,9 +7,6 @@
 #define  MOTOR_H
 #include "evive.h"
 
-
-
-
 #ifndef COUNT_CONST 
 #define COUNT_CONST 3
 #endif //for COUNT_CONST

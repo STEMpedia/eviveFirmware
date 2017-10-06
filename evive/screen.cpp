@@ -35,7 +35,6 @@ static void tft_control_servos_menu();
 //static void tft_control_tactilesw_menu();
 static void tft_sensing_menu();
 //static void tft_log_menu();
-static void tft_pin_state();
 static void tft_evive_oscilloscope();
 static void tft_serial_select_menu();
 static void tft_baud_menu();
@@ -44,7 +43,8 @@ static void tft_serial_monitor();
 static void tft_pin_state_menu();
 static void tft_dac_menu();
 static void tft_user_def_menu();
-static void tft_remove_function_menu();
+static void tft_examples_menu();
+//static void tft_remove_function_menu();
 static void tft_control_motor1();
 static void tft_control_motor2();
 static void tft_control_motor12();
@@ -71,9 +71,14 @@ static void add_user_def_fun_2();
 static void add_user_def_fun_3();
 static void add_user_def_fun_4();
 static void add_user_def_fun_5();
+static void add_example_1();
+static void add_example_2();
+static void add_example_3();
+static void add_example_4();
+static void add_example_5();
 static void actionRemove();
 
-long baudrate[]={9600, 115200, 250000, 300,1200,2400,4800,19200,38400,57600,74880,230400};
+const long baudrate[]={9600, 115200, 250000, 300, 1200, 2400, 4800, 19200, 38400, 57600, 74880, 230400};
 uint8_t serialSelect;
 
 #if ENABLED(SDSUPPORT)
@@ -86,8 +91,8 @@ static void menu_action_back(menuFunc_t data);
 static void menu_action_submenu(menuFunc_t data);
 static void menu_action_function(menuFunc_t data);
 static void menu_action_setting_edit_bool(const char* pstr, bool* ptr);
-static void menu_action_setting_edit_int(const char* pstr, int* ptr, int minValue, int maxValue);
-static void menu_action_setting_edit_callback_int3(const char* pstr, int* ptr, int minValue, int maxValue, menuFunc_t callbackFunc);
+//static void menu_action_setting_edit_int(const char* pstr, int* ptr, int minValue, int maxValue);
+//static void menu_action_setting_edit_callback_int3(const char* pstr, int* ptr, int minValue, int maxValue, menuFunc_t callbackFunc);
 
 uint8_t currentMenuViewOffset=0;              /* scroll offset in the current menu */
 //moved menupress and menumove, lastKeyMoveTime to navkey.h. They are extern variables, so can be accessed.
@@ -254,6 +259,9 @@ static void tft_home_menu(){
   MENU_ITEM(submenu, MSG_DAC, tft_dac_menu);
   MENU_ITEM(function, MSG_CAP_TOUCH, tft_touch_sensors_setup);
   MENU_ITEM(submenu, MSG_USER_DEF, tft_user_def_menu);
+#ifdef INCLUDE_EXAMPLES
+  MENU_ITEM(submenu, MSG_EXAMPLES, tft_examples_menu);
+#endif
 //  MENU_ITEM(submenu, MSG_REMOVE_FUNCTION, tft_remove_function_menu);
 	//add menu
   END_MENU();
@@ -503,7 +511,7 @@ static void tft_dac_function_generator(){
   /*Speed up ADC*/
   // set up the ADC
   ADCSRA &= ~PS_128;  // remove bits set by Arduino library
-  // you can choose a prescaler from above.
+  // you can choose a prescaler from above. This are declared in configuration file.
   // PS_16, PS_32, PS_64 or PS_128
   ADCSRA |= PS_32;    // set our own prescaler to 64
 
@@ -674,6 +682,60 @@ static void add_user_def_fun_5(){
 	remove_other_user_def_fun(5);
 }
 
+
+#ifdef INCLUDE_EXAMPLES
+static void tft_examples_menu(){
+	if(tftDrawUpdate){
+		actionRemoveAll();
+		//tft_implementation_clear_menu();
+	}
+	START_MENU();
+	#ifdef EXAMPLE_1
+		MENU_ITEM(function, EXAMPLE_1, add_example_1 );
+	#endif
+	#ifdef EXAMPLE_2
+		MENU_ITEM(function, EXAMPLE_2, add_example_2 );
+	#endif
+	#ifdef EXAMPLE_3
+		MENU_ITEM(function, EXAMPLE_3, add_example_3 );
+	#endif
+	#ifdef EXAMPLE_4
+		MENU_ITEM(function, EXAMPLE_4, add_example_4 );
+	#endif
+	#ifdef EXAMPLE_5
+		MENU_ITEM(function, EXAMPLE_5, add_example_5 );
+	#endif
+
+	END_MENU();
+	EXIT_MENU(tft_home_menu);
+}
+
+static void add_example_1(){
+	add_example(1);
+	remove_other_example(1);
+}
+
+static void add_example_2(){
+	add_example(2);
+	remove_other_example(2);
+}
+
+static void add_example_3(){
+	add_example(3);
+	remove_other_example(3);
+}
+
+static void add_example_4(){
+	add_example(4);
+	remove_other_example(4);
+}
+
+static void add_example_5(){
+	add_example(5);
+	remove_other_example(5);
+}
+#endif
+
 /* static void tft_remove_function_menu(){
 //	START_MENU();
 //	for(uint8_t i = 0; i < actionFuncListNum; i++)
@@ -725,12 +787,12 @@ static void menu_action_setting_edit_callback_bool(const char* pstr, bool* ptr, 
 //Put a #define SCREENOFF which turns off all screen initialisations and everything for like a battery saver application
 bool tft_clicked() { return TFT_CLICKED; }
 
-void tft_init(){
+void tft_init(uint8_t tabColor){
 //#ifdef __DEEBUG__
 	Serial.println(F("Setup ends"));
 //#endif
 	pinMode(TFT_CS,OUTPUT);
-	tft_implementation_init();
+	tft_implementation_init(tabColor);
 }
 
 /*

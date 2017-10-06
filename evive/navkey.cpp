@@ -5,18 +5,18 @@ uint8_t menuMove = 0;
 unsigned long lastKeyMoveTime = 0;
 
 void navKeyUpdate(){
-	unsigned long thisTime=millis();
-	if ((thisTime-lastKeyMoveTime)<MIN_TIME2){ //Too less time has passed
+	//unsigned long thisTime=millis();
+	if ((millis()-lastKeyMoveTime)<MIN_TIME2){ //Too less time has passed
 		menuPress=0;
 		menuMove=0;
 		return;
 	}
 	else{ //Enough time has passed
 		if(digitalRead(NAVKEY_PRESS)){ //Press
-			lastKeyMoveTime=thisTime;
+			lastKeyMoveTime=millis();
 			menuPress = 1;
 			#ifdef __DEBUG__
-			Serial.println("Navkey Press");
+			Serial.println(F("Navkey Press"));
 			#endif
 			menuMove=0;
 			return;
@@ -29,24 +29,24 @@ void navKeyUpdate(){
 			}
 			else{ //No press, yes move
 				//#ifdef __DEBUG__
-				Serial.print("NavKeyMove: ");
+				Serial.print(F("NavKeyMove: "));
 				Serial.println(navKeyMove);
 				//#endif
 				if ((navKeyMove>NAVKEYMOVE_UP_LOW)&&(navKeyMove<NAVKEYMOVE_UP_HIGH)){ //Up
 					menuMove=1;
-					lastKeyMoveTime=thisTime;
+					lastKeyMoveTime=millis();
 				}
 				else if ((navKeyMove>NAVKEYMOVE_RIGHT_LOW)&&(navKeyMove<NAVKEYMOVE_RIGHT_HIGH)){ //Right
 					menuMove=2;
-					lastKeyMoveTime=thisTime;
+					lastKeyMoveTime=millis();
 				}
 				else if ((navKeyMove>NAVKEYMOVE_DOWN_LOW)&&(navKeyMove<NAVKEYMOVE_DOWN_HIGH)){ //Down
 					menuMove=3;
-					lastKeyMoveTime=thisTime;					
+					lastKeyMoveTime=millis();
 				}
 				else if ((navKeyMove>NAVKEYMOVE_LEFT_LOW)&&(navKeyMove<NAVKEYMOVE_LEFT_HIGH)){ //Left
 					menuMove=4;
-					lastKeyMoveTime=thisTime;
+					lastKeyMoveTime=millis();
 				}
 			}
 		}

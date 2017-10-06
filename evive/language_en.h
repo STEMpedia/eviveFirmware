@@ -67,6 +67,9 @@
 #ifndef MSG_USER_DEF
 	#define MSG_USER_DEF							"User Defined Programs"
 #endif
+#ifndef MSG_EXAMPLES
+	#define MSG_EXAMPLES							"Examples"
+#endif
 #ifndef MSG_REMOVE_FUNCTION
 	#define MSG_REMOVE_FUNCTION						"Remove Function"
 #endif
@@ -260,11 +263,10 @@
 #endif
 /*
 *ERRORS SECTION
-*
-*/
+
 #ifndef MSG_ERROR_BATTERY_LOW
 	#define MSG_ERROR_BATTERY_LOW					"Battery low. Please charge"
 #endif
+*/
 
 #endif
-

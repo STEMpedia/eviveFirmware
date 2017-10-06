@@ -14,12 +14,8 @@
 #define BAUDRATE 250000
 #define SERIAL_TIME_OUT 10
 
-#ifndef SCREEN_TAB
-//Comment (uncomment) based on the Screen Tab type of TFT Display, ie BLACKTAB or GREENTAB
-//Identify TFT, if you get Red color in place of Blue or vice versa.
-#define SCREEN_TAB INITR_GREENTAB
-//#define SCREEN_TAB INITR_BLACKTAB
-#endif
+//Uncomment/Comment the INCLUDE_EXAMPLES to exclued/include examples in menu
+//#define INCLUDE_EXAMPLES
 
 //////////macros////////////////
 // Macros to support option testing
@@ -34,7 +30,7 @@
 #define MIN_TIME1 	100
 #define MIN_TIME1_5 150
 #define MIN_TIME2 	200
-#define MIN_TIME3 	300
+//#define MIN_TIME3 	300
 #define MIN_TIME5 	500
 
 // Macros for bit masks
@@ -43,23 +39,18 @@
 #define SET_BIT(n,b,value) (n) ^= ((-value)^(n)) & (BIT(b))
 
 // Macros for maths shortcuts
-#define RADIANS(d) ((d)*M_PI/180.0)
-#define DEGREES(r) ((r)*180.0/M_PI)
-
-#define COUNT(a) (sizeof(a)/sizeof(*a))
+//#define RADIANS(d) ((d)*M_PI/180.0)
+//#define DEGREES(r) ((r)*180.0/M_PI)
+//
+//#define COUNT(a) (sizeof(a)/sizeof(*a))
 
 // Define various ADC prescaler (Used to speed up ADC read action)
-const unsigned char PS_16 = (1 << ADPS2);
+//const unsigned char PS_16 = (1 << ADPS2);
 const unsigned char PS_32 = (1 << ADPS2) | (1 << ADPS0);
-const unsigned char PS_64 = (1 << ADPS2) | (1 << ADPS1);
+//const unsigned char PS_64 = (1 << ADPS2) | (1 << ADPS1);
 const unsigned char PS_128 = (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
 
-//TFT related macros
-//Comment (uncomment) based on the Screen Tab type of TFT Display, ie BLACKTAB or GREENTAB
-//Identify TFT, if you get Red color in place of Blue or vice versa.
-#define SCREEN_TAB INITR_GREENTAB
-//#define SCREEN_TAB INITR_BLACKTAB
-
+//TFT and Menu related macros
 #ifndef ROW_HEIGHT
 #define ROW_HEIGHT      10
 #endif

@@ -5,9 +5,9 @@
 // Comment out all but one of these options
 
 //#define TAB_COLOUR INITB
-#define TAB_COLOUR INITR_GREENTAB
+//#define TAB_COLOUR INITR_GREENTAB
 //#define TAB_COLOUR INITR_REDTAB
-//#define TAB_COLOUR INITR_BLACKTAB
+#define TAB_COLOUR INITR_BLACKTAB
 //#define TAB_COLOUR INITR_GREENTAB2
 
 // ##################################################################################
