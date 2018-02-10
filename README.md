@@ -1,5 +1,5 @@
-# eviveFirmware Version 1.0.4
-This firmware is developed for evive [http://evive.cc].  It enables the menu based visual interface for Arduino programs.
+# eviveFirmware Version 1.1.0
+This firmware is developed for evive [https://evive.cc].  It enables the menu based visual interface for Arduino programs.
 
 1) Control Menu: evive includes hardware interaction and plug & play interface, which can be used to control many basic utilities like controlling motors, servos, stepper, relays, solenoid values for pneumatics using tactile switches slide switches and potentiometers. Also the user can use the inbuilt hardware (switches and potentiometers) to change/define the states of Digital I/O Pins or PWM output. Switches and potentiometers are internally connected to Arduino MEGA pins as control inputs and motor drivers are connected for output at plug & play interface. The state or values are displayed on screen
 
@@ -16,3 +16,5 @@ This firmware is developed for evive [http://evive.cc].  It enables the menu bas
 7) Touch: evive has 12 touch inputs. Just plug a wire from the outputs to any conducting surface, and get a touch-sensitive surface!
 
 8) User Defined Programs: Generally, while using Arduino one face problem of uploading different codes again and again as he changes some part of codes. Using evive’s user defined function submenu, the user can store different Arduino programs at once. He can switch to different program while navigating inside the menu. Here is how to do it: https://www.youtube.com/watch?v=c5ne1dfeFOQ
+
+9) Exit Menu: While using evive Frimware as library, Exit Menu needs to be selected to enter the custom program along with evive Menu.

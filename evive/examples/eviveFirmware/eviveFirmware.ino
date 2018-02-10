@@ -1,13 +1,13 @@
  /*
-  * Version 1.0.3
+  * Version 1.1.0
   * This firmware is developed for evive [http://evive.cc].
   * This is licensed under GNU GPL V3 [http://www.gnu.org/licenses/gpl.txt].
   * Written by Dhrupal R Shah for evive platform, Agilo Research.
-  * Last update: 2017, July 29, by Harsh Chittora
+  * Last update: 2017, December 30, by Nihar Shah
   * Contact: support@evive.cc
-  * Copyright (c) 2017 Agilo Research.  All rights reserved.
+  * Copyright (c) 2018 Agilo Research.  All rights reserved.
   *
-  * Getting started with evive: http://learn.evive.cc/
+  * Getting started with evive: https://evive.cc/learn
   *
   * NOTE: Works with Arduino IDE 1.6.6 or later [https://www.arduino.cc/en/Main/Software]
  */
@@ -16,7 +16,7 @@
 
 void setup(){
   Serial.begin(BAUDRATE);			//Default BAUD Rate: 250000, edit the macro in configuration.h
-  tft_init();									//Initialize TFT screen in library screen.cpp
+	tft_init(INITR_BLACKTAB);			//Use either INITR_BLACKTAB or INITR_GREENTAB. Initialize TFT screen in library screen.cpp
 }
 
 void loop(){

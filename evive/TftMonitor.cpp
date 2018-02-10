@@ -1,10 +1,24 @@
-#include "TftSerial.h"
-//	TftSerial :: TftSerial()
+/*TftMonitor library implements similar view of serial monitor of Arduino desktop IDE
+ *on evive TFT display.
+ *
+ *Last editted on  01.08.2017 by Harsh Chittora an Dhrupal R. Shah
+ *Added support for double and float
+ *Improved Text wrap for int  
+ *
+ *How to use:
+ *1) Declare a class object with any name, say tftMonitor, as: TftMonitor tftMonitor;
+ *2) Now you can use the tftMonitor as Serial object: tftMonitor.print(123)
+ *
+ *Note: Work in progress.
+*/
+
+#include "TftMonitor.h"
+//	TftMonitor :: TftMonitor()
 //	{
 //		tft = TFT_ST7735();
 //	}
  
-	void TftSerial :: begin()
+	void TftMonitor :: begin()
 	{
 		//tft.init();
 		//tft.setRotation(1);
@@ -16,7 +30,7 @@
 		tft.setTextColor(ST7735_RED);
 	}
 
-  void TftSerial :: print(int i)
+  void TftMonitor :: print(int i)
   {
   	/*
 		tft.fillRect(next_col, next_line, tft.width()-next_col, ROW_HEIGHT, ST7735_BLACK);
@@ -40,11 +54,11 @@
   	print(s);
   }
 	
-	// void	TftSerial :: print(int i, int base){
+	// void	TftMonitor :: print(int i, int base){
 		
 	// }
 	
-   void TftSerial :: println(int i)
+   void TftMonitor :: println(int i)
    {
 		tft.fillRect(next_col, next_line, tft.width()-next_col, ROW_HEIGHT, ST7735_BLACK);
 		tft.fillRect(0, next_line+ROW_HEIGHT, tft.width(), ROW_HEIGHT, ST7735_BLACK);
@@ -67,7 +81,7 @@
 #endif
    }	
 
-  void TftSerial :: print(char c)
+  void TftMonitor :: print(char c)
   {
 		tft.setCursor(next_col,next_line);
 		tft.fillRect(next_col,next_line,24,8,ST7735_BLACK);
@@ -89,7 +103,7 @@
 #endif
   }
 
-  void TftSerial :: print(double d)
+  void TftMonitor :: print(double d)
   {
   	s=String(d);
   	print(s);
@@ -98,34 +112,34 @@
   	#endif
   }
 
-  void TftSerial :: print(float f)
+  void TftMonitor :: print(float f)
   {
   	s=String(f);
   	print(f);
 
   }
 
-  void TftSerial :: println(double d)
+  void TftMonitor :: println(double d)
   {
   	s=String(d);
   	println(s);
   }
 
-  void TftSerial :: println(float f)
+  void TftMonitor :: println(float f)
   {
   	s=String(f);
   	println(f);
   }
    
-   void TftSerial :: print(String s)
+   void TftMonitor :: print(String s)
    {
-		for(int j=0;j<s.length();j++)
+		for(int j=0;j<s.length()-1;j++)
 		{
 			tft.print(s[j]);
 		}
    }
 	 
-/* 	size_t TftSerial :: print(double number, uint8_t digits) 
+/* 	size_t TftMonitor :: print(double number, uint8_t digits) 
 { 
   size_t n = 0;
   
@@ -170,7 +184,7 @@
   return n;
 	} */
    
-	void TftSerial :: println(){
+	void TftMonitor :: println(){
 		tft.fillRect(next_col, next_line, tft.width()-next_col, ROW_HEIGHT, ST7735_BLACK);
 		tft.fillRect(0, next_line+ROW_HEIGHT, tft.width(), ROW_HEIGHT, ST7735_BLACK);
 		//tft.setCursor(next_col,next_line);
@@ -189,11 +203,7 @@
   }
 	
 	
-	
-	
-	
-	
-  void  TftSerial :: println(char c)
+  void  TftMonitor :: println(char c)
   {	
 		
 		next_line=next_line+ROW_HEIGHT;
@@ -211,11 +221,8 @@
 			next_line=next_line+ROW_HEIGHT;
 		}
   }
-	
-	
-
    
-   void TftSerial :: println(String s)
+   void TftMonitor :: println(String s)
    {
    		lines=(CHAR_WIDTH*s.length()/128)+1;
    		//Serial.println(lines);
@@ -246,4 +253,4 @@
 		return count;
 	}
 
-//TftSerial TftMonitor;
+//TftMonitor tftMonitor;
